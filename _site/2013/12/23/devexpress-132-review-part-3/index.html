@@ -1,0 +1,560 @@
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+    <title>DevExpress 13.2 Review Part 3</title>
+    <meta name="description" content="Part of the DevExpress 13.2 release series. Part3.">
+    <meta name="author" content="Manuel Grundner">
+
+    <!-- Enable responsive viewport -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- Bootstrap styles -->
+    <link href="/assets/themes/bootstrap-3/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Optional theme -->
+    <link href="/assets/themes/bootstrap-3/bootstrap/css/bootstrap-theme.min.css" rel="stylesheet">
+    <!-- Sticky Footer -->
+    <link href="/assets/themes/bootstrap-3/bootstrap/css/bs-sticky-footer.css" rel="stylesheet">
+    
+    <!-- Custom styles -->
+    <link href="/assets/themes/bootstrap-3/css/style.css?body=1" rel="stylesheet" type="text/css" media="all">
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+      <script src="https://oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js"></script>
+    <![endif]-->
+
+    <!-- Fav and touch icons -->
+    <!-- Update these with your own images
+      <link rel="shortcut icon" href="images/favicon.ico">
+      <link rel="apple-touch-icon" href="images/apple-touch-icon.png">
+      <link rel="apple-touch-icon" sizes="72x72" href="images/apple-touch-icon-72x72.png">
+      <link rel="apple-touch-icon" sizes="114x114" href="images/apple-touch-icon-114x114.png">
+    -->
+
+    <!-- atom & rss feed -->
+    <link href="/atom.xml" type="application/atom+xml" rel="alternate" title="Sitewide ATOM Feed">
+    <link href="/rss.xml" type="application/rss+xml" rel="alternate" title="Sitewide RSS Feed">
+
+  </head>
+
+  <body>
+    <div id="wrap">
+      <nav class="navbar navbar-default" role="navigation">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#jb-navbar-collapse">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="/">paraOffice - Team Blog</a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <div class="collapse navbar-collapse" id="jb-navbar-collapse">
+          <ul class="nav navbar-nav">
+            
+            
+            
+
+
+  
+    
+      
+      	
+      	<li><a href="/archive.html">Archive</a></li>
+      	
+      
+    
+  
+    
+      
+    
+  
+    
+      
+      	
+      	<li><a href="/categories.html">Categories</a></li>
+      	
+      
+    
+  
+    
+      
+    
+  
+    
+      
+      	
+      	<li><a href="/pages.html">Pages</a></li>
+      	
+      
+    
+  
+    
+      
+    
+  
+    
+      
+    
+  
+    
+      
+      	
+      	<li><a href="/tags.html">Tags</a></li>
+      	
+      
+    
+  
+
+
+
+          </ul>
+          <form class="navbar-form navbar-right" role="search">
+            <div class="form-group">
+              <input type="text" class="form-control" placeholder="Search">
+            </div>
+            <button type="submit" class="btn btn-default">Submit</button>
+          </form>
+        </div><!-- /.navbar-collapse -->
+      </nav>
+
+      <div class="container">
+        
+<div class="page-header">
+  <h1>DevExpress 13.2 Review Part 3 <small> - Works on my machine</small></h1>
+</div>
+
+<div class="row post-full">
+  <div class="col-xs-12">
+    <div class="date">
+      <span>23 December 2013</span>
+    </div>
+    <div class="content">
+      
+<p>After some days of hard work, not able to blog, here is my third part of the DevExpress review.</p>
+
+<p>This times i focused, as promised, about integrating the WinForms TaskbarAssistant into XAF.</p>
+
+<p>Cause i don’t wan’t to repeat myself here is the <a href="https://github.com/biohazard999/Xpand.ExpressApp.Win.Para.WindowsIntegration/blob/master/README.md">readme</a> that can also be found on <a href="https://github.com/biohazard999/Xpand.ExpressApp.Win.Para.WindowsIntegration">github</a>. If i have time over the holidays, i try to make a screencast that explain my solution in further detail and show the little pitfalls i encountered. But, as expected, it was very easy to integrate in XAF and till now my absolute favorite of the 13.2 release. (i hate to write native calls on my own :D)</p>
+
+<p>So here is the readme &amp; <em>happy holidays to everybody</em> :)</p>
+
+<p>Oh and before i forget:
+<strong>Xpand.ExpressApp.Win.Para.</strong>* will be a new part of our applications, that allows me to write and share Xpand (XAF) modules, without having to violate our internal source licence.</p>
+
+<p>Greetins Manuel</p>
+
+<hr />
+
+<h1 id="xpandexpressappwinparawindowsintegration">Xpand.ExpressApp.Win.Para.WindowsIntegration</h1>
+
+<p>Deeper Windows Integration Features to XAF/Xpand</p>
+
+<h2 id="the-windowsintegrationwindowsformsmodule">The WindowsIntegrationWindowsFormsModule</h2>
+
+<p>This Module allows you to integrate the <a href="http://documentation.devexpress.com/#WindowsForms/clsDevExpressUtilsTaskbarTaskbarAssistanttopic" title="TaskbarAssistent Component">TaskbarAssistent</a> into XAF.</p>
+
+<h3 id="getting-started">Getting started</h3>
+
+<p>Integrate the <code>WindowsIntegrationWindowsFormsModule</code> like you would do with any Module.
+This is a WindowsForms only Module.</p>
+
+<p>Rebuild your project and you will see 2 additional nodes in the Options section:</p>
+
+<p><img src="http://i.imgur.com/vur7hpM.png" alt="" /></p>
+
+<p>The <code>TaskbarJumpListOptions</code> node allows you to specify <code>JumplistCategories</code> and <code>JumplistItems</code>. </p>
+
+<h3 id="jumplists">Jumplists</h3>
+
+<p>Set the <code>EnableJumplist</code> option to <code>True</code> and specify a argument name that will be used to launch your application with command line arguments.</p>
+
+<p><img src="http://i.imgur.com/EsCmOa4.png" alt="" /></p>
+
+<blockquote>
+  <p>Note if you only like to launch external applications you can skip the <code>NavigationItemJumplistArgumentName</code>
+The <code>NavigationItemJumplistArgumentName</code> should end with a <strong>colon</strong>.</p>
+</blockquote>
+
+<p>You see two nodes:</p>
+
+<ol>
+  <li>The <code>CustomCategories</code> node: This allows you to specify custom categories with <code>JumpItems</code> in it.</li>
+  <li>The <code>TasksCategory</code> is the default category provided by windows.</li>
+</ol>
+
+<p><img src="http://i.imgur.com/CjcAtQ1.png" alt="" /></p>
+
+<p>Currently there are 3 types of <code>JumpListItems</code>:</p>
+
+<ol>
+  <li>The <code>TaskbarJumplistJumpItemLaunch</code> allows you to specify any program that you’d like to launch. You can provide arguments and a <code>WorkingDirectory</code>.</li>
+  <li>The <code>TaskbarJumplistJumpItemNavigationItem</code> allows you to specify a <code>NavigationItem</code> the user can select from the the Jumplist.</li>
+  <li>The <code>TaskbarJumplistSeperatorItem</code> is a simple seperator that draws a horizontal line.</li>
+</ol>
+
+<p><img src="http://i.imgur.com/sJtdh5W.png" alt="" /></p>
+
+<h4 id="taskbarjumplistjumpitemlaunch">TaskbarJumplistJumpItemLaunch</h4>
+<p><img src="http://i.imgur.com/QSAoYJY.png" alt="" /></p>
+
+<p>You can currently specify:</p>
+
+<ul>
+  <li><code>PathToLaunch</code>: The program you like to launch</li>
+  <li><code>Arguments</code>: The arguments that are passed to the application</li>
+  <li><code>WorkingDirectory</code>: Specifies the folder in which the program is launched</li>
+  <li><code>ImageName</code>: An <a href="#Images">ImageName</a> to provide an icon for the JumpListItem</li>
+  <li><code>Caption</code>: The Text that is displayed to the user</li>
+  <li><code>Index</code>: The order of the JumpListItem</li>
+  <li><code>Id</code>: The Id of the item</li>
+</ul>
+
+<h4 id="taskbarjumplistjumpitemnavigationitem">TaskbarJumplistJumpItemNavigationItem</h4>
+<p><img src="http://i.imgur.com/q4XDmM7.png" alt="" /></p>
+
+<p>You can currently specify:</p>
+
+<ul>
+  <li><code>NavigationItem</code>: Specifies the NavigationItem that should be shown</li>
+  <li><code>UseProtocolIfAvailable</code>: Uses the protocol handler if available</li>
+  <li><code>ImageName</code>: An <a href="#Images">ImageName</a> to provide an icon for the JumpListItem </li>
+  <li><code>Caption</code>: The Text that is displayed to the user</li>
+  <li><code>Index</code>: The order of the JumpListItem</li>
+  <li><code>Id</code>: The Id of the item</li>
+</ul>
+
+<h4 id="taskbarjumplistseperatoritem">TaskbarJumplistSeperatorItem</h4>
+<p><img src="http://i.imgur.com/zOAhFkd.png" alt="" /></p>
+
+<p>You can currently specify:</p>
+
+<ul>
+  <li><code>Index</code>: The order of the JumpListItem</li>
+  <li><code>Id</code>: The Id of the item</li>
+</ul>
+
+<h4 id="custom-categories">Custom Categories</h4>
+<p><img src="http://i.imgur.com/4pUwdBX.png" alt="" /></p>
+
+<p><img src="http://i.imgur.com/bVMs33r.png" alt="" /></p>
+
+<p>You can currently specify:</p>
+
+<ul>
+  <li><code>Caption</code>: The caption of the Category</li>
+  <li><code>Index</code>: The order of the JumpListItem</li>
+  <li><code>Id</code>: The Id of the item</li>
+</ul>
+
+<p>Adding new items is exact the same as for the <code>TasksCategory</code>.</p>
+
+<h3 id="bootstrapping-code-for-navigationitemjumplistitems">Bootstrapping code for NavigationItemJumplistItems</h3>
+
+<pre><code>static class Program
+{
+    private static WinApplication _Application;
+
+    /// &lt;summary&gt;
+    /// The main entry point for the application.
+    /// &lt;/summary&gt;
+    [STAThread]
+    static void Main()
+    {
+        var assemblyName = typeof(Program).Assembly.GetName();
+        var mutexName = assemblyName.Name + "_" + assemblyName.Version.ToString(3);
+
+#if DEBUG
+        mutexName += "_Debug";
+#endif
+        using (var instance = new SingleInstance(mutexName))
+        {
+            if (instance.IsFirstInstance)
+            {
+                instance.ArgumentsReceived += WindowsIntegrationWindowsFormsModule.InstanceOnArgumentsReceived;
+
+                instance.ListenForArgumentsFromSuccessiveInstances();
+</code></pre>
+
+<p>Specify a mutex name. This is an ordinary string, my experiance has shown that a combination of the assemblyName combined with the version of the application and a debug constant works very well for the most scenarios.</p>
+
+<p>Create an instance of the <code>SingleInstance</code> class that manages our application instances.
+Check if this is the first instance launched, attach the <code>ArgumentsReceived</code> event handler to the <code>WindowsIntegrationWindowsFormsModule.InstanceOnArgumentsReceived</code> method and call the <code>ListenForArgumentsFromSuccessiveInstances</code> method to listen for new arguments on the <code>NamedPipe</code>.</p>
+
+<p>Create your application as you always would:</p>
+
+<pre><code>Application.EnableVisualStyles();
+Application.SetCompatibleTextRenderingDefault(false);
+
+_Application = new WinApplication
+{
+    ApplicationName = assemblyName.Name,
+    SplashScreen = new DevExpress.ExpressApp.Win.Utils.DXSplashScreen()
+};
+
+_Application.CreateCustomObjectSpaceProvider += (sender, args) =&gt;
+{
+    args.ObjectSpaceProvider = new XPObjectSpaceProvider(new ConnectionStringDataStoreProvider(args.ConnectionString));
+};
+
+_Application.DatabaseVersionMismatch += (sender, args) =&gt;
+{
+    args.Updater.Update();
+    args.Handled = true;
+};
+
+_Application.Modules.Add(new SystemModule());
+_Application.Modules.Add(new SystemWindowsFormsModule());
+_Application.Modules.Add(new WindowsIntegrationWindowsFormsModule());
+_Application.Modules.Add(new DemoCenterModule());
+_Application.Modules.Add(new DemoCenterWindowsFormsModule());
+</code></pre>
+
+<p><strong>Before</strong> you start the application make sure you pass the <code>WinApplication</code> instance to the <code>WindowsIntegrationWindowsFormsModule.TaskbarApplication</code> propety:</p>
+
+<pre><code>WindowsIntegrationWindowsFormsModule.TaskbarApplication = _Application;
+</code></pre>
+
+<p>Than setup and launch your application</p>
+
+<pre><code>InMemoryDataStoreProvider.Register();
+_Application.ConnectionString = InMemoryDataStoreProvider.ConnectionString;
+
+try
+{
+    _Application.Setup();
+
+    _Application.Start();
+}
+catch (Exception e)
+{
+    _Application.HandleException(e);
+}
+</code></pre>
+
+<p>If the application is <strong>not</strong> the first instance pass the arguments to the first instance:</p>
+
+<pre><code>}
+else
+{
+    instance.PassArgumentsToFirstInstance();
+}
+</code></pre>
+
+<p>The whole bootstrapper now should look like this:</p>
+
+<pre><code>using System;
+using System.Configuration;
+using System.Windows.Forms;
+using DevExpress.ExpressApp.SystemModule;
+using DevExpress.ExpressApp.Win;
+using DevExpress.ExpressApp.Win.SystemModule;
+using DevExpress.ExpressApp.Xpo;
+using Xpand.Demo.Para.DemoCenter.Module.Win;
+using Xpand.ExpressApp.Win.Para.WindowsIntegration;
+
+namespace Xpand.Demo.Para.DemoCenter.Win
+{
+    static class Program
+    {
+        private static WinApplication _Application;
+
+        /// &lt;summary&gt;
+        /// The main entry point for the application.
+        /// &lt;/summary&gt;
+        [STAThread]
+        static void Main()
+        {
+            var assemblyName = typeof(Program).Assembly.GetName();
+            var mutexName = assemblyName.Name + "_" + assemblyName.Version.ToString(3);
+
+#if DEBUG
+            mutexName += "_Debug";
+#endif
+            using (var instance = new SingleInstance(mutexName))
+            {
+                if (instance.IsFirstInstance)
+                {
+                    instance.ArgumentsReceived += WindowsIntegrationWindowsFormsModule.InstanceOnArgumentsReceived;
+
+                    instance.ListenForArgumentsFromSuccessiveInstances();
+
+                    Application.EnableVisualStyles();
+                    Application.SetCompatibleTextRenderingDefault(false);
+
+                    _Application = new WinApplication
+                    {
+                        ApplicationName = assemblyName.Name,
+                        SplashScreen = new DevExpress.ExpressApp.Win.Utils.DXSplashScreen()
+                    };
+
+                    _Application.CreateCustomObjectSpaceProvider += (sender, args) =&gt;
+                    {
+                        args.ObjectSpaceProvider = new XPObjectSpaceProvider(new ConnectionStringDataStoreProvider(args.ConnectionString));
+                    };
+
+                    _Application.DatabaseVersionMismatch += (sender, args) =&gt;
+                    {
+                        args.Updater.Update();
+                        args.Handled = true;
+                    };
+
+                    _Application.Modules.Add(new SystemModule());
+                    _Application.Modules.Add(new SystemWindowsFormsModule());
+                    _Application.Modules.Add(new WindowsIntegrationWindowsFormsModule());
+                    _Application.Modules.Add(new DemoCenterModule());
+                    _Application.Modules.Add(new DemoCenterWindowsFormsModule());
+
+                    WindowsIntegrationWindowsFormsModule.TaskbarApplication = _Application;
+
+                    InMemoryDataStoreProvider.Register();
+                    _Application.ConnectionString = InMemoryDataStoreProvider.ConnectionString;
+
+                    try
+                    {
+                        _Application.Setup();
+
+                        _Application.Start();
+                    }
+                    catch (Exception e)
+                    {
+                        _Application.HandleException(e);
+                    }
+                }
+                else
+                {
+                    instance.PassArgumentsToFirstInstance();
+                }
+            }
+        }
+    }
+}
+</code></pre>
+
+<p>That’s it!</p>
+
+<h3 id="custom-protocols">Custom Protocols</h3>
+
+<p>The custom protocol options allow you to launch your application via an custom protocol. This can be handy if you like to send a link to another workstation to open the application with a specific window. You can think about this like a normal hyperlink but this works for your machine.</p>
+
+<p>Select the CustomProtocolOptions node:</p>
+
+<p><img src="http://i.imgur.com/rgCkl9u.png" alt="" /></p>
+
+<p>Set the <code>EnableProtocols</code> to <code>True</code> and specify a <code>ProtolName</code>. You see a demo of the protocol under the <code>ProtocolHandler</code> node.</p>
+
+<p>You can currently specify:</p>
+
+<ul>
+  <li><code>AutoRegisterProtols</code>: This will write the needed registry keys automatically, when the application launches</li>
+  <li><code>EnableProtocols</code>: This en/disables the whole logic for protocol handlers</li>
+  <li><code>ProtocolDescription</code>: This is a hint in the registry what this protocol does</li>
+  <li><code>ProtoclName</code>: The name of your protocol. This should not start with a number, dashes are allowed. See more under the <a href="http://msdn.microsoft.com/en-us/library/aa767914(VS.85).aspx">microsoft documentation</a></li>
+</ul>
+
+<h3 id="images">Images</h3>
+
+<p>The Images will automatically be compiled into a new dll (based on <code>WinApplication.UserModelDifferenceFilePath</code>)
+You can specify the name of the generated assembly via the <code>Options.AutomaticImageAssemblyName</code> parameter. The default leads to <code>JumplistImages.dll</code>.</p>
+
+<p>This is necessary because windows needs a <code>NativeResource</code> assembly. This will be full automatically generated for all images used by your <code>JumplistItems</code>.</p>
+
+<blockquote>
+  <p>If you launch your application, windows is sometimes caching the icons in the jumplists, so you may not see the actual image you set. After a reboot (or a windows logon/logoff) your application icon should be updated.</p>
+</blockquote>
+
+
+    </div>
+
+    
+
+  
+    <ul class="tag_box inline">
+      <li><i class="glyphicon glyphicon-tags"></i></li>
+      
+      
+
+
+  
+     
+    	<li><a href="/tags.html#13.2-ref">13.2 <span>3</span></a></li>
+     
+    	<li><a href="/tags.html#XAF-ref">XAF <span>9</span></a></li>
+     
+    	<li><a href="/tags.html#DevExpress-ref">DevExpress <span>3</span></a></li>
+    
+  
+
+
+
+    </ul>
+    
+  
+    <hr>
+    <ul class="pagination">
+    
+      <li class="prev"><a href="/2013/12/07/devexpress-132-review-part-2" title="DevExpress 13.2 Review Part 2">&laquo; Previous</a></li>
+    
+      <li><a href="/archive.html">Archive</a></li>
+    
+      <li class="next"><a href="/2015/02/27/hello-world" title="Hello World">Next &raquo;</a></li>
+    
+    </ul>
+    <hr>
+    
+
+
+  <div id="disqus_thread"></div>
+<script type="text/javascript">
+    var disqus_developer = 1;
+    var disqus_shortname = 'biohazard999'; // required: replace example with your forum shortname
+    
+    /* * * DON'T EDIT BELOW THIS LINE * * */
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = 'http://' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="http://disqus.com" class="dsq-brlink">blog comments powered by <span class="logo-disqus">Disqus</span></a>
+
+
+
+
+  </div>
+</div>
+
+
+      </div>
+
+    </div>
+
+    <div id="footer">
+      <div class="container">
+        <p>&copy; 2015 Manuel Grundner
+          with help from <a href="http://jekyllbootstrap.com" target="_blank" title="The Definitive Jekyll Blogging Framework">Jekyll Bootstrap</a>
+          and <a href="http://twitter.github.com/bootstrap/" target="_blank">Twitter Bootstrap</a>
+        </p>
+      </div>
+    </div>
+
+    
+
+
+    <!-- Latest compiled and minified JavaScript, requires jQuery 1.x (2.x not supported in IE8) -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+    <script src="/assets/themes/bootstrap-3/bootstrap/js/bootstrap.min.js"></script>
+  </body>
+</html>
+

@@ -1,0 +1,369 @@
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+    <title>DevExpress 13.2 Review Part 2</title>
+    <meta name="description" content="Part of the DevExpress 13.2 release series. Part2.">
+    <meta name="author" content="Manuel Grundner">
+
+    <!-- Enable responsive viewport -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- Bootstrap styles -->
+    <link href="/assets/themes/bootstrap-3/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Optional theme -->
+    <link href="/assets/themes/bootstrap-3/bootstrap/css/bootstrap-theme.min.css" rel="stylesheet">
+    <!-- Sticky Footer -->
+    <link href="/assets/themes/bootstrap-3/bootstrap/css/bs-sticky-footer.css" rel="stylesheet">
+    
+    <!-- Custom styles -->
+    <link href="/assets/themes/bootstrap-3/css/style.css?body=1" rel="stylesheet" type="text/css" media="all">
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+      <script src="https://oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js"></script>
+    <![endif]-->
+
+    <!-- Fav and touch icons -->
+    <!-- Update these with your own images
+      <link rel="shortcut icon" href="images/favicon.ico">
+      <link rel="apple-touch-icon" href="images/apple-touch-icon.png">
+      <link rel="apple-touch-icon" sizes="72x72" href="images/apple-touch-icon-72x72.png">
+      <link rel="apple-touch-icon" sizes="114x114" href="images/apple-touch-icon-114x114.png">
+    -->
+
+    <!-- atom & rss feed -->
+    <link href="/atom.xml" type="application/atom+xml" rel="alternate" title="Sitewide ATOM Feed">
+    <link href="/rss.xml" type="application/rss+xml" rel="alternate" title="Sitewide RSS Feed">
+
+  </head>
+
+  <body>
+    <div id="wrap">
+      <nav class="navbar navbar-default" role="navigation">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#jb-navbar-collapse">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="/">paraOffice - Team Blog</a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <div class="collapse navbar-collapse" id="jb-navbar-collapse">
+          <ul class="nav navbar-nav">
+            
+            
+            
+
+
+  
+    
+      
+      	
+      	<li><a href="/archive.html">Archive</a></li>
+      	
+      
+    
+  
+    
+      
+    
+  
+    
+      
+      	
+      	<li><a href="/categories.html">Categories</a></li>
+      	
+      
+    
+  
+    
+      
+    
+  
+    
+      
+      	
+      	<li><a href="/pages.html">Pages</a></li>
+      	
+      
+    
+  
+    
+      
+    
+  
+    
+      
+    
+  
+    
+      
+      	
+      	<li><a href="/tags.html">Tags</a></li>
+      	
+      
+    
+  
+
+
+
+          </ul>
+          <form class="navbar-form navbar-right" role="search">
+            <div class="form-group">
+              <input type="text" class="form-control" placeholder="Search">
+            </div>
+            <button type="submit" class="btn btn-default">Submit</button>
+          </form>
+        </div><!-- /.navbar-collapse -->
+      </nav>
+
+      <div class="container">
+        
+<div class="page-header">
+  <h1>DevExpress 13.2 Review Part 2 <small> - Works on my machine</small></h1>
+</div>
+
+<div class="row post-full">
+  <div class="col-xs-12">
+    <div class="date">
+      <span>07 December 2013</span>
+    </div>
+    <div class="content">
+      
+<h1 id="devexpress-132-review---part-2">DevExpress 13.2 Review - Part 2</h1>
+
+<p>In the last review, I showed only some of the new small improvements I noticed during migration, so now go to the great stuff!</p>
+
+<h2 id="winforms">WinForms</h2>
+
+<h3 id="taskbarassistant">TaskbarAssistant</h3>
+
+<p>The TaskbarAssistent component can help you to integrate the small features of Windows every windows user loves, a seamless and easy to use <em>Quickstart/Recently used/CustomCommand/Preview/Whatever</em> -menu for your application.</p>
+
+<p><img src="http://i.imgur.com/Z71xAuy.png" alt="" />
+<img src="http://i.imgur.com/O1cP3Ei.png" alt="" /></p>
+
+<p>Till now you had to deal with unmanaged code to bring this in your application, or use the <a href="http://archive.msdn.microsoft.com/WindowsAPICodePack">WindowsAPICodePack</a> but this is very unhandy.</p>
+
+<p>So DevExpress gave us a new API to handle this straight forward, so we can focus on our clients!</p>
+
+<h4 id="use-the-designer">Use the designer</h4>
+
+<p>We have a simple Winforms application and start with the designer:</p>
+
+<p><img src="http://i.imgur.com/hjhRhyl.png" alt="" /></p>
+
+<p>Drag it to your form and you got a component:</p>
+
+<p><img src="http://i.imgur.com/uCPzjhA.png" alt="" /></p>
+
+<p>Lets see the options:</p>
+
+<p><img src="http://i.imgur.com/a5a8Dm8.png" alt="" /></p>
+
+<p>As we can see, we have a lot of options to customize our taskbar. </p>
+
+<h4 id="the-jumplist">The Jumplist</h4>
+
+<p>The Jumplist items are basically shortcuts or launch commands to applications. <a href="http://msdn.microsoft.com/en-us/library/windows/desktop/dd378460(v=vs.85).aspx#dests">The Microsoft Documentation</a> says that tasks are typically <code>IShellLink</code> items with command-line arguments.</p>
+
+<p>Okay lets see how we can manage this:</p>
+
+<p>For the default Windows behavior, we should use the JumpListTasksCategory. This will be localized under the different languages of the operating system. For example <em>Tasks</em> in english or <em>Aufgaben</em> in German.</p>
+
+<p>We now can add custom commands to this like launching the windows calculator or notepad:</p>
+
+<p><img src="http://i.imgur.com/sGBxn70.png" alt="" />
+<img src="http://i.imgur.com/WgIIK1J.png" alt="" /></p>
+
+<p>Let’s launch the application and see what it looks like:</p>
+
+<p><img src="http://i.imgur.com/3KUxzCJ.png" alt="" /></p>
+
+<p>Great! This works like a charm! But let’s handle the pictures. Cause this can be even launched if the application is not running (for example the user has pinned your application to the taskbar) we need to add a native image resource.</p>
+
+<p><img src="http://i.imgur.com/DFTPV6w.png" alt="" />
+<img src="http://i.imgur.com/3BhqrxZ.png" alt="" /></p>
+
+<p>Let’s add an icon for both applications:</p>
+
+<p>Grab a <a href="https://www.google.com/search?q=extract+icon+from+exe+&amp;oq=extract+icon+from+exe+&amp;aqs=chrome..69i57j69i59j0l4.4427j0j4&amp;sourceid=chrome&amp;espv=210&amp;es_sm=122&amp;ie=UTF-8">tool</a> that allows you to extract an icon from an exe or use you own ico file (note it must be in the ICO-Format) (I used the freeware tool <a href="http://www.nirsoft.net/">IconExtracts from Nirsoft</a>)</p>
+
+<p><img src="http://i.imgur.com/9K48qyU.png" alt="" />
+<img src="http://i.imgur.com/JkUHJPo.png" alt="" /></p>
+
+<p>Close the designers, Rebuild and select your icons:
+<img src="http://i.imgur.com/qxKQBF1.png" alt="" /></p>
+
+<p>Let’s see the result:</p>
+
+<p><img src="http://i.imgur.com/Q3EK8Kk.png" alt="" /></p>
+
+<p>That was easy, without a single line of code we have a full working JumpList. This <strong>is</strong> really amazing!</p>
+
+<p>You also can add a custom JumpList with additional categories, it follows the same scheme but you use the <code>JumpListCustomCategories</code>:</p>
+
+<p><img src="http://i.imgur.com/xe4taCQ.png" alt="" /></p>
+
+<h4 id="the-overlayicon">The OverlayIcon</h4>
+
+<p>Using the overlay icon you can inform your user about the current status of your application. Its a simple Bitmap you can set (Note: I’m using 24x24 PNGs here):</p>
+
+<pre><code>if (busyCheckEdit.Checked)
+    taskbarAssistant1.OverlayIcon = Resources.delete;
+else
+    taskbarAssistant1.OverlayIcon = Resources.check;
+</code></pre>
+
+<p><img src="http://i.imgur.com/K2LU3uq.png" alt="" /></p>
+
+<p>This is a simple API i like, DevExpress thanks for that. No pointer juggling, just a simple, clear and pure managed API.</p>
+
+<h4 id="the-thumbnailbuttons">The ThumbnailButtons</h4>
+
+<p>The last feature i want to talk about are the <code>ThumbnailButtons</code>. That are buttons that are visible if the User hovers over your running application in the taskbar:</p>
+
+<p><img src="http://i.imgur.com/r8JLKST.png" alt="" /></p>
+
+<p><img src="http://i.imgur.com/eAiESGb.png" alt="" /></p>
+
+<p><img src="http://i.imgur.com/ADix3kn.png" alt="" /></p>
+
+<p>Now handle the both <code>Click</code> events:</p>
+
+<p><img src="http://i.imgur.com/tBz69d9.png" alt="" /></p>
+
+<p>Insert our custom code:</p>
+
+<pre><code>private void whatsNewTaskbarButton_Click(object sender, ThumbButtonClickEventArgs e)
+{
+    webBrowser1.Navigate(@"https://www.devexpress.com/Subscriptions/New-2013.xml");
+}
+
+private void helpTaskbarButton_Click(object sender, ThumbButtonClickEventArgs e)
+{
+    webBrowser1.Navigate(@"http://documentation.devexpress.com/#HomePage/CustomDocument9453");
+}
+</code></pre>
+
+<p>Start the application and see if everything works as expected.</p>
+
+<p><img src="http://i.imgur.com/f3sqaL8.png" alt="" /></p>
+
+<p><img src="http://i.imgur.com/W1BJ1d4.png" alt="" /></p>
+
+<p>And we are done! In minutes, we implemented full working windows 7 (or greater) taskbar support for our application.</p>
+
+<p>I’m impressed.</p>
+
+<h3 id="conclusion">Conclusion</h3>
+
+<p>Never thought it was so easy to get along with this new control. No need to think about Win32 API, just get it done right. With the first try. I never used this control before, and I’m really impressed how quick i got running with this. Never looked in the documentation (of course the documentation it self is very good)</p>
+
+<p>For me, it is a great proof to rely on the strengths of a manufacturer like DevExpress. When only the best will do.</p>
+
+<h2 id="whats-next">What’s next?</h2>
+
+<p>In the next part of the review, i will show you how easy it is to integrate the TaskbarAssistent in an expressAppFramework Winforms project.</p>
+
+<p>Also, i try to show the soft validation feature of XAF and try to cover some other features like adding custom fields and calculated fields at runtime.</p>
+
+<p>Of course, you can follow my progress in my public <a href="https://github.com/biohazard999/DX13_2">GitHub-Repository</a>.</p>
+
+<p>Greetings, Manuel</p>
+
+    </div>
+
+    
+
+  
+    <ul class="tag_box inline">
+      <li><i class="glyphicon glyphicon-tags"></i></li>
+      
+      
+
+
+  
+     
+    	<li><a href="/tags.html#XAF-ref">XAF <span>9</span></a></li>
+     
+    	<li><a href="/tags.html#13.2-ref">13.2 <span>3</span></a></li>
+     
+    	<li><a href="/tags.html#DevExpress-ref">DevExpress <span>3</span></a></li>
+    
+  
+
+
+
+    </ul>
+    
+  
+    <hr>
+    <ul class="pagination">
+    
+      <li class="prev"><a href="/2013/12/06/devexpress-132-review-part-1" title="DevExpress 13.2 Review Part 1">&laquo; Previous</a></li>
+    
+      <li><a href="/archive.html">Archive</a></li>
+    
+      <li class="next"><a href="/2013/12/23/devexpress-132-review-part-3" title="DevExpress 13.2 Review Part 3">Next &raquo;</a></li>
+    
+    </ul>
+    <hr>
+    
+
+
+  <div id="disqus_thread"></div>
+<script type="text/javascript">
+    var disqus_developer = 1;
+    var disqus_shortname = 'biohazard999'; // required: replace example with your forum shortname
+    
+    /* * * DON'T EDIT BELOW THIS LINE * * */
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = 'http://' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="http://disqus.com" class="dsq-brlink">blog comments powered by <span class="logo-disqus">Disqus</span></a>
+
+
+
+
+  </div>
+</div>
+
+
+      </div>
+
+    </div>
+
+    <div id="footer">
+      <div class="container">
+        <p>&copy; 2015 Manuel Grundner
+          with help from <a href="http://jekyllbootstrap.com" target="_blank" title="The Definitive Jekyll Blogging Framework">Jekyll Bootstrap</a>
+          and <a href="http://twitter.github.com/bootstrap/" target="_blank">Twitter Bootstrap</a>
+        </p>
+      </div>
+    </div>
+
+    
+
+
+    <!-- Latest compiled and minified JavaScript, requires jQuery 1.x (2.x not supported in IE8) -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+    <script src="/assets/themes/bootstrap-3/bootstrap/js/bootstrap.min.js"></script>
+  </body>
+</html>
+

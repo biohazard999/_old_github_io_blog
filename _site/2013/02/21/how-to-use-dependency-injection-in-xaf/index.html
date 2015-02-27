@@ -1,0 +1,816 @@
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+    <title>How to use Dependency Injection in XAF</title>
+    <meta name="description" content="">
+    <meta name="author" content="Manuel Grundner">
+
+    <!-- Enable responsive viewport -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- Bootstrap styles -->
+    <link href="/assets/themes/bootstrap-3/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Optional theme -->
+    <link href="/assets/themes/bootstrap-3/bootstrap/css/bootstrap-theme.min.css" rel="stylesheet">
+    <!-- Sticky Footer -->
+    <link href="/assets/themes/bootstrap-3/bootstrap/css/bs-sticky-footer.css" rel="stylesheet">
+    
+    <!-- Custom styles -->
+    <link href="/assets/themes/bootstrap-3/css/style.css?body=1" rel="stylesheet" type="text/css" media="all">
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+      <script src="https://oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js"></script>
+    <![endif]-->
+
+    <!-- Fav and touch icons -->
+    <!-- Update these with your own images
+      <link rel="shortcut icon" href="images/favicon.ico">
+      <link rel="apple-touch-icon" href="images/apple-touch-icon.png">
+      <link rel="apple-touch-icon" sizes="72x72" href="images/apple-touch-icon-72x72.png">
+      <link rel="apple-touch-icon" sizes="114x114" href="images/apple-touch-icon-114x114.png">
+    -->
+
+    <!-- atom & rss feed -->
+    <link href="/atom.xml" type="application/atom+xml" rel="alternate" title="Sitewide ATOM Feed">
+    <link href="/rss.xml" type="application/rss+xml" rel="alternate" title="Sitewide RSS Feed">
+
+  </head>
+
+  <body>
+    <div id="wrap">
+      <nav class="navbar navbar-default" role="navigation">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#jb-navbar-collapse">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="/">paraOffice - Team Blog</a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <div class="collapse navbar-collapse" id="jb-navbar-collapse">
+          <ul class="nav navbar-nav">
+            
+            
+            
+
+
+  
+    
+      
+      	
+      	<li><a href="/archive.html">Archive</a></li>
+      	
+      
+    
+  
+    
+      
+    
+  
+    
+      
+      	
+      	<li><a href="/categories.html">Categories</a></li>
+      	
+      
+    
+  
+    
+      
+    
+  
+    
+      
+      	
+      	<li><a href="/pages.html">Pages</a></li>
+      	
+      
+    
+  
+    
+      
+    
+  
+    
+      
+    
+  
+    
+      
+      	
+      	<li><a href="/tags.html">Tags</a></li>
+      	
+      
+    
+  
+
+
+
+          </ul>
+          <form class="navbar-form navbar-right" role="search">
+            <div class="form-group">
+              <input type="text" class="form-control" placeholder="Search">
+            </div>
+            <button type="submit" class="btn btn-default">Submit</button>
+          </form>
+        </div><!-- /.navbar-collapse -->
+      </nav>
+
+      <div class="container">
+        
+<div class="page-header">
+  <h1>How to use Dependency Injection in XAF <small> - Works on my machine</small></h1>
+</div>
+
+<div class="row post-full">
+  <div class="col-xs-12">
+    <div class="date">
+      <span>21 February 2013</span>
+    </div>
+    <div class="content">
+      
+<h1 id="dependency-injection">Dependency injection</h1>
+
+<p>XAF has the ability to provide DI over Domain-Componants, we use XPO so we don’t have a chance to use this feature (and yes, i <strong>hate static</strong> methods! (<strong>testing testing testing</strong>))</p>
+
+<p><a href="http://en.wikipedia.org/wiki/Dependency_injection">http://en.wikipedia.org/wiki/Dependency_injection</a></p>
+
+<h1 id="why">Why?</h1>
+<p>It’s simple. We have a legacy model with a lot of customers, and can’t affort to recreate the model all and all over.</p>
+
+<p>Testing abilities are also a huge factor for our development.</p>
+
+<h1 id="how">How?</h1>
+<p>It was a really <em>tricky</em> task to tell XAF &amp; XPO the trick of DI (or IOC <a href="http://en.wikipedia.org/wiki/Inversion_of_control">http://en.wikipedia.org/wiki/Inversion_of_control</a>)</p>
+
+<h1 id="okay-lets-start">Okay Let’s start</h1>
+
+<p>First of all: The sample uses Unity (<a href="http://unity.codeplex.com">http://unity.codeplex.com</a>) cause it’s well known and supported from microsoft (and fits our needs perfect), but it’s also possible to extract this hard dependency through the Service Locator Pattern if you like to. (<a href="http://en.wikipedia.org/wiki/Service_locator_pattern">http://en.wikipedia.org/wiki/Service_locator_pattern</a>)</p>
+
+<h2 id="the-key-interfaces">The key interfaces!</h2>
+
+<p>First we need two simple interface’s we can talk to:</p>
+
+<pre><code>public interface IUnityContainerProvider
+{
+    IUnityContainer UnityContainer { get; set; }
+}
+</code></pre>
+
+  	public interface IUnityModule
+<pre><code>{
+    void InitUnityContainer(IUnityContainer unityContainer);
+    void UnityContainerInitialized(IUnityContainer unityContainer);
+}
+</code></pre>
+
+<p>The <code>IUnityContainerProvider</code> is used for any class resolved by the <code>UnityContainer</code> to inject himself (we prefer <code>PropertyInjection</code> cause of the Session constructor forced by XPO.</p>
+
+<p>The IUnityModule is intended to be implemented by a <code>DevExpress.ExpressApp.ModuleBase</code> derived type.</p>
+
+<p>The <code>InitUnityContainer</code> is inteded to be called after the <code>Application.Setup()</code> method for each module loaded. The <code>UnityContainerInitialized</code> is called after the <code>InitUnityContainer</code> for each module. So we can <em>override</em> behavior provided by other modules.</p>
+
+<h2 id="how-the-hell-can-this-work-with-xaf">How the hell can this work with XAF?</h2>
+
+<p>I’ve played with this really long and still facing out some problems i’ve seen with our implementation, but this works for almost 2 years now. So i can say it works <em>almost</em> with no problems so long. <em>Till the next XAF update</em> ;)</p>
+
+<h3 id="children">Children</h3>
+
+<p>Unity has the ability to create ChildContainer’s from parent containers. This is nice cause the Frame concept in XAF is almost the same for the view handling.</p>
+
+<p>We could <em>reuse</em> this for the domain-logic so we can simply write domain code without having to deal with different Sessions/UnitOfWorks/ObjectSpaces.</p>
+
+<h3 id="code-it-please">Code it please!</h3>
+
+<p>Okay okay, dont hustle…</p>
+
+<h4 id="unityunitofwork">UnityUnitOfWork</h4>
+
+<p>First of all we need a <code>UnityUnitOfWork</code>. This Class provides a UnityContainer and stores itself as a instance of type <code>Session</code> and <code>UnitOfWork</code>.</p>
+
+ 	public class UnityUnitOfWork : UnitOfWork, IUnityContainerProvider
+<pre><code>{
+    public UnityUnitOfWork() { }
+    public UnityUnitOfWork(DevExpress.Xpo.Metadata.XPDictionary dictionary) : base(dictionary) { }
+    public UnityUnitOfWork(IDataLayer layer, params IDisposable[] disposeOnDisconnect) : base(layer, disposeOnDisconnect) { }
+    public UnityUnitOfWork(IObjectLayer layer, params IDisposable[] disposeOnDisconnect) : base(layer, disposeOnDisconnect) { }
+
+    private IUnityContainer _UnityContainer;
+    public IUnityContainer UnityContainer
+    {
+        get
+        {
+            return _UnityContainer;
+        }
+        set
+        {
+            value.RegisterInstance&lt;UnitOfWork&gt;(this, new HierarchicalLifetimeManager());
+            value.RegisterInstance&lt;Session&gt;(this, new HierarchicalLifetimeManager());
+            _UnityContainer = value;
+        }
+    }
+
+    protected override NestedUnitOfWork CreateNestedUnitOfWork()
+    {
+        return new NestedUnityUnitOfWork(this);
+    }
+}
+</code></pre>
+
+<h4 id="nestedunityunitofwork">NestedUnityUnitOfWork</h4>
+
+<p>Cause XPO supports nested transactions we shouldn’t miss the <code>NestedUnitOfWork</code> who is also a <em>full</em> <code>UnityOfWork</code>.</p>
+
+ 	public class NestedUnityUnitOfWork : NestedUnitOfWork, IUnityContainerProvider
+<pre><code>{
+    protected internal NestedUnityUnitOfWork(Session parent)
+        : base(parent)
+    {
+        UnityContainer = (parent as IUnityContainerProvider).UnityContainer.CreateChildContainer();
+        UnityContainer.RegisterInstance&lt;NestedUnitOfWork&gt;(this, new HierarchicalLifetimeManager());
+        UnityContainer.RegisterInstance&lt;UnitOfWork&gt;(this, new HierarchicalLifetimeManager());
+        UnityContainer.RegisterInstance&lt;Session&gt;(this, new HierarchicalLifetimeManager());
+    }
+
+    public IUnityContainer UnityContainer { get; set; }
+
+    protected override NestedUnitOfWork CreateNestedUnitOfWork()
+    {
+        return new NestedUnityUnitOfWork(this);
+    }
+}
+</code></pre>
+
+<h2 id="but-what-about-xaf">But what about XAF?</h2>
+
+<p>We need to provide the same functionality to the <code>XPObjectSpace</code> as well to the <code>XPNestedObjectSpace</code>.
+### ObjectSpaces ###</p>
+
+<h4 id="unityobjectspace">UnityObjectSpace</h4>
+
+<pre><code>public class UnityObjectSpace : XPObjectSpace, IUnityContainerProvider, IUnityObjectSpace
+{
+    public UnityObjectSpace(UnitOfWork unitOfWork) : base(unitOfWork) { }
+
+    public UnityObjectSpace(ITypesInfo typesInfo, XpoTypeInfoSource xpoTypeInfoSource, CreateUnitOfWorkHandler createUnitOfWorkDelegate) : base(typesInfo, xpoTypeInfoSource, createUnitOfWorkDelegate) { }
+
+    public IUnityContainer UnityContainer
+    {
+        get
+        {
+            if (Session is UnityUnitOfWork)
+                return (Session as UnityUnitOfWork).UnityContainer;
+            return null;
+        }
+        set { }
+    }
+
+    protected override UnitOfWork RecreateUnitOfWork()
+    {
+        var uow = base.RecreateUnitOfWork();
+        if (uow is UnityUnitOfWork)
+            (uow as UnityUnitOfWork).UnityContainer.RegisterInstance&lt;IObjectSpace&gt;(this, new HierarchicalLifetimeManager());
+        return uow;
+    }
+
+    public override IObjectSpace CreateNestedObjectSpace()
+    {
+        var os = new UnityNestedObjectSpace(this);
+        (os.Session as IUnityContainerProvider).UnityContainer.RegisterInstance&lt;IObjectSpace&gt;(os, new HierarchicalLifetimeManager());
+        return os;
+    }
+}
+</code></pre>
+
+<h4 id="unitynestedobjectspace">UnityNestedObjectSpace</h4>
+
+<pre><code>public class UnityNestedObjectSpace : XPNestedObjectSpace, IUnityContainerProvider
+{
+    public UnityNestedObjectSpace(IObjectSpace parentObjectSpace)
+        : base(parentObjectSpace) {}
+
+    public IUnityContainer UnityContainer
+    {
+        get
+        {
+            return (Session as IUnityContainerProvider).UnityContainer;
+        }
+        set {}
+    }
+
+    public override IObjectSpace CreateNestedObjectSpace()
+    {
+        var nestedOS = new UnityNestedObjectSpace(this);
+        nestedOS.AsyncServerModeSourceResolveSession = AsyncServerModeSourceResolveSession;
+        nestedOS.AsyncServerModeSourceDismissSession = AsyncServerModeSourceDismissSession;
+
+        (nestedOS.Session as IUnityContainerProvider).UnityContainer.RegisterInstance&lt;IObjectSpace&gt;(nestedOS, new HierarchicalLifetimeManager());
+
+        return nestedOS;
+    }
+
+
+    protected override UnitOfWork RecreateUnitOfWork()
+    {
+        var Result = base.RecreateUnitOfWork();
+        (Result as IUnityContainerProvider).UnityContainer.RegisterInstance&lt;IObjectSpace&gt;(this, new HierarchicalLifetimeManager());
+        return Result;
+    }
+}
+</code></pre>
+
+<h2 id="okay-we-have-almost-all-we-need-hurry-up">Okay we have almost all we need, hurry up!</h2>
+
+<p>There are only 2 things missing. The infrastrucure for the <code>ObjectSpaceProviders</code> and the <code>XAFApplication</code>.</p>
+
+<h3 id="objectspaceproviders--application">ObjectSpaceProviders &amp; Application</h3>
+
+<p>There are 2 versions of the <code>ObjectSpaceProvider</code>: Secured and Unsecured. </p>
+
+<p>First the unsecured version:</p>
+
+  	public class UnityObjectSpaceProvider : XPObjectSpaceProvider, IUnityContainerProvider
+<pre><code>{
+    public IUnityContainer UnityContainer { get; set; }
+
+    public UnityObjectSpaceProvider(string connectionString, IDbConnection connection, IUnityContainer unityContainer) : base(connectionString, connection)
+    {
+        UnityContainer = unityContainer;
+        unityContainer.RegisterInstance(typeof(IObjectSpaceProvider), this, new ContainerControlledLifetimeManager());
+    }
+
+    public UnityObjectSpaceProvider(IXpoDataStoreProvider dataStoreProvider, IUnityContainer unityContainer)
+        : base(dataStoreProvider)
+    {
+        UnityContainer = unityContainer;
+        unityContainer.RegisterInstance(typeof(IObjectSpaceProvider), this, new ContainerControlledLifetimeManager());
+    }
+
+    public UnityObjectSpaceProvider(IXpoDataStoreProvider dataStoreProvider, ITypesInfo typesInfo, XpoTypeInfoSource xpoTypeInfoSource, IUnityContainer unityContainer)
+        : base(dataStoreProvider, typesInfo, xpoTypeInfoSource)
+    {
+        UnityContainer = unityContainer;
+        unityContainer.RegisterInstance(typeof(IObjectSpaceProvider), this, new ContainerControlledLifetimeManager());
+    }
+
+    protected override IDataLayer CreateDataLayer(IDataStore dataStore)
+    {
+        var dataLayer = new SimpleDataLayer(this.XPDictionary, dataStore);
+
+        return dataLayer;
+    }
+
+    protected override IObjectSpace CreateObjectSpaceCore()
+    {
+        var os = new UnityObjectSpace(TypesInfo, XpoTypeInfoSource, CreateUnitOfWorkDelegate);
+
+        os.UnityContainer.RegisterInstance&lt;IObjectSpace&gt;(os, new HierarchicalLifetimeManager());
+
+        return os;
+    }
+
+    protected override UnitOfWork CreateUnitOfWork(IDataLayer dataLayer)
+    {
+        var uow = new UnityUnitOfWork(dataLayer, null)
+                  {
+                      UnityContainer = UnityContainer.CreateChildContainer()
+                  };
+
+        return uow;
+    }
+}
+</code></pre>
+
+<p>And Secured:</p>
+
+ 	public class SecureUnityObjectSpaceProvider : XPObjectSpaceProvider, IUnityContainerProvider
+<pre><code>{
+    private ISelectDataSecurityProvider SelectDataSecurityProvider;
+
+    public bool AllowICommandChannelDoWithSecurityContext { get; set; }
+
+    public SecureUnityObjectSpaceProvider(ISelectDataSecurityProvider selectDataSecurityProvider, IXpoDataStoreProvider dataStoreProvider, ITypesInfo typesInfo, XpoTypeInfoSource xpoTypeInfoSource, IUnityContainer unityContainer)
+        : base(dataStoreProvider, typesInfo, xpoTypeInfoSource)
+    {
+        UnityContainer = unityContainer;
+        SelectDataSecurityProvider = selectDataSecurityProvider;
+        AllowICommandChannelDoWithSecurityContext = true;
+    }
+
+    public SecureUnityObjectSpaceProvider(ISelectDataSecurityProvider selectDataSecurityProvider, IXpoDataStoreProvider dataStoreProvider, IUnityContainer unityContainer)
+        : base(dataStoreProvider)
+    {
+        UnityContainer = unityContainer;
+        SelectDataSecurityProvider = selectDataSecurityProvider;
+        AllowICommandChannelDoWithSecurityContext = true;
+    }
+
+    public SecureUnityObjectSpaceProvider(ISelectDataSecurityProvider selectDataSecurityProvider, string databaseConnectionString, IDbConnection connection, IUnityContainer unityContainer)
+        : base(databaseConnectionString, connection)
+    {
+        UnityContainer = unityContainer;
+        SelectDataSecurityProvider = selectDataSecurityProvider;
+        AllowICommandChannelDoWithSecurityContext = true;
+    }
+
+    public IUnityContainer UnityContainer { get; set; }
+
+    protected override IDataLayer CreateDataLayer(IDataStore dataStore)
+    {
+        var datalayer = new SimpleDataLayer(dataStore);
+
+        return datalayer;
+    }
+
+
+    protected override IObjectSpace CreateObjectSpaceCore()
+    {
+        var os = new UnityObjectSpace(TypesInfo, XpoTypeInfoSource, CreateUnitOfWorkDelegate);
+
+        os.UnityContainer.RegisterInstance&lt;IObjectSpace&gt;(os, new HierarchicalLifetimeManager());
+
+        return os;
+    }
+
+    protected override UnitOfWork CreateUnitOfWork(IDataLayer dataLayer)
+    {
+        UnityUnitOfWork uow = new UnityUnitOfWork(dataLayer, null);
+
+        uow.UnityContainer = UnityContainer.CreateChildContainer();
+
+        SessionObjectLayer currentObjectLayer = new SecuredSessionObjectLayer(AllowICommandChannelDoWithSecurityContext, uow, true, null, new SecurityRuleProvider(XPDictionary, SelectDataSecurityProvider.CreateSelectDataSecurity()), null);
+
+        var secureUnitOfWork = new UnityUnitOfWork(currentObjectLayer, uow);
+
+        secureUnitOfWork.UnityContainer = uow.UnityContainer;
+
+        return secureUnitOfWork;
+    }
+}
+</code></pre>
+
+<p><strong>Note: The second one is almost a clone of the <code>SecuredObjectSpaceProvider</code> provided by DevExpress but we didn’t want to intercept this class with reflection so we made a <em>clone</em> to <em>inject</em> our needs.</strong></p>
+
+<h3 id="application--bootstrapping">Application &amp; Bootstrapping</h3>
+
+<pre><code>public class UnityModuleInitializer
+{
+    public void InitUnityModules(IUnityContainer container, IEnumerable&lt;IUnityModule&gt; modules)
+    {
+        foreach (var module in modules)
+            module.InitUnityContainer(container);
+
+        foreach (var module in modules)
+            module.UnityContainerInitialized(container);
+    }
+}
+</code></pre>
+
+  	public class UnityWinApplication : WinApplication, IUnityContainerProvider
+<pre><code>{
+    public IUnityContainer UnityContainer { get; set; }
+
+    public UnityWinApplication() : this(new UnityContainer()) { }
+
+    public UnityWinApplication(IUnityContainer container)
+    {
+        UnityContainer = container;
+        UnityContainer.RegisterInstance&lt;XafApplication&gt;(this, new ContainerControlledLifetimeManager());
+
+        SettingUp += ParaXAFApplication_SettingUp;
+    }
+
+    protected override void CreateDefaultObjectSpaceProvider(CreateCustomObjectSpaceProviderEventArgs args)
+    {
+        args.ObjectSpaceProvider = CreateUnityObjectSpaceProvider(args);
+    }
+    
+    public XPObjectSpaceProvider CreateUnityObjectSpaceProvider(CreateCustomObjectSpaceProviderEventArgs e)
+    {
+        return new UnityObjectSpaceProvider(e.ConnectionString, e.Connection, UnityContainer);
+    }
+
+    void ParaXAFApplication_SettingUp(object sender, SetupEventArgs e)
+    {
+        new UnityModuleInitializer().InitUnityModules(UnityContainer, Modules.OfType&lt;IUnityModule&gt;());
+    }
+}
+</code></pre>
+
+<h2 id="bring-the-stuff-together">Bring the stuff together</h2>
+
+<p>The Application:</p>
+
+  	public partial class XAFDISolutionWindowsFormsApplication : UnityWinApplication
+<pre><code>{
+    public XAFDISolutionWindowsFormsApplication(IUnityContainer container)
+        : base(container)
+    {
+        InitializeComponent();
+        DelayedViewItemsInitialization = true;
+    }
+
+    public XAFDISolutionWindowsFormsApplication() : this(new UnityContainer()) { }
+
+    private void XAFDISolutionWindowsFormsApplication_DatabaseVersionMismatch(object sender, DevExpress.ExpressApp.DatabaseVersionMismatchEventArgs e)
+    {
+        if (System.Diagnostics.Debugger.IsAttached)
+        {
+            e.Updater.Update();
+            e.Handled = true;
+        }
+        else
+        {
+            throw new InvalidOperationException(
+                "The application cannot connect to the specified database, because the latter doesn't exist or its version is older than that of the application.\r\n" +
+                "This error occurred  because the automatic database update was disabled when the application was started without debugging.\r\n" +
+                "To avoid this error, you should either start the application under Visual Studio in debug mode, or modify the " +
+                "source code of the 'DatabaseVersionMismatch' event handler to enable automatic database update, " +
+                "or manually create a database using the 'DBUpdater' tool.\r\n" +
+                "Anyway, refer to the 'Update Application and Database Versions' help topic at http://www.devexpress.com/Help/?document=ExpressApp/CustomDocument2795.htm " +
+                "for more detailed information. If this doesn't help, please contact our Support Team at http://www.devexpress.com/Support/Center/");
+        }
+    }
+
+    private void XAFDISolutionWindowsFormsApplication_CustomizeLanguagesList(object sender, CustomizeLanguagesListEventArgs e)
+    {
+        string userLanguageName = System.Threading.Thread.CurrentThread.CurrentUICulture.Name;
+        if (userLanguageName != "en-US" &amp;&amp; e.Languages.IndexOf(userLanguageName) == -1)
+        {
+            e.Languages.Add(userLanguageName);
+        }
+    }
+}
+</code></pre>
+
+<p>And Program.cs</p>
+
+<pre><code>static class Program
+{
+    [STAThread]
+    static void Main()
+    {
+        var unityContainer = new UnityContainer();
+
+        Application.EnableVisualStyles();
+        Application.SetCompatibleTextRenderingDefault(false);
+        EditModelPermission.AlwaysGranted = System.Diagnostics.Debugger.IsAttached;
+
+        string connectionString = null;
+
+        if (ConfigurationManager.ConnectionStrings["ConnectionString"] != null)
+            connectionString = ConfigurationManager.ConnectionStrings["ConnectionString"].ConnectionString;
+
+        var winApplication = new XAFDISolutionWindowsFormsApplication(unityContainer);
+        winApplication.ConnectionString = connectionString;
+
+        try
+        {
+            winApplication.Setup();
+            winApplication.Start();
+        }
+        catch (Exception e)
+        {
+            winApplication.HandleException(e);
+        }
+    }
+}
+</code></pre>
+
+<h2 id="lets-rock">Lets rock!</h2>
+
+<p>In our platform agnostic module we create a simple BO:</p>
+
+<pre><code>[Persistent]
+[DefaultClassOptions]
+public class MyBo1 : XPObject
+{
+    public MyBo1()
+    {
+    }
+
+    public MyBo1(Session session) : base(session)
+    {
+    }
+
+    public MyBo1(Session session, XPClassInfo classInfo) : base(session, classInfo)
+    {
+    }
+
+    [NonPersistent]
+    [MemberDesignTimeVisibility(false)]
+    public IUnityContainer UnityContainer
+    {
+        get { return (Session as IUnityContainerProvider).UnityContainer; }
+    }
+
+    private string _MyName;
+    [Size(SizeAttribute.Unlimited)]
+    [Persistent]
+    public string MyName
+    {
+        get { return _MyName; }
+        set { SetPropertyValue("MyName", ref _MyName, value); }
+    }
+
+    [DevExpress.Persistent.Base.Action(Caption = "Rename Me!!!")]
+    public void RenameMe()
+    {
+        UnityContainer.Resolve&lt;IRenamer&gt;().RenameMe(this);
+    }
+}
+</code></pre>
+
+<p>Notice there is a MethodAction that pulls out the dependency of `IRenamer’</p>
+
+<pre><code>public interface IRenamer
+{
+    void RenameMe(MyBo1 myBo1);
+}
+</code></pre>
+
+<p>And a NullImplementation</p>
+
+ 	public class NullRenamer : IRenamer
+<pre><code>{
+    [Dependency]
+    public IObjectSpace OS { get; set; }
+
+    public void RenameMe(MyBo1 myBo1)
+    {
+        //I should never be called.
+    }
+}
+</code></pre>
+
+<p>So we have a nice NullImplementation and we don’t have to check allways if the dependency is already registered (performance).</p>
+
+<p>In the Module we implement the interface <code>IUnityModule</code> and register the type of the <code>NullRenamer</code></p>
+
+<pre><code>public sealed partial class XAFDISolutionModule : ModuleBase, IUnityModule
+{
+    public XAFDISolutionModule()
+    {
+        InitializeComponent();
+    }
+
+    public override IEnumerable&lt;ModuleUpdater&gt; GetModuleUpdaters(IObjectSpace objectSpace, Version versionFromDB)
+    {
+        ModuleUpdater updater = new DatabaseUpdate.Updater(objectSpace, versionFromDB);
+        return new ModuleUpdater[] { updater };
+    }
+
+    public void InitUnityContainer(Microsoft.Practices.Unity.IUnityContainer unityContainer)
+    {
+        unityContainer.RegisterType&lt;IRenamer, NullRenamer&gt;();
+    }
+
+    public void UnityContainerInitialized(Microsoft.Practices.Unity.IUnityContainer unityContainer)
+    {
+        
+    }
+}
+</code></pre>
+
+<p>In the WinProject we create a new DomainLogic class called <code>WinRenamer</code></p>
+
+<pre><code>public class WinRenamer : IRenamer
+{
+    [Dependency]
+    public IObjectSpace OS { get; set; }
+
+    public void RenameMe(MyBo1 myBo1)
+    {
+        //I should be be called.
+
+        myBo1.MyName = "Hello from the Win Project: My Dependencies: " + GetType().FullName + " " + OS + "Session id:" + (OS as XPObjectSpace).Session;
+    }
+}
+</code></pre>
+
+<p>And the WinModule need’s to overwrite the <code>IRenamer</code> registration</p>
+
+ 	[ToolboxItemFilter(“Xaf.Platform.Win”)]
+<pre><code>public sealed partial class XAFDISolutionWindowsFormsModule : ModuleBase, IUnityModule
+{
+    public XAFDISolutionWindowsFormsModule()
+    {
+        InitializeComponent();
+    }
+    public override IEnumerable&lt;ModuleUpdater&gt; GetModuleUpdaters(IObjectSpace objectSpace, Version versionFromDB)
+    {
+        return ModuleUpdater.EmptyModuleUpdaters;
+    }
+
+    public void InitUnityContainer(IUnityContainer unityContainer)
+    {
+        unityContainer.RegisterType&lt;IRenamer, WinRenamer&gt;();
+    }
+
+    public void UnityContainerInitialized(IUnityContainer unityContainer)
+    {
+        
+    }
+}
+</code></pre>
+
+<p>Thats it!</p>
+
+<p>Check out the video on <a href="http://www.screencast.com/users/Paragraph-Software/folders/Jing/media/0fd30e6c-8757-4293-91e9-29a1a67e5443">Screencast</a>
+And the source-code on <a href="https://bitbucket.org/biohazard999/xafdisolution">Bitbucket</a></p>
+
+
+    </div>
+
+    
+
+  
+    <ul class="tag_box inline">
+      <li><i class="glyphicon glyphicon-tags"></i></li>
+      
+      
+
+
+  
+     
+    	<li><a href="/tags.html#XAF-ref">XAF <span>9</span></a></li>
+     
+    	<li><a href="/tags.html#Unity-ref">Unity <span>5</span></a></li>
+    
+  
+
+
+
+    </ul>
+    
+  
+    <hr>
+    <ul class="pagination">
+    
+      <li class="prev"><a href="/2012/08/06/fastschemaprovider-v06" title="FastSchemaProvider V0.6">&laquo; Previous</a></li>
+    
+      <li><a href="/archive.html">Archive</a></li>
+    
+      <li class="next"><a href="/2013/02/22/how-to-use-dependency-injection-in-xaf-unittesting-part-2" title="How to use Dependency Injection in XAF (UnitTesting) Part 2">Next &raquo;</a></li>
+    
+    </ul>
+    <hr>
+    
+
+
+  <div id="disqus_thread"></div>
+<script type="text/javascript">
+    var disqus_developer = 1;
+    var disqus_shortname = 'biohazard999'; // required: replace example with your forum shortname
+    
+    /* * * DON'T EDIT BELOW THIS LINE * * */
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = 'http://' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="http://disqus.com" class="dsq-brlink">blog comments powered by <span class="logo-disqus">Disqus</span></a>
+
+
+
+
+  </div>
+</div>
+
+
+      </div>
+
+    </div>
+
+    <div id="footer">
+      <div class="container">
+        <p>&copy; 2015 Manuel Grundner
+          with help from <a href="http://jekyllbootstrap.com" target="_blank" title="The Definitive Jekyll Blogging Framework">Jekyll Bootstrap</a>
+          and <a href="http://twitter.github.com/bootstrap/" target="_blank">Twitter Bootstrap</a>
+        </p>
+      </div>
+    </div>
+
+    
+
+
+    <!-- Latest compiled and minified JavaScript, requires jQuery 1.x (2.x not supported in IE8) -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+    <script src="/assets/themes/bootstrap-3/bootstrap/js/bootstrap.min.js"></script>
+  </body>
+</html>
+

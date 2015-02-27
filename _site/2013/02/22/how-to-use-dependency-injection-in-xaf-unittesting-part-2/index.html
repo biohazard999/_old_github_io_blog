@@ -1,0 +1,897 @@
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+    <title>How to use Dependency Injection in XAF (UnitTesting) Part 2</title>
+    <meta name="description" content="">
+    <meta name="author" content="Manuel Grundner">
+
+    <!-- Enable responsive viewport -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- Bootstrap styles -->
+    <link href="/assets/themes/bootstrap-3/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Optional theme -->
+    <link href="/assets/themes/bootstrap-3/bootstrap/css/bootstrap-theme.min.css" rel="stylesheet">
+    <!-- Sticky Footer -->
+    <link href="/assets/themes/bootstrap-3/bootstrap/css/bs-sticky-footer.css" rel="stylesheet">
+    
+    <!-- Custom styles -->
+    <link href="/assets/themes/bootstrap-3/css/style.css?body=1" rel="stylesheet" type="text/css" media="all">
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+      <script src="https://oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js"></script>
+    <![endif]-->
+
+    <!-- Fav and touch icons -->
+    <!-- Update these with your own images
+      <link rel="shortcut icon" href="images/favicon.ico">
+      <link rel="apple-touch-icon" href="images/apple-touch-icon.png">
+      <link rel="apple-touch-icon" sizes="72x72" href="images/apple-touch-icon-72x72.png">
+      <link rel="apple-touch-icon" sizes="114x114" href="images/apple-touch-icon-114x114.png">
+    -->
+
+    <!-- atom & rss feed -->
+    <link href="/atom.xml" type="application/atom+xml" rel="alternate" title="Sitewide ATOM Feed">
+    <link href="/rss.xml" type="application/rss+xml" rel="alternate" title="Sitewide RSS Feed">
+
+  </head>
+
+  <body>
+    <div id="wrap">
+      <nav class="navbar navbar-default" role="navigation">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#jb-navbar-collapse">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="/">paraOffice - Team Blog</a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <div class="collapse navbar-collapse" id="jb-navbar-collapse">
+          <ul class="nav navbar-nav">
+            
+            
+            
+
+
+  
+    
+      
+      	
+      	<li><a href="/archive.html">Archive</a></li>
+      	
+      
+    
+  
+    
+      
+    
+  
+    
+      
+      	
+      	<li><a href="/categories.html">Categories</a></li>
+      	
+      
+    
+  
+    
+      
+    
+  
+    
+      
+      	
+      	<li><a href="/pages.html">Pages</a></li>
+      	
+      
+    
+  
+    
+      
+    
+  
+    
+      
+    
+  
+    
+      
+      	
+      	<li><a href="/tags.html">Tags</a></li>
+      	
+      
+    
+  
+
+
+
+          </ul>
+          <form class="navbar-form navbar-right" role="search">
+            <div class="form-group">
+              <input type="text" class="form-control" placeholder="Search">
+            </div>
+            <button type="submit" class="btn btn-default">Submit</button>
+          </form>
+        </div><!-- /.navbar-collapse -->
+      </nav>
+
+      <div class="container">
+        
+<div class="page-header">
+  <h1>How to use Dependency Injection in XAF (UnitTesting) Part 2 <small> - Works on my machine</small></h1>
+</div>
+
+<div class="row post-full">
+  <div class="col-xs-12">
+    <div class="date">
+      <span>22 February 2013</span>
+    </div>
+    <div class="content">
+      
+<h1 id="how-to-unittest-a-xafxpo-application">How to UnitTest a XAF/XPO application?</h1>
+
+<p>It’s not a really easy task to correctly UnitTest a XAF/XPO application, but as we all know, UnitTesting is a very important part of our work today.</p>
+
+<h2 id="why">Why?</h2>
+
+<p>Cause nobody can know all impacts a change can make in an application.</p>
+
+<h2 id="how">How?</h2>
+
+<p>I’ve written a bunch of little helpers to accomplish this tasks:</p>
+
+<ul>
+  <li><code>XpoTest</code></li>
+  <li><code>XafTest</code></li>
+  <li><code>XafModelTestHelper</code></li>
+</ul>
+
+<h3 id="xpotest">XpoTest</h3>
+<p>I prefer this kind of test cause it is horrible fast and only tests model classes. Perfect to test DomainLogic.</p>
+
+<p>This baseclass provides all you need to test a business object in memory (and of course with <code>Unity</code>)</p>
+
+<pre><code>public abstract class XpoTest
+{
+    private TestHelper _Helper;
+    protected TestHelper GetHelper()
+    {
+        if (_Helper == null)
+        {
+            _Helper = GetHelperCore();
+            InitUnityContainer(_Helper.UnityContainer);
+        }
+        return _Helper;
+    }
+
+    protected virtual void InitUnityContainer(IUnityContainer unityContainer)
+    {
+
+    }
+
+    protected virtual TestHelper GetHelperCore()
+    {
+        return TestHelper.NewInstanceXpo();
+    }
+
+    protected Session CreateSession()
+    {
+        return GetHelper().GetNewObjectSpace().GetSession();
+    }
+}
+</code></pre>
+
+<p>There are currently 5 generic versions of this class to provide a easy to read, and convention based approach to unit-test our classes:</p>
+
+<pre><code>public abstract class XpoTest&lt;T, T2, T3, T4, T5&gt; : XpoTest
+{
+    protected override TestHelper GetHelperCore()
+    {
+        return TestHelper.NewInstanceXpo&lt;T, T2, T3, T4, T5&gt;();
+    }
+}
+
+public abstract class XpoTest&lt;T, T2, T3, T4&gt; : XpoTest
+{
+    protected override TestHelper GetHelperCore()
+    {
+        return TestHelper.NewInstanceXpo&lt;T, T2, T3, T4&gt;();
+    }
+}
+
+public abstract class XpoTest&lt;T, T2, T3&gt; : XpoTest
+{
+    protected override TestHelper GetHelperCore()
+    {
+        return TestHelper.NewInstanceXpo&lt;T, T2, T3&gt;();
+    }
+}
+
+public abstract class XpoTest&lt;T, T2&gt; : XpoTest
+{
+    protected override TestHelper GetHelperCore()
+    {
+        return TestHelper.NewInstanceXpo&lt;T, T2&gt;();
+    }
+}
+
+public abstract class XpoTest&lt;T&gt; : XpoTest
+{
+    protected override TestHelper GetHelperCore()
+    {
+        return TestHelper.NewInstanceXpo&lt;T&gt;();
+    }
+}
+</code></pre>
+
+<p>It uses the <code>TestHelper</code> class which does all the bootstrapping for you:</p>
+
+<pre><code>public class TestHelper
+{
+    public IUnityContainer UnityContainer { get; set; }
+
+    private IObjectSpaceProvider ObjectSpaceProvider;
+
+    public static TestHelper NewInstance()
+    {
+        return new TestHelper();
+    }
+
+    public static TestHelper NewInstanceXpo(params Type[] types)
+    {
+        return new TestHelper();
+    }
+
+    public static TestHelper NewInstanceXpo&lt;T&gt;()
+    {
+        return NewInstanceXaf(typeof(T));
+    }
+
+    public static TestHelper NewInstanceXpo&lt;T, T2&gt;()
+    {
+        return NewInstanceXaf(typeof(T), typeof(T2));
+    }
+
+    public static TestHelper NewInstanceXpo&lt;T, T2, T3&gt;()
+    {
+        return NewInstanceXaf(typeof(T), typeof(T2), typeof(T3));
+    }
+
+    public static TestHelper NewInstanceXpo&lt;T, T2, T3, T4&gt;()
+    {
+        return NewInstanceXaf(typeof(T), typeof(T2), typeof(T3), typeof(T4));
+    }
+
+    public static TestHelper NewInstanceXpo&lt;T, T2, T3, T4, T5&gt;()
+    {
+        return NewInstanceXaf(typeof(T), typeof(T2), typeof(T3), typeof(T4), typeof(T5));
+    }
+
+    public static TestHelper NewInstanceXaf(params Type[] types)
+    {
+        XafTypesInfo.Reset();
+
+        if (XafTypesInfo.PersistentEntityStore == null)
+            XafTypesInfo.SetPersistentEntityStore(new XpoTypeInfoSource(XafTypesInfo.Instance as TypesInfo));
+
+        foreach (var typeToRegister in types)
+            XafTypesInfo.Instance.RegisterEntity(typeToRegister);
+
+        return new TestHelper();
+    }
+
+    public static TestHelper NewInstanceXaf&lt;T&gt;()
+    {
+        return NewInstanceXaf(typeof(T));
+    }
+
+    public static TestHelper NewInstanceXaf&lt;T, T2&gt;()
+    {
+        return NewInstanceXaf(typeof(T), typeof(T2));
+    }
+
+    public static TestHelper NewInstanceXaf&lt;T, T2, T3&gt;()
+    {
+        return NewInstanceXaf(typeof(T), typeof(T2), typeof(T3));
+    }
+
+    public static TestHelper NewInstanceXaf&lt;T, T2, T3, T4&gt;()
+    {
+        return NewInstanceXaf(typeof(T), typeof(T2), typeof(T3), typeof(T4));
+    }
+
+    public static TestHelper NewInstanceXaf&lt;T, T2, T3, T4, T5&gt;()
+    {
+        return NewInstanceXaf(typeof(T), typeof(T2), typeof(T3), typeof(T4), typeof(T5));
+    }
+
+    public TestHelper AutoMock()
+    {
+        UnityContainer.AddNewExtension&lt;AutoMockingContainerExtension&gt;();
+        return this;
+    }
+
+    public TestHelper()
+    {
+        UnityContainer = new UnityContainer();
+    }
+
+    public IObjectSpace GetNewObjectSpace(bool generateIds = true)
+    {
+        ObjectSpaceProvider = new UnityObjectSpaceProvider(new MemoryDataStoreProvider(), UnityContainer);
+        var OS = ObjectSpaceProvider.CreateObjectSpace();
+
+        if (generateIds)
+            (OS as UnityObjectSpace).ObjectNewInObjectSpace += ChannelTestsHelper_ObjectNewInObjectSpace;
+
+        return OS;
+    }
+
+    private static void ChannelTestsHelper_ObjectNewInObjectSpace(object sender, ObjectNewInObjectSpaceEventArgs e)
+    {
+        var classInfo = (e.Object as IXPObject).ClassInfo;
+        if (!classInfo.IsPersistent)
+            return;
+
+        if (classInfo.KeyProperty.MemberType.IsAssignableFrom(typeof(int)))
+        {
+            classInfo.KeyProperty.SetValue(e.Object, IDGenerator.NextInt());
+        }
+
+        if (classInfo.KeyProperty.MemberType.IsAssignableFrom(typeof(Guid)))
+        {
+            classInfo.KeyProperty.SetValue(e.Object, IDGenerator.NextGuid());
+        }
+    }
+}
+
+static class TestExtensions
+{
+    internal static Session GetSession(this IObjectSpace os)
+    {
+        return (os as XPObjectSpace).Session;
+    }
+}
+</code></pre>
+
+<p>With memory-datastores there is no auto-incrementing key, so we have to mimic this behaviour.</p>
+
+<pre><code>public static class IDGenerator
+{
+    private static int Current = 0;
+
+    public static int NextInt()
+    {
+        Current++;
+        return Current;
+    }
+
+    public static Guid NextGuid()
+    {
+        return Guid.NewGuid();
+    }
+}
+</code></pre>
+
+<p>It also provides support for <a href="http://code.google.com/p/moq/" title="Moq">Moq</a>, and <a href="http://unity.codeplex.com/" title="Unity">Unity</a> based <a href="https://github.com/darrencauthon/AutoMoq" title="AutoMoq">AutoMoq</a>.</p>
+
+<pre><code>public static class MoqExtensions
+{
+    public static Mock&lt;T&gt; RegisterMock&lt;T&gt;(this IUnityContainer container, MockBehavior behavior = MockBehavior.Strict) where T : class
+    {
+        var mock = new Mock&lt;T&gt;(behavior);
+
+        container.RegisterInstance&lt;Mock&lt;T&gt;&gt;(mock);
+        container.RegisterInstance&lt;T&gt;(mock.Object);
+
+        return mock;
+    }
+
+    /// &lt;summary&gt;
+    /// Use this to add additional setups for a mock that is already registered
+    /// &lt;/summary&gt;
+    public static Mock&lt;T&gt; ConfigureMockFor&lt;T&gt;(this IUnityContainer container) where T : class
+    {
+        return container.Resolve&lt;Mock&lt;T&gt;&gt;();
+    }
+
+    public static void VerifyMockFor&lt;T&gt;(this IUnityContainer container) where T : class
+    {
+        container.Resolve&lt;Mock&lt;T&gt;&gt;().VerifyAll();
+    }
+}
+
+public class AutoMockingContainerExtension : UnityContainerExtension
+{
+    protected override void Initialize()
+    {
+        var strategy = new AutoMockingBuilderStrategy(Container);
+
+        Context.Strategies.Add(strategy, UnityBuildStage.PreCreation);
+    }
+
+    class AutoMockingBuilderStrategy : BuilderStrategy
+    {
+        private readonly IUnityContainer container;
+
+        public AutoMockingBuilderStrategy(IUnityContainer container)
+        {
+            this.container = container;
+        }
+
+        public override void PreBuildUp(IBuilderContext context)
+        {
+            var key = context.OriginalBuildKey;
+
+            if (key.Type.IsInterface &amp;&amp; !container.IsRegistered(key.Type))
+            {
+                context.Existing = CreateDynamicMock(key.Type);
+            }
+        }
+
+        private static object CreateDynamicMock(Type type)
+        {
+            var genericMockType = typeof(Mock&lt;&gt;).MakeGenericType(type);
+            var mock = (Mock)Activator.CreateInstance(genericMockType);
+            return mock.Object;
+        }
+    }
+}
+</code></pre>
+
+<p>I have borrowed this classes from a blogpost i can’t remember (sorry).</p>
+
+<h3 id="xaftest">XafTest</h3>
+<p>Is intended to test all kinds of DomainLogic that interacts with XafTypesInfo and ObjectSpace relevant tests. It is much slower than the XpoTest cause the XafTypesInfo has to reset and needs to be repopulated.</p>
+
+<p>The only difference in the usage of <code>XpoTest</code> and <code>XafTest</code> is that the <code>XafTest</code> provides a additional <code>CreateObjectSpace</code> method:</p>
+
+<pre><code>public abstract class XafTest : XpoTest
+{
+    protected override TestHelper GetHelperCore()
+    {
+        return TestHelper.NewInstance();
+    }
+
+    protected virtual IObjectSpace CreateObjectSpace()
+    {
+        return GetHelper().GetNewObjectSpace();
+    }
+}
+
+public abstract class XafTest&lt;T, T2&gt; : XafTest
+{
+    protected override TestHelper GetHelperCore()
+    {
+        return TestHelper.NewInstanceXaf&lt;T, T2&gt;();
+    }
+}
+
+public abstract class XafTest&lt;T, T2, T3&gt; : XafTest
+{
+    protected override TestHelper GetHelperCore()
+    {
+        return TestHelper.NewInstanceXaf&lt;T, T2, T3&gt;();
+    }
+}
+
+public abstract class XafTest&lt;T, T2, T3, T4&gt; : XafTest
+{
+    protected override TestHelper GetHelperCore()
+    {
+        return TestHelper.NewInstanceXaf&lt;T, T2, T3, T4&gt;();
+    }
+}
+
+public abstract class XafTest&lt;T, T2, T3, T4, T5&gt; : XafTest
+{
+    protected override TestHelper GetHelperCore()
+    {
+        return TestHelper.NewInstanceXpo&lt;T, T2, T3, T4, T5&gt;();
+    }
+}
+</code></pre>
+
+<h3 id="xafmodeltesthelper">XafModelTestHelper</h3>
+<p>Can be used to load a ApplicationModel and test it’s properties. You can test orders and columns of listviews  or PropertyEditors of DetailViews ect.
+This is in fact the slowest guy in this round. But we have a lot of problems with small refactorings that can happen in huge view problems :(</p>
+
+<pre><code>public static class XafModelTestHelper
+{
+    public static IModelApplication LoadApplicationModel(this ModuleBase module)
+    {
+        var manager = new ApplicationModulesManager();
+        
+        manager.AddModule(module);
+
+        manager.Load(XafTypesInfo.Instance, true);
+
+        return new DesignerModelFactory().CreateApplicationModel(module,
+                                                           manager,
+                                                           ModelStoreBase.Empty);
+    }
+}
+</code></pre>
+
+<h2 id="go-and-test">Go and test!</h2>
+
+<blockquote>
+  <p>For simplicity i only used one UnitTest project to test platform agnostic and winforms code.</p>
+</blockquote>
+
+<pre><code>[TestFixture]
+[Category("CI")]
+public class XpoTest_MyBo1 : XpoTest&lt;MyBo1&gt;
+{
+    [Test]
+    public void Test_Ctor()
+    {
+        var session = CreateSession();
+
+        var myBo = new MyBo1(session);
+
+        Assert.That(myBo, Is.AssignableFrom&lt;MyBo1&gt;());
+    }
+
+    private MyBo1 CreateEmptyTestObject()
+    {
+        var session = CreateSession();
+
+        return new MyBo1(session);
+    }
+
+    [Test]
+    public void Test_MyName_Stores_Value_Correctly()
+    {
+        var bo = CreateEmptyTestObject();
+
+        const string expected = "My String";
+        bo.MyName = "My String";
+
+        Assert.That(bo.MyName, Is.EqualTo(expected));
+    }
+
+    [Test]
+    public void Test_MyName_Stores_And_Resets_Value_Correctly()
+    {
+        var bo = CreateEmptyTestObject();
+
+        const string expected = "My String";
+        bo.MyName = "My String";
+        bo.MyName = null;
+        Assert.That(bo.MyName, Is.Null);
+    }
+}
+</code></pre>
+
+<p>This tests are simple property tests, nothing really special here..</p>
+
+<p>But now the interessting things come:</p>
+
+<pre><code>[TestFixture]
+[Category("CI")]
+public class XpoTest_Manually_Mock_MyBo1 : XpoTest&lt;MyBo1&gt;
+{
+    public class Mock_Renamer : IRenamer
+    {
+        public void RenameMe(MyBo1 myBo1)
+        {
+            myBo1.MyName = typeof (Mock_Renamer).FullName;
+        }
+    }
+
+    protected override void InitUnityContainer(IUnityContainer unityContainer)
+    {
+        base.InitUnityContainer(unityContainer);
+        unityContainer.RegisterType&lt;IRenamer, Mock_Renamer&gt;();
+    }
+
+    [Test]
+    public void Test_Rename_Works()
+    {
+        var bo = new MyBo1(CreateSession());
+
+        bo.RenameMe();
+
+        Assert.That(bo.MyName, Is.EqualTo(typeof(Mock_Renamer).FullName));
+    }
+}
+</code></pre>
+
+<p>As you can see we have a successfull test! And decoupled from the original dependency.
+But it can be really annoying to write a mock class for every interface we use. So get <code>Moq</code>!</p>
+
+<pre><code>[TestFixture]
+[Category("CI")]
+public class XpoTest_Moq_Mock_MyBo1 : XpoTest&lt;MyBo1&gt;
+{
+    [Test]
+    public void Test_Rename_Works_Mocked()
+    {
+        var session = CreateSession();
+
+        var mock = session.GetUnityContainer().RegisterMock&lt;IRenamer&gt;();
+
+        mock.Setup(m =&gt; m.RenameMe(It.IsAny&lt;MyBo1&gt;()));
+
+        var bo = new MyBo1(session);
+
+        bo.RenameMe();
+
+        mock.Verify(m =&gt; m.RenameMe(bo), Times.AtLeastOnce());
+    }
+</code></pre>
+
+<p>We don’t use a expected value here, cause we only want to know that this interface is resolved and test only the existence of the call.</p>
+
+<p>Now want to test the XAF part:</p>
+
+<pre><code>[TestFixture]
+[Category("CI")]
+public class XafTest_MyBo1 : XafTest&lt;MyBo1&gt;
+{
+    [Test]
+    public void Test_Ctor_With_OS()
+    {
+        var os = CreateObjectSpace();
+
+        var myBo = os.CreateObject&lt;MyBo1&gt;();
+
+        Assert.That(myBo, Is.AssignableFrom&lt;MyBo1&gt;());
+    }
+
+    private MyBo1 CreateEmptyTestObject()
+    {
+        var os = CreateObjectSpace();
+
+        return os.CreateObject&lt;MyBo1&gt;();
+    }
+
+    [Test]
+    public void Test_MyName_Stores_Value_Correctly()
+    {
+        var bo = CreateEmptyTestObject();
+
+        const string expected = "My String";
+        bo.MyName = "My String";
+
+        Assert.That(bo.MyName, Is.EqualTo(expected));
+    }
+
+    [Test]
+    public void Test_MyName_Stores_And_Resets_Value_Correctly()
+    {
+        var bo = CreateEmptyTestObject();
+
+        const string expected = "My String";
+        bo.MyName = "My String";
+        bo.MyName = null;
+        Assert.That(bo.MyName, Is.Null);
+    }
+}
+</code></pre>
+
+<p>Boring. Nothing special here. but a lot slower:</p>
+
+<p><img src="http://blog.paraoffice.at/get/screenshots/XAFDISolution/XAFDISolution_2013-02-22_17-12-35.png" alt="" /></p>
+
+<p>Now the XafApplicationModel part:</p>
+
+<pre><code>[TestFixture]
+[Category("CI")]
+public class XafApplicationModelTest_MyBo1
+{
+    [Test]
+    public void Test_ListView_Should_Only_Contain_1_Column()
+    {
+        var model = XafModelTestHelper.LoadApplicationModel(new XAFDISolutionModule());
+
+        var view = model.Views.OfType&lt;IModelListView&gt;().FirstOrDefault(m =&gt; m.Id == "MyBo1_ListView");
+
+        Assert.That(view, Is.Not.Null);
+
+        Assert.That(view.Columns.Count, Is.EqualTo(2));
+        // Two is not correct, but i have no idea why the UnityContainer Column is generated??? :(
+    }
+}
+</code></pre>
+
+<p>This is almost the slowest of all tests, so i recommend you init the ApplicationModel only once per TestCase:</p>
+
+<pre><code>[TestFixture]
+[Category("CI")]
+public class XafApplicationModelTest_MyBo1
+{
+    private IModelApplication _Model;
+
+    [TestFixtureSetUp]
+    public void SetUp()
+    {
+        _Model = XafModelTestHelper.LoadApplicationModel(new XAFDISolutionModule());
+    }
+
+    [Test]
+    public void Test_ListView_Should_Only_Contain_1_Column()
+    {
+        var view = _Model.Views.OfType&lt;IModelListView&gt;().FirstOrDefault(m =&gt; m.Id == "MyBo1_ListView");
+
+        Assert.That(view, Is.Not.Null);
+
+        Assert.That(view.Columns.Count, Is.EqualTo(2));
+        // Two is not correct, but i have no idea why the UnityContainer Column is generated??? :(
+    }
+
+    [Test]
+    public void Test_Caption_Of_MyName_Is_My_Name()
+    {
+        var view = _Model.Views.OfType&lt;IModelListView&gt;().FirstOrDefault(m =&gt; m.Id == "MyBo1_ListView");
+
+        var column = view.Columns.FirstOrDefault(m =&gt; m.Id == "MyName");
+
+        Assert.That(column, Is.Not.Null);
+
+        Assert.That(column.Caption, Is.EqualTo("My Name"));
+    }
+}
+</code></pre>
+
+<p>The last one is the Application-Based Test:</p>
+
+<pre><code>[TestFixture]
+[Category("CI")]
+public class ApplicationTest_MyBo1
+{
+    private WinApplication TestApplication;
+    [TestFixtureSetUp]
+    public void SetUp()
+    {
+        var unityContainer = new UnityContainer();
+
+        TestApplication = new TestApplication(unityContainer);
+
+        var objectSpaceProvider = new UnityObjectSpaceProvider(new MemoryDataStoreProvider(), unityContainer);
+
+        var testModule = new ModuleBase();
+
+        testModule.AdditionalExportedTypes.Add(typeof(MyBo1));
+
+        TestApplication.Modules.Add(new SystemModule());
+        TestApplication.Modules.Add(testModule);
+
+        TestApplication.Setup("TestApplication", objectSpaceProvider);
+
+        TestApplication.CustomCheckCompatibility += (o, args) =&gt; args.Handled = true;
+    }
+
+    [Test]
+    public void Test_Action_WorksCorrectly()
+    {
+        var os = TestApplication.CreateObjectSpace();
+
+        var bo = os.CreateObject&lt;MyBo1&gt;();
+
+        var detailView = TestApplication.CreateDetailView(os, bo);
+
+        var controller = TestApplication.CreateController&lt;DevExpress.ExpressApp.SystemModule.ObjectMethodActionsViewController&gt;();
+
+        controller.SetView(detailView);
+        
+        Assert.That(controller.Actions.Count, Is.GreaterThan(0));
+    }
+}
+</code></pre>
+
+<p>Note that the last test fails, because i have no idea how to instanciate the ObjectMethodActionsViewController correctly to test my action :(</p>
+
+<p>But i think you get the point :)</p>
+
+<p><a href="https://bitbucket.org/biohazard999/xafdisolution">Source</a></p>
+
+<p>Update:
+Thanks to <a href="https://bitbucket.org/shamp00">Robert Anderson</a> the ControllerTest is now working correctly :)</p>
+
+<h2 id="imported-comments">Imported Comments:</h2>
+
+<p><a href="http://blog.zerosharp.com/">Robert Anderson</a>:</p>
+
+<p>Fantastic work!</p>
+
+    </div>
+
+    
+
+  
+    <ul class="tag_box inline">
+      <li><i class="glyphicon glyphicon-tags"></i></li>
+      
+      
+
+
+  
+     
+    	<li><a href="/tags.html#UnitTesting-ref">UnitTesting <span>4</span></a></li>
+     
+    	<li><a href="/tags.html#XAF-ref">XAF <span>9</span></a></li>
+     
+    	<li><a href="/tags.html#XPO-ref">XPO <span>6</span></a></li>
+     
+    	<li><a href="/tags.html#Unity-ref">Unity <span>5</span></a></li>
+    
+  
+
+
+
+    </ul>
+    
+  
+    <hr>
+    <ul class="pagination">
+    
+      <li class="prev"><a href="/2013/02/21/how-to-use-dependency-injection-in-xaf" title="How to use Dependency Injection in XAF">&laquo; Previous</a></li>
+    
+      <li><a href="/archive.html">Archive</a></li>
+    
+      <li class="next"><a href="/2013/02/22/real-mtier-with-devexpress-part1" title="Real MTier with DevExpress (Part 1)">Next &raquo;</a></li>
+    
+    </ul>
+    <hr>
+    
+
+
+  <div id="disqus_thread"></div>
+<script type="text/javascript">
+    var disqus_developer = 1;
+    var disqus_shortname = 'biohazard999'; // required: replace example with your forum shortname
+    
+    /* * * DON'T EDIT BELOW THIS LINE * * */
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = 'http://' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="http://disqus.com" class="dsq-brlink">blog comments powered by <span class="logo-disqus">Disqus</span></a>
+
+
+
+
+  </div>
+</div>
+
+
+      </div>
+
+    </div>
+
+    <div id="footer">
+      <div class="container">
+        <p>&copy; 2015 Manuel Grundner
+          with help from <a href="http://jekyllbootstrap.com" target="_blank" title="The Definitive Jekyll Blogging Framework">Jekyll Bootstrap</a>
+          and <a href="http://twitter.github.com/bootstrap/" target="_blank">Twitter Bootstrap</a>
+        </p>
+      </div>
+    </div>
+
+    
+
+
+    <!-- Latest compiled and minified JavaScript, requires jQuery 1.x (2.x not supported in IE8) -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+    <script src="/assets/themes/bootstrap-3/bootstrap/js/bootstrap.min.js"></script>
+  </body>
+</html>
+

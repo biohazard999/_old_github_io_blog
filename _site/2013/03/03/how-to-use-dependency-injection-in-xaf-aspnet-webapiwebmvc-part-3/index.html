@@ -1,0 +1,1915 @@
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+    <title>How to use Dependency Injection in XAF (ASP.NET WebApi/WebMvc) Part 3</title>
+    <meta name="description" content="">
+    <meta name="author" content="Manuel Grundner">
+
+    <!-- Enable responsive viewport -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- Bootstrap styles -->
+    <link href="/assets/themes/bootstrap-3/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Optional theme -->
+    <link href="/assets/themes/bootstrap-3/bootstrap/css/bootstrap-theme.min.css" rel="stylesheet">
+    <!-- Sticky Footer -->
+    <link href="/assets/themes/bootstrap-3/bootstrap/css/bs-sticky-footer.css" rel="stylesheet">
+    
+    <!-- Custom styles -->
+    <link href="/assets/themes/bootstrap-3/css/style.css?body=1" rel="stylesheet" type="text/css" media="all">
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+      <script src="https://oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js"></script>
+    <![endif]-->
+
+    <!-- Fav and touch icons -->
+    <!-- Update these with your own images
+      <link rel="shortcut icon" href="images/favicon.ico">
+      <link rel="apple-touch-icon" href="images/apple-touch-icon.png">
+      <link rel="apple-touch-icon" sizes="72x72" href="images/apple-touch-icon-72x72.png">
+      <link rel="apple-touch-icon" sizes="114x114" href="images/apple-touch-icon-114x114.png">
+    -->
+
+    <!-- atom & rss feed -->
+    <link href="/atom.xml" type="application/atom+xml" rel="alternate" title="Sitewide ATOM Feed">
+    <link href="/rss.xml" type="application/rss+xml" rel="alternate" title="Sitewide RSS Feed">
+
+  </head>
+
+  <body>
+    <div id="wrap">
+      <nav class="navbar navbar-default" role="navigation">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#jb-navbar-collapse">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="/">paraOffice - Team Blog</a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <div class="collapse navbar-collapse" id="jb-navbar-collapse">
+          <ul class="nav navbar-nav">
+            
+            
+            
+
+
+  
+    
+      
+      	
+      	<li><a href="/archive.html">Archive</a></li>
+      	
+      
+    
+  
+    
+      
+    
+  
+    
+      
+      	
+      	<li><a href="/categories.html">Categories</a></li>
+      	
+      
+    
+  
+    
+      
+    
+  
+    
+      
+      	
+      	<li><a href="/pages.html">Pages</a></li>
+      	
+      
+    
+  
+    
+      
+    
+  
+    
+      
+    
+  
+    
+      
+      	
+      	<li><a href="/tags.html">Tags</a></li>
+      	
+      
+    
+  
+
+
+
+          </ul>
+          <form class="navbar-form navbar-right" role="search">
+            <div class="form-group">
+              <input type="text" class="form-control" placeholder="Search">
+            </div>
+            <button type="submit" class="btn btn-default">Submit</button>
+          </form>
+        </div><!-- /.navbar-collapse -->
+      </nav>
+
+      <div class="container">
+        
+<div class="page-header">
+  <h1>How to use Dependency Injection in XAF (ASP.NET WebApi/WebMvc) Part 3 <small> - Works on my machine</small></h1>
+</div>
+
+<div class="row post-full">
+  <div class="col-xs-12">
+    <div class="date">
+      <span>03 March 2013</span>
+    </div>
+    <div class="content">
+      
+<h1 id="how-how-to-use-dependency-injection-in-xaf-aspnet-webapi--mvc4-part-3">How How to use Dependency Injection in XAF (ASP.Net WebApi / MVC4) Part 3</h1>
+
+<h2 id="how-to-add-support-for-aspnet-webapi--mvc4-in-xaf">How to add support for ASP.NET WebAPI / MVC4 in XAF?</h2>
+<p>It is not quite complicated, but took me also some hours of work to get it running.</p>
+
+<h2 id="why">Why?</h2>
+<p>We’d like to provide a WebAPI to other companies to reduce our amount of work, when handling with other companies data.</p>
+
+<p>Microsoft’s <a href="http://www.asp.net/web-api">WebAPI</a>/<a href="http://www.asp.net/mvc">MVC4</a> are great frameworks to easily write such platforms. <a href="http://www.devexpress.com/">XPO</a> and <a href="http://www.devexpress.com/Products/NET/Application_Framework/">XAF</a> are great products. So let’s combine them.</p>
+
+<h2 id="how">How?</h2>
+
+<p>First of all we need 3 new projects in our solution.
+The first one is the WebApi project. The second one is the WebMvc Project. The third one will contain our Datatransfer objects to support strong typing. This one will be a portable class library.</p>
+
+<h2 id="webapi">WebApi</h2>
+<p>In this project goes the whole big stuff (domain logic &amp; co).
+Let’s start:</p>
+
+<p>First of all we need to install the <a href="http://nuget.org/packages/Unity.WebAPI/">Unity.WebAPI</a> nuget package. (Attention: if your project is strong signed, this will fail, but the source is not that hard ;))</p>
+
+<p>We get this nice little bootstrapper class that allowes us to configure our UnityContainer.</p>
+
+<pre><code>public static class Bootstrapper
+{
+    public static void Initialise()
+    {
+        var container = BuildUnityContainer();
+
+        GlobalConfiguration.Configuration.DependencyResolver = new Unity.WebApi.UnityDependencyResolver(container);
+    }
+
+    private static IUnityContainer BuildUnityContainer()
+    {
+        var container = new UnityContainer();
+
+        // register all your components with the container here
+        // e.g. container.RegisterType&lt;ITestService, TestService&gt;();            
+
+        return container;
+    }
+}
+</code></pre>
+
+<p>The only thing we need to do is call our <code>Bootstrapper</code> in our <code>Global.asax</code> file:</p>
+
+<pre><code>public class WebApiApplication : System.Web.HttpApplication
+{
+    protected void Application_Start()
+    {
+        AreaRegistration.RegisterAllAreas();
+
+        WebApiConfig.Register(GlobalConfiguration.Configuration);
+        FilterConfig.RegisterGlobalFilters(GlobalFilters.Filters);
+        RouteConfig.RegisterRoutes(RouteTable.Routes);
+        BundleConfig.RegisterBundles(BundleTable.Bundles);
+
+        Bootstrapper.Initialise();
+    }
+}
+</code></pre>
+
+<p>Nothing special so far. This is default ASP.NET WebApi. </p>
+
+<p>How to deal now with XPO? We need to bootstrap the  <code>Datalayer</code> and the <code>Session</code>:</p>
+
+<p>The interface IDataLayerHelper is used to abstract the procress of creating an DataLayer:</p>
+
+<pre><code>public interface IDataLayerHelper
+{
+    IDataLayer DataLayer { get; }
+}
+</code></pre>
+
+<p>The implementation is pretty straight forward. Notice that nothing is static here, except of the <code>XPDictionary</code> (cause this is the only thing that is very time consuming, and dosn’t change at all, when the application is running)</p>
+
+<pre><code>public class DataLayerHelper : IDataLayerHelper
+{
+    private IDataLayer _DataLayer;
+    public IDataLayer DataLayer
+    {
+        get
+        {
+            if (_DataLayer == null)
+            {
+                var connectionString = ConnectionString;
+                XpoDefault.Session = null;
+
+                _DataLayer = new ThreadSafeDataLayer(XpDictionary, GetConnectionProvider(connectionString));
+            }
+
+            return _DataLayer;
+        }
+
+    }
+
+    private readonly static object lockObjectXpDictionary = new object();
+
+    private volatile static XPDictionary _XpDictionary;
+    private static XPDictionary XpDictionary
+    {
+        get
+        {
+            if (_XpDictionary == null)
+            {
+                lock (lockObjectXpDictionary)
+                {
+                    if (_XpDictionary == null)
+                    {
+                        _XpDictionary = new ReflectionDictionary();
+
+                        _XpDictionary.GetDataStoreSchema(Assembly.GetExecutingAssembly(), typeof(XAFDISolutionModule).Assembly);
+                    }
+                }
+            }
+            return _XpDictionary;
+        }
+    }
+
+    protected internal string _ConnectionString;
+
+    protected internal AutoCreateOption _DefaultAutoCreateOption = AutoCreateOption.None;
+
+    protected virtual string ConnectionString
+    {
+        get
+        {
+            if (string.IsNullOrEmpty(_ConnectionString) &amp;&amp; ConfigurationManager.ConnectionStrings["ConnectionString"] != null)
+                _ConnectionString = ConfigurationManager.ConnectionStrings["ConnectionString"].ConnectionString;
+
+            return _ConnectionString;
+        }
+    }
+
+    protected virtual IDataStore GetConnectionProvider(string connectionString)
+    {
+        return XpoDefault.GetConnectionProvider(connectionString, _DefaultAutoCreateOption);
+    }
+}
+</code></pre>
+
+<p>Now we need to register this <code>Type</code> with the correct <code>LifeTimeManager</code>:</p>
+
+<pre><code>public static class Bootstrapper
+{
+    public static void Initialise()
+    {
+        var container = BuildUnityContainer();
+
+        GlobalConfiguration.Configuration.DependencyResolver = new Unity.WebApi.UnityDependencyResolver(container);
+    }
+
+    private static IUnityContainer BuildUnityContainer()
+    {
+        var unityContainer = new UnityContainer();
+
+        unityContainer.RegisterType&lt;IDataLayerHelper, DataLayerHelper&gt;(new ContainerControlledLifetimeManager());
+
+        return unityContainer;
+    }
+}
+</code></pre>
+
+<p>In this case we need a <code>ContainerControlledLifetimeManager</code> so the instance will live for every <code>ChildUnityContainer </code> that is created.</p>
+
+<p>Of course we write a <code>UnitTest</code> for this:</p>
+
+<pre><code>[TestFixture]
+[Category("CI")]
+public class DataLayerHelperTest
+{
+    [Test]
+    public void DataLayerHelper_Ctor_DoesNotThrowAnException()
+    {
+        Assert.DoesNotThrow(() =&gt;
+        {
+            var helper = new DataLayerHelper();
+    
+            Assert.That(helper, Is.InstanceOf&lt;DataLayerHelper&gt;());
+        });
+    }
+
+    [Test]
+    public void DataLayerHelper_Can_Load_DataLayer_With_InMemoryConnectionString()
+    {
+        //Arrange
+        var helper = new DataLayerHelper
+            {
+                _ConnectionString = InMemoryDataStore.GetConnectionStringInMemory(true),
+                _DefaultAutoCreateOption = AutoCreateOption.DatabaseAndSchema
+            };
+
+        //Act
+        var session = new UnitOfWork(helper.DataLayer);
+        var bo = new MyBo1(session)
+            {
+                MyName = "test"
+            };
+
+        session.CommitTransaction();
+
+        //Assert
+        var itemToAssert = session.FindObject&lt;MyBo1&gt;(null);
+
+        Assert.That(itemToAssert.MyName, Is.EqualTo("test"));
+    }
+}
+</code></pre>
+
+<p>Now we need a little interface that abstracts the creation of a new <code>Session</code> aka <code>UnityUnitOfWork</code>:</p>
+
+<pre><code>public interface IXpoHelper
+{
+    Session GetNewSession();
+}
+</code></pre>
+
+<p>The implementation is easy:</p>
+
+<pre><code>public class XpoHelper : IXpoHelper
+{
+    private readonly IDataLayerHelper _DataLayerHelper;
+
+    internal readonly IUnityContainer _UnityContainer;
+
+    public XpoHelper(IUnityContainer unityContainer, IDataLayerHelper dataLayerHelper)
+    {
+        _DataLayerHelper = dataLayerHelper;
+        _UnityContainer = unityContainer;
+    }
+
+    public Session GetNewSession()
+    {
+        return GetNewUnitOfWork();
+    }
+
+    UnityUnitOfWork GetNewUnitOfWork()
+    {
+        var uow = new UnityUnitOfWork(_DataLayerHelper.DataLayer)
+        {
+            UnityContainer = _UnityContainer
+        };
+        return uow;
+    }
+}
+</code></pre>
+
+<blockquote>
+  <p>Notice that we use here <code>ConstructorInjection</code></p>
+</blockquote>
+
+<p>The UnitTest:</p>
+
+<pre><code>[TestFixture]
+[Category("CI")]
+public class XpoHelperTest
+{
+    [Test]
+    public void Ctor_OfXpoHelperTest_DoesNotThrowAnException()
+    {
+        //Arrange
+        var dataLayerHelperMock = new Moq.Mock&lt;IDataLayerHelper&gt;();
+        var unityContainerMock = new Moq.Mock&lt;IUnityContainer&gt;();
+
+        //Act &amp; Assert
+        Assert.DoesNotThrow(() =&gt;
+        {
+            var xpoHelper = new XpoHelper(unityContainerMock.Object, dataLayerHelperMock.Object);
+            Assert.That(xpoHelper, Is.InstanceOf&lt;XpoHelper&gt;());
+        });
+    }
+
+    [Test]
+    public void GetNewSession_Creates_A_New_Session()
+    {
+        //Arrange
+        var dataLayerHelperMock = new Moq.Mock&lt;IDataLayerHelper&gt;();
+        dataLayerHelperMock.SetupGet(m =&gt; m.DataLayer).Returns(new SimpleDataLayer(new InMemoryDataStore()));
+
+        var unityContainerMock = new Moq.Mock&lt;IUnityContainer&gt;();
+        var sessionHelper = new XpoHelper(unityContainerMock.Object, dataLayerHelperMock.Object);
+
+        //Act 
+        var session = sessionHelper.GetNewSession();
+
+        //Assert
+        Assert.That(session, Is.Not.Null);
+        Assert.That(session, Is.InstanceOf&lt;Session&gt;());
+    }
+}
+</code></pre>
+
+<p>Now we also must register this guy in the <code>Bootstrapper</code>:</p>
+
+<pre><code>public static class Bootstrapper
+{
+    public static void Initialise()
+    {
+        var container = BuildUnityContainer();
+
+        GlobalConfiguration.Configuration.DependencyResolver = new Unity.WebApi.UnityDependencyResolver(container);
+    }
+
+    private static IUnityContainer BuildUnityContainer()
+    {
+        var unityContainer = new UnityContainer();
+
+        unityContainer.RegisterType&lt;IDataLayerHelper, DataLayerHelper&gt;(new ContainerControlledLifetimeManager());
+        unityContainer.RegisterType&lt;IXpoHelper, XpoHelper&gt;();
+
+        return unityContainer;
+    }
+}
+</code></pre>
+
+<h2 id="the-portable-assembly">The portable assembly</h2>
+
+<p>Note that the WebApi and WebMvc are using <code>.Net 4.5</code> to use the nice async/await featues we build the protable assembly with support for <code>.Net 4.0</code> support to use the calls from our <em>legacy</em> XAFSolution.</p>
+
+<p><img src="http://blog.paraoffice.at/get/screenshots/XAFDISolution3/2013-03-03%2012_49_53-Add_Portable_Class_Library.png" alt="Portable Lib" /></p>
+
+<p>Here is the very simple <code>MyBo1-DTO</code></p>
+
+<pre><code>public class MyBo1
+{
+    public int Oid { get; set; }
+    public string MyName { get; set; }
+}
+</code></pre>
+
+<h2 id="back-to-the-future-ahm-webapi">Back to the future, ahm WebApi</h2>
+
+<p>We know use a simple pattern called the <a href="http://msdn.microsoft.com/en-us/library/ff649690.aspx">RepositoryPattern</a> to access our Database via XPO and keep testablility and <a href="http://en.wikipedia.org/wiki/Separation_of_concerns">Seperation of Conserns</a>:</p>
+
+<pre><code>public interface IBusinessObjectRepository
+{
+    Task&lt;IEnumerable&lt;MyBo1&gt;&gt; GetBusinessObjects();
+
+    Task&lt;MyBo1&gt; GetBusinessObjectById(int id);
+
+    Task&lt;MyBo1&gt; Save(MyBo1 bo);
+
+    Task&lt;MyBo1&gt; Delete(int id);
+
+    Task&lt;MyBo1&gt; Save(int id, MyBo1 value);
+}
+</code></pre>
+
+<p>A nice an clean interface, isn’t it? :)</p>
+
+<p>The implementation is also not that complicated:</p>
+
+<pre><code>public class MyBo1Repository : IBusinessObjectRepository
+{
+    internal readonly IXpoHelper _Helper;
+
+    public MyBo1Repository(IXpoHelper helper)
+    {
+        _Helper = helper;
+    }
+
+    MyBo1 CreateBusinessObject(XAFDISolution.Module.BusinessObjects.MyBo1 boXPO)
+    {
+        if(boXPO == null)
+            return null;
+
+        return new MyBo1()
+            {
+                Oid = boXPO.Oid,
+                MyName = boXPO.MyName,
+            };
+    }
+
+    XAFDISolution.Module.BusinessObjects.MyBo1 CreateBusinessObject(MyBo1 bo, Session session)
+    {
+        return MapBusinessObject(bo, new XAFDISolution.Module.BusinessObjects.MyBo1(session));
+    }
+
+    XAFDISolution.Module.BusinessObjects.MyBo1 MapBusinessObject(MyBo1 bo, XAFDISolution.Module.BusinessObjects.MyBo1 boXPO)
+    {
+        boXPO.MyName = bo.MyName;
+        
+        return boXPO;
+    }
+
+    public async Task&lt;IEnumerable&lt;MyBo1&gt;&gt; GetBusinessObjects()
+    {
+        return await Task&lt;IEnumerable&lt;MyBo1&gt;&gt;.Run(() =&gt; BusinessObjectsXPO.Select(CreateBusinessObject));
+    }
+
+    IEnumerable&lt;XAFDISolution.Module.BusinessObjects.MyBo1&gt; BusinessObjectsXPO
+    {
+        get
+        {
+            return new XPQuery&lt;XAFDISolution.Module.BusinessObjects.MyBo1&gt;(_Helper.GetNewSession());
+        }
+    }
+
+    public async Task&lt;MyBo1&gt; GetBusinessObjectById(int id)
+    {
+        return CreateBusinessObject(_Helper.GetNewSession().GetObjectByKey&lt;XAFDISolution.Module.BusinessObjects.MyBo1&gt;(id));
+    }
+
+    public async Task&lt;MyBo1&gt; Save(MyBo1 bo)
+    {
+        return await Task&lt;MyBo1&gt;.Run(() =&gt;
+            {
+                var session = _Helper.GetNewSession();
+                var boToReturn = CreateBusinessObject(bo, session);
+                session.CommitTransaction();
+
+                return CreateBusinessObject(boToReturn);
+            });
+    }
+
+    public async Task&lt;MyBo1&gt; Delete(int id)
+    {
+        return await Task&lt;MyBo1&gt;.Run(() =&gt;
+            {
+                var session = _Helper.GetNewSession();
+                var boXpo = session.GetObjectByKey&lt;XAFDISolution.Module.BusinessObjects.MyBo1&gt;(id);
+                if (boXpo == null)
+                    return CreateBusinessObject(null);
+
+                session.Delete(boXpo);
+                session.CommitTransaction();
+                boXpo.Oid = -1;
+
+                return CreateBusinessObject(boXpo);
+            });
+    }
+
+    public async Task&lt;MyBo1&gt; Save(int id, MyBo1 bo)
+    {
+        return await Task&lt;MyBo1&gt;.Run(() =&gt;
+            {
+                var session = _Helper.GetNewSession();
+                var boXpo = session.GetObjectByKey&lt;XAFDISolution.Module.BusinessObjects.MyBo1&gt;(id);
+
+                MapBusinessObject(bo, boXpo);
+
+                session.CommitTransaction();
+
+                return CreateBusinessObject(boXpo);
+            });
+    }
+}
+</code></pre>
+
+<p>What we do here is basicly a proxy arround our XPO-Database-Objects and wrap the whole thing in async/await Tasks. The most complex thing that can happen are in the <code>CreateBusinessObject</code> and <code>MapBusinessObject</code> methods. Here is good testing absolutly necessary. If you miss a property the whole thing is unstable. The other side of the medal is that we can provide a clear interface to the database, and can decide how to serialize/deserialize data to the database.</p>
+
+<p>The tests are also very interessting:</p>
+
+<pre><code>[TestFixture]
+[Category("CI")]
+public class MyBo1RepositoryTests
+{
+    [Test]
+    public void Ctor_Is_Not_Throwing_An_Exception()
+    {
+        //Arrange
+        var mockXpoHelper = new Mock&lt;IXpoHelper&gt;();
+
+        //Act &amp; Assert
+        Assert.DoesNotThrow(() =&gt;
+        {
+            var repo = new MyBo1Repository(mockXpoHelper.Object);
+
+            Assert.That(repo, Is.InstanceOf&lt;MyBo1Repository&gt;());
+        });
+    }
+
+    private IDataLayerHelper CreateDataLayer()
+    {
+        //Arrange
+        var dataLayerHelperMock = new Moq.Mock&lt;IDataLayerHelper&gt;();
+        dataLayerHelperMock.SetupGet(m =&gt; m.DataLayer).Returns(new SimpleDataLayer(new InMemoryDataStore()));
+        return dataLayerHelperMock.Object;
+    }
+
+    [Test]
+    public async void Save_A_New_Object_Will_Go_To_Database()
+    {
+        //Arrange
+        var xpoHelper = new XpoHelper(new Mock&lt;IUnityContainer&gt;().Object, CreateDataLayer());
+
+        var repo = new MyBo1Repository(xpoHelper);
+
+        //Act
+        var boToTest = new XAFDiSolution.DTO.MyBo1()
+            {
+                MyName = "Test Name"
+            };
+
+        await repo.Save(boToTest);
+
+        //Assert
+        var myBo1Expected = xpoHelper.GetNewSession().FindObject&lt;XAFDISolution.Module.BusinessObjects.MyBo1&gt;(null);
+
+        Assert.That(myBo1Expected, Is.Not.Null);
+
+        Assert.That(myBo1Expected.MyName, Is.EqualTo("Test Name"));
+    }
+
+    [Test]
+    public async void Save_An_Existing_Object_Will_Modify_The_XPO_Object()
+    {
+        //Arrange
+        var xpoHelper = new XpoHelper(new Mock&lt;IUnityContainer&gt;().Object, CreateDataLayer());
+
+        var session = xpoHelper.GetNewSession();
+
+        var existingXpoBo = new XAFDISolution.Module.BusinessObjects.MyBo1(session)
+            {
+                MyName = "Test existing",
+            };
+
+        session.CommitTransaction();
+
+        var oid = session.FindObject&lt;XAFDISolution.Module.BusinessObjects.MyBo1&gt;(null).Oid;
+
+        var repo = new MyBo1Repository(xpoHelper);
+
+        //Act
+        var boToTest = new XAFDiSolution.DTO.MyBo1()
+        {
+            MyName = "Test Name"
+        };
+
+        await repo.Save(oid, boToTest);
+
+        //Assert
+        var assertSession = xpoHelper.GetNewSession();
+        var myBo1ExpectedCollection = assertSession.GetObjects(assertSession.GetClassInfo&lt;XAFDISolution.Module.BusinessObjects.MyBo1&gt;(), null, new SortingCollection(), 0, Int32.MaxValue, true, true);
+
+        Assert.That(myBo1ExpectedCollection, Is.Not.Null);
+        Assert.That(myBo1ExpectedCollection.Count, Is.EqualTo(1));
+
+        Assert.That(myBo1ExpectedCollection.OfType&lt;XAFDISolution.Module.BusinessObjects.MyBo1&gt;().ElementAt(0).MyName, Is.EqualTo("Test Name"));
+    }
+
+    [Test]
+    public async void GetBusinessObjects_With_Empty_Database_Does_Not_Return_Null()
+    {
+        //Arrange
+        var xpoHelper = new XpoHelper(new Mock&lt;IUnityContainer&gt;().Object, CreateDataLayer());
+
+        var session = xpoHelper.GetNewSession();
+
+        var repo = new MyBo1Repository(xpoHelper);
+
+        //Act
+        var result = await repo.GetBusinessObjects();
+
+        //Assert
+        Assert.That(result, Is.Not.Null);
+        Assert.That(result.Count(), Is.EqualTo(0));
+    }
+
+    [Test]
+    public async void GetBusinessObjects_With_Filled_Database_Returns_All_BusinessObjects_Correct()
+    {
+        //Arrange
+        var xpoHelper = new XpoHelper(new Mock&lt;IUnityContainer&gt;().Object, CreateDataLayer());
+
+        var session = xpoHelper.GetNewSession();
+
+        var existingXpoBo1 = new XAFDISolution.Module.BusinessObjects.MyBo1(session)
+        {
+            MyName = "Test existing1",
+        };
+
+        var existingXpoBo2 = new XAFDISolution.Module.BusinessObjects.MyBo1(session)
+        {
+            MyName = "Test existing2",
+        };
+
+        session.CommitTransaction();
+
+        var repo = new MyBo1Repository(xpoHelper);
+
+        //Act
+
+        var result = (await repo.GetBusinessObjects()).OrderBy(m =&gt; m.Oid);
+
+        //Assert
+        Assert.That(result, Is.Not.Null);
+        Assert.That(result.Count(), Is.EqualTo(2));
+
+        Assert.That(result.ElementAt(0).MyName, Is.EqualTo("Test existing1"));
+        Assert.That(result.ElementAt(1).MyName, Is.EqualTo("Test existing2"));
+    }
+
+    [Test]
+    public async void GetBusinessObjectById_With_Filled_Database_Returns_Correct_BusinessObject_With_Exisiting_Key_Property()
+    {
+        //Arrange
+        var xpoHelper = new XpoHelper(new Mock&lt;IUnityContainer&gt;().Object, CreateDataLayer());
+
+        var session = xpoHelper.GetNewSession();
+
+        var existingXpoBo1 = new XAFDISolution.Module.BusinessObjects.MyBo1(session)
+        {
+            MyName = "Test existing1",
+        };
+
+        var existingXpoBo2 = new XAFDISolution.Module.BusinessObjects.MyBo1(session)
+        {
+            MyName = "Test existing2",
+        };
+
+        session.CommitTransaction();
+
+        var oid = session.FindObject&lt;Module.BusinessObjects.MyBo1&gt;(CriteriaOperator.Parse("MyName = ?", "Test existing2")).Oid;
+
+        var repo = new MyBo1Repository(xpoHelper);
+
+        //Act
+
+        var result = await repo.GetBusinessObjectById(oid);
+
+        //Assert
+        Assert.That(result, Is.Not.Null);
+        Assert.That(result.MyName, Is.EqualTo("Test existing2"));
+    }
+
+    [Test]
+    public async void GetBusinessObjectById_With_Empty_Database_Returns_Null_With_Non_Exisiting_Key_Property()
+    {
+        //Arrange
+        var xpoHelper = new XpoHelper(new Mock&lt;IUnityContainer&gt;().Object, CreateDataLayer());
+
+        var session = xpoHelper.GetNewSession();
+        
+        session.CommitTransaction();
+
+        var repo = new MyBo1Repository(xpoHelper);
+
+        //Act
+        var result = await repo.GetBusinessObjectById(1);
+
+        //Assert
+        Assert.That(result, Is.Null);
+    }
+
+    [Test]
+    public async void Delete_With_Filled_Database_Returns_Correct_BusinessObject_With_Exisiting_Key_Property()
+    {
+        //Arrange
+        var xpoHelper = new XpoHelper(new Mock&lt;IUnityContainer&gt;().Object, CreateDataLayer());
+
+        var session = xpoHelper.GetNewSession();
+
+        var existingXpoBo1 = new XAFDISolution.Module.BusinessObjects.MyBo1(session)
+        {
+            MyName = "Test existing1",
+        };
+
+        var existingXpoBo2 = new XAFDISolution.Module.BusinessObjects.MyBo1(session)
+        {
+            MyName = "Test existing2",
+        };
+
+        session.CommitTransaction();
+
+        var oid = session.FindObject&lt;Module.BusinessObjects.MyBo1&gt;(CriteriaOperator.Parse("MyName = ?", "Test existing2")).Oid;
+
+        var repo = new MyBo1Repository(xpoHelper);
+
+        //Act
+
+        var result = await repo.Delete(oid);
+        var collectionResult = await repo.GetBusinessObjects();
+
+        //Assert
+        Assert.That(result, Is.Not.Null);
+        Assert.That(result.Oid, Is.EqualTo(-1));
+        Assert.That(result.MyName, Is.EqualTo("Test existing2"));
+
+        Assert.That(collectionResult, Is.Not.Null);
+        Assert.That(collectionResult.Count(), Is.EqualTo(1));
+
+        Assert.That(collectionResult.ElementAt(0).MyName, Is.EqualTo("Test existing1"));
+    }
+
+    [Test]
+    public async void Delete_With_Empty_Database_Returns_Null()
+    {
+        //Arrange
+        var xpoHelper = new XpoHelper(new Mock&lt;IUnityContainer&gt;().Object, CreateDataLayer());
+
+        var repo = new MyBo1Repository(xpoHelper);
+
+        //Act
+
+        var result = await repo.Delete(1);
+        var collectionResult = await repo.GetBusinessObjects();
+
+        //Assert
+        Assert.That(result, Is.Null);
+
+        Assert.That(collectionResult, Is.Not.Null);
+        Assert.That(collectionResult.Count(), Is.EqualTo(0));
+    }
+}
+</code></pre>
+
+<p>Do not forget to add the Repository to the UnityContainer:</p>
+
+<pre><code>public static class Bootstrapper
+{
+    public static void Initialise()
+    {
+        var container = BuildUnityContainer();
+
+        GlobalConfiguration.Configuration.DependencyResolver = new Unity.WebApi.UnityDependencyResolver(container);
+    }
+
+    private static IUnityContainer BuildUnityContainer()
+    {
+        var unityContainer = new UnityContainer();
+
+        unityContainer.RegisterType&lt;IDataLayerHelper, DataLayerHelper&gt;(new ContainerControlledLifetimeManager());
+        unityContainer.RegisterType&lt;IXpoHelper, XpoHelper&gt;();
+        unityContainer.RegisterType&lt;IBusinessObjectRepository, MyBo1Repository&gt;();
+
+        return unityContainer;
+    }
+}
+</code></pre>
+
+<p>For now the data access aspect is finished. How to get the data now to the client?</p>
+
+<p>We need to implement a new <code>MyBusinessObjectController</code> derived from <code>ApiController</code>;</p>
+
+<pre><code>public class MyBusinessObjectController : ApiController
+{
+    private readonly IBusinessObjectRepository _repository;
+
+    public MyBusinessObjectController(IBusinessObjectRepository repository)
+    {
+        _repository = repository;
+    }
+
+    // GET api/MyBusinessObject
+    public async Task&lt;IEnumerable&lt;MyBo1&gt;&gt; Get()
+    {
+        return await _repository.GetBusinessObjects();
+    }
+
+    // GET api/MyBusinessObject/5
+    public async Task&lt;MyBo1&gt; Get(int id)
+    {
+        return await _repository.GetBusinessObjectById(id);
+    }
+
+    // POST api/MyBusinessObject
+    public async Task&lt;MyBo1&gt; Post([FromBody]MyBo1 value)
+    {
+        return await _repository.Save(value);
+    }
+
+    // PUT api/MyBusinessObject/5
+    public async Task&lt;MyBo1&gt; Put(int id, [FromBody]MyBo1 value)
+    {
+        return await _repository.Save(id, value);
+    }
+
+    // DELETE api/MyBusinessObject/5
+    public async Task&lt;MyBo1&gt; Delete(int id)
+    {
+        return await _repository.Delete(id);
+    }
+}
+</code></pre>
+
+<p>Here we need no registration to create the controller, cause of the <code>Unity.WebApi</code> package we’ve imported via nuget.</p>
+
+<p>The tests are not that clear cause we have to return tasks for now, but the async/await in the unittests helps us to write quite straight tests:</p>
+
+<pre><code>[TestFixture]
+[Category("CI")]
+public class MyBusinessObjectControllerTests
+{
+    [Test]
+    public void Ctor_Does_Not_Throw_Exception()
+    {
+        //Arrage
+        var mockRepo = new Mock&lt;IBusinessObjectRepository&gt;();
+
+        //Act &amp; Assert
+        Assert.DoesNotThrow(() =&gt;
+        {
+            var controller = new MyBusinessObjectController(mockRepo.Object);
+            Assert.That(controller, Is.InstanceOf&lt;MyBusinessObjectController&gt;());
+        });
+    }
+
+    [Test]
+    public async void Get_Will_Call_Repo()
+    {
+        //Arrage
+        var mockRepo = new Mock&lt;IBusinessObjectRepository&gt;();
+        mockRepo.Setup(m =&gt; m.GetBusinessObjects()).Returns(() =&gt; Task.Run(() =&gt; new List&lt;MyBo1&gt;().AsEnumerable()));
+
+        var controller = new MyBusinessObjectController(mockRepo.Object);
+
+        //Act 
+        var result = await controller.Get();
+
+        //Assert
+        mockRepo.Verify(m =&gt; m.GetBusinessObjects(), Times.Exactly(1));
+    }
+
+    [Test]
+    public async void Get_Will_Return_2_Bo()
+    {
+        //Arrage
+        var mockRepo = new Mock&lt;IBusinessObjectRepository&gt;();
+        mockRepo.Setup(m =&gt; m.GetBusinessObjects()).Returns(() =&gt; Task.Run(() =&gt; new List&lt;MyBo1&gt;() { new MyBo1() { MyName = "Test" }, new MyBo1() {MyName = "Test2"} }.AsEnumerable()));
+
+        var controller = new MyBusinessObjectController(mockRepo.Object);
+
+        //Act 
+        var result = (await controller.Get()).OrderBy(m =&gt; m.Oid);
+
+        //Assert
+        Assert.That(result, Is.Not.Null);
+        Assert.That(result.Count(), Is.EqualTo(2));
+        Assert.That(result.ElementAt(0).MyName, Is.EqualTo("Test"));
+        Assert.That(result.ElementAt(1).MyName, Is.EqualTo("Test2"));
+    }
+
+    [Test]
+    public async void Get_Will_Return_1_Bo()
+    {
+        //Arrage
+        var mockRepo = new Mock&lt;IBusinessObjectRepository&gt;();
+        mockRepo.Setup(m =&gt; m.GetBusinessObjectById(It.IsAny&lt;int&gt;())).Returns(() =&gt; Task.Run(() =&gt; new MyBo1() { MyName = "Test" }));
+
+        var controller = new MyBusinessObjectController(mockRepo.Object);
+
+        //Act 
+        var result = await controller.Get(1);
+
+        //Assert
+        Assert.That(result, Is.Not.Null);
+        Assert.That(result.MyName, Is.EqualTo("Test"));
+    }
+
+    [Test]
+    public async void Post_Will_Set_Something_Up_In_The_Database()
+    {
+        //Arrage
+        var mockRepo = new Mock&lt;IBusinessObjectRepository&gt;();
+        mockRepo.Setup(m =&gt; m.Save(It.IsAny&lt;MyBo1&gt;())).Returns(Task.Run(() =&gt; new MyBo1() { Oid = 1, MyName = "Test" }));
+
+        var controller = new MyBusinessObjectController(mockRepo.Object);
+
+        //Act 
+        var bo = new MyBo1() { MyName = "Test" };
+        var result = await controller.Post(bo);
+
+        //Assert
+        mockRepo.Verify(m =&gt; m.Save(bo), Times.Exactly(1));
+        Assert.That(result, Is.Not.Null);
+        Assert.That(result.Oid, Is.EqualTo(1));
+        Assert.That(result.MyName, Is.EqualTo("Test"));
+    }
+
+    [Test]
+    public async void Put_Will_Set_Something_Up_In_The_Database()
+    {
+        //Arrage
+        var mockRepo = new Mock&lt;IBusinessObjectRepository&gt;();
+        mockRepo.Setup(m =&gt; m.Save(It.IsAny&lt;int&gt;(), It.IsAny&lt;MyBo1&gt;())).Returns(Task.Run(() =&gt; new MyBo1() { Oid = 1, MyName = "Test" }));
+
+        var controller = new MyBusinessObjectController(mockRepo.Object);
+
+        //Act 
+        var bo = new MyBo1() { MyName = "Test" };
+        var result = await controller.Put(1, bo);
+
+        //Assert
+        mockRepo.Verify(m =&gt; m.Save(1, bo), Times.Exactly(1));
+        Assert.That(result, Is.Not.Null);
+        Assert.That(result.Oid, Is.EqualTo(1));
+        Assert.That(result.MyName, Is.EqualTo("Test"));
+    }
+
+    [Test]
+    public async void Delete_Will_Set_Something_Up_In_The_Database()
+    {
+        //Arrage
+        var mockRepo = new Mock&lt;IBusinessObjectRepository&gt;();
+        mockRepo.Setup(m =&gt; m.Delete(It.IsAny&lt;int&gt;())).Returns(Task.Run(() =&gt; new MyBo1() { Oid = -1, MyName = "Test" }));
+
+        var controller = new MyBusinessObjectController(mockRepo.Object);
+
+        //Act 
+        var result = await controller.Delete(1);
+
+        //Assert
+        mockRepo.Verify(m =&gt; m.Delete(1), Times.Exactly(1));
+        Assert.That(result, Is.Not.Null);
+        Assert.That(result.Oid, Is.EqualTo(-1));
+        Assert.That(result.MyName, Is.EqualTo("Test"));
+    }
+}
+</code></pre>
+
+<h3 id="ready-to-rock">Ready to rock!</h3>
+
+<p>Starting up our <a href="http://msdn.microsoft.com/en-us/library/ms165413(v=vs.80).aspx">projects</a> and see something in action.</p>
+
+<p>Hit the page from our controller (http://localhost:3786/api/MyBusinessObject) we get this result:</p>
+
+<pre><code>&lt;ArrayOfMyBo1 xmlns:i="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://schemas.datacontract.org/2004/07/XAFDiSolution.DTO"&gt;
+	&lt;MyBo1&gt;
+		&lt;MyName&gt;Hello from the Win Project: My Dependencies: XAFDISolution.Module.Win.DomainLogic.WinRenamer XAFDISolution.Core.UnityObjectSpaceSession id:XAFDISolution.Core.UnityUnitOfWork(13)&lt;/MyName&gt;
+		&lt;Oid&gt;2&lt;/Oid&gt;
+	&lt;/MyBo1&gt;
+	&lt;MyBo1&gt;
+		&lt;MyName&gt;Hello from the Win Project: My Dependencies: XAFDISolution.Module.Win.DomainLogic.WinRenamer XAFDISolution.Core.UnityObjectSpaceSession id:XAFDISolution.Core.UnityUnitOfWork(5)&lt;/MyName&gt;
+		&lt;Oid&gt;0&lt;/Oid&gt;
+	&lt;/MyBo1&gt;
+	&lt;MyBo1&gt;
+		&lt;MyName&gt;Hello from the Win Project: My Dependencies: XAFDISolution.Module.Win.DomainLogic.WinRenamer XAFDISolution.Core.UnityObjectSpaceSession id:XAFDISolution.Core.UnityUnitOfWork(12)&lt;/MyName&gt;
+		&lt;Oid&gt;1&lt;/Oid&gt;
+	&lt;/MyBo1&gt;
+&lt;/ArrayOfMyBo1&gt;
+</code></pre>
+
+<p>Nice or is it? :)</p>
+
+<p>Let’s check out <a href="http://www.fiddler2.com/fiddler2/">fiddler</a> an see if we can get some <a href="http://www.json.org/">JSON</a> from our api.</p>
+
+<p><img src="http://blog.paraoffice.at/get/screenshots/XAFDISolution3/fiddler_input.png" alt="Fiddler input" /></p>
+
+<p>Outputs:</p>
+
+<p><img src="http://blog.paraoffice.at/get/screenshots/XAFDISolution3/fiddler_output.png" alt="Fiddler output" /></p>
+
+<p>Nice!
+Lets input some data:</p>
+
+<p><img src="http://blog.paraoffice.at/get/screenshots/XAFDISolution3/post_from_fiddler.png" alt="Post from fiddler" /></p>
+
+<p><img src="http://blog.paraoffice.at/get/screenshots/XAFDISolution3/XAF_Post_From_Fiddler.png" alt="XAF Post from fiddler" /></p>
+
+<p>Update some data:</p>
+
+<p><img src="http://blog.paraoffice.at/get/screenshots/XAFDISolution3/put_from_fiddler.png" alt="Update from Fiddler" /></p>
+
+<p><img src="http://blog.paraoffice.at/get/screenshots/XAFDISolution3/XAF_Put_From_Fiddler.png" alt="XAF Update from fiddler" /></p>
+
+<p>And delete it:</p>
+
+<p><img src="http://blog.paraoffice.at/get/screenshots/XAFDISolution3/delete_from_fiddler.png" alt="Delete from fiddler" /></p>
+
+<p><img src="http://blog.paraoffice.at/get/screenshots/XAFDISolution3/XAF_Delete_From_Fiddler.png" alt="XAF Delete from fiddler" /></p>
+
+<blockquote>
+  <p>As you maybe noticed, i’ve never startet the application so far. The unit-testing works like a charm.</p>
+</blockquote>
+
+<h2 id="webmvc">WebMvc</h2>
+<p>Here we need a little different package from nuget. Install <a href="http://nuget.org/packages/Unity.Mvc3/1.2">Unity.WebMvc3</a> This will also work in Mvc4.</p>
+
+<p>Our little friend the <code>Bootstrapper</code> is also present here:</p>
+
+ 	public static class Bootstrapper
+<pre><code>{
+    public static void Initialise()
+    {
+        var container = BuildUnityContainer();
+
+        DependencyResolver.SetResolver(new UnityDependencyResolver(container));
+    }
+
+    private static IUnityContainer BuildUnityContainer()
+    {
+        var container = new UnityContainer();
+
+        // register all your components with the container here
+        // it is NOT necessary to register your controllers
+        
+        // e.g. container.RegisterType&lt;ITestService, TestService&gt;();            
+
+        return container;
+    }
+}
+</code></pre>
+
+<p>Same thing here with the <code>Global.asax</code> file. We need to call the <code>Bootstrapper</code> once to get the nice DI-Thing:</p>
+
+<pre><code>public class MvcApplication : System.Web.HttpApplication
+{
+    protected void Application_Start()
+    {
+        AreaRegistration.RegisterAllAreas();
+
+        WebApiConfig.Register(GlobalConfiguration.Configuration);
+        FilterConfig.RegisterGlobalFilters(GlobalFilters.Filters);
+        RouteConfig.RegisterRoutes(RouteTable.Routes);
+        BundleConfig.RegisterBundles(BundleTable.Bundles);
+        AuthConfig.RegisterAuth();
+
+        Bootstrapper.Initialise();
+    }
+}
+</code></pre>
+
+<blockquote>
+  <p>Notice: The only thing we need in this assembly is the <code>XAFDISolution.DTO</code> Reference. Don’t reference any XPO-specific here!!</p>
+</blockquote>
+
+<p>Unfortunately the portable lib doesn’t provide support for the Task<t> class we used so far, so we have to recreate the `IBusinessObjectRepository`. But i don't like that. So i link the files via `Add Existing Item` feature from VisualStudio.</t></p>
+
+<p>Now we need a new <code>Repository</code>. I call this one <code>WebApiBoRepository</code>:</p>
+
+<pre><code>public class WebApiBoRepository : IBusinessObjectRepository
+{
+    private readonly IEndpointProvider _endpointProvider;
+
+    public WebApiBoRepository(IEndpointProvider endpointProvider)
+    {
+        _endpointProvider = endpointProvider;
+    }
+
+    private HttpClient CreateHttpClient()
+    {
+        var client = new HttpClient();
+
+        client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+
+        client.BaseAddress = new Uri(_endpointProvider.WebApiEndpoint);
+        return client;
+    }
+
+    public async Task&lt;IEnumerable&lt;MyBo1&gt;&gt; GetBusinessObjects()
+    {
+        var client = CreateHttpClient();
+
+        var response = await client.GetAsync("api/MyBusinessObject");
+
+        response.EnsureSuccessStatusCode();
+
+        return await response.Content.ReadAsAsync&lt;IEnumerable&lt;MyBo1&gt;&gt;();
+    }
+
+    public async Task&lt;MyBo1&gt; GetBusinessObjectById(int id)
+    {
+        var client = CreateHttpClient();
+
+        var response = await client.GetAsync("api/MyBusinessObject/" + id);
+
+        response.EnsureSuccessStatusCode();
+
+        return await response.Content.ReadAsAsync&lt;MyBo1&gt;();
+    }
+
+    public async Task&lt;MyBo1&gt; Save(MyBo1 bo)
+    {
+        var client = CreateHttpClient();
+
+        var response = await client.PostAsync("api/MyBusinessObject/", bo, new JsonMediaTypeFormatter());
+
+        response.EnsureSuccessStatusCode();
+
+        return await response.Content.ReadAsAsync&lt;MyBo1&gt;();
+    }
+
+    public async Task&lt;MyBo1&gt; Delete(int id)
+    {
+        var client = CreateHttpClient();
+
+        var response = await client.DeleteAsync("api/MyBusinessObject/" + id);
+
+        response.EnsureSuccessStatusCode();
+
+        return await response.Content.ReadAsAsync&lt;MyBo1&gt;();
+    }
+
+    public async Task&lt;MyBo1&gt; Save(int id, MyBo1 bo)
+    {
+        var client = CreateHttpClient();
+
+        var response = await client.PutAsync("api/MyBusinessObject/" + id, bo, new JsonMediaTypeFormatter());
+
+        response.EnsureSuccessStatusCode();
+
+        return await response.Content.ReadAsAsync&lt;MyBo1&gt;();
+    }
+}
+</code></pre>
+
+<p>To avoid hard references to a singe WebApi-Endpoint we use a IEndpointProvider</p>
+
+<pre><code>public interface IEndpointProvider
+{
+    string WebApiEndpoint { get; }
+}
+</code></pre>
+
+<p>And implement this really silly (but important) class:</p>
+
+ 	public class HTTPEndpointProvider : IEndpointProvider
+<pre><code>{
+    public string WebApiEndpoint
+    {
+        get { return "http://localhost:3786/"; }
+    }
+}
+</code></pre>
+
+<p>If you need to implement SSL this <a href="http://www.hanselman.com/blog/WorkingWithSSLAtDevelopmentTimeIsEasierWithIISExpress.aspx">post</a> from <a href="http://www.hanselman.com">Scott Hanselmann</a> will help you, and you can use a SSLEndpointProvider:</p>
+
+<pre><code>public class SSLEndpointProvider : IEndpointProvider
+{
+    public string WebApiEndpoint
+    {
+        get { return "https://localhost:8443/"; }
+    }
+}
+</code></pre>
+
+<p>Don’t forget to register the IEndpointProvider and the IBusinessObjectRepository</p>
+
+<pre><code>public static class Bootstrapper
+{
+    public static void Initialise()
+    {
+        var container = BuildUnityContainer();
+
+        DependencyResolver.SetResolver(new UnityDependencyResolver(container));
+    }
+
+    private static IUnityContainer BuildUnityContainer()
+    {
+        var unityContainer = new UnityContainer();
+
+        // register all your components with the container here
+        // it is NOT necessary to register your controllers
+
+        unityContainer.RegisterType&lt;IEndpointProvider, HTTPEndpointProvider&gt;();            
+
+        unityContainer.RegisterType&lt;IBusinessObjectRepository, WebApiBoRepository&gt;();            
+
+        return unityContainer;
+    }
+}
+</code></pre>
+
+<p>So far i found no easy way to test this <code>Repository</code> without providing a WebApi. Maybe someone will provide this functionality :).</p>
+
+<p>Now we need a simple <code>AsyncController</code> called <code>BOController</code>:</p>
+
+<pre><code>public class BOController : AsyncController
+{
+    private readonly IBusinessObjectRepository _repository;
+
+    public BOController(IBusinessObjectRepository repository)
+    {
+        _repository = repository;
+    }
+
+    //
+    // GET: /BO/
+    public async Task&lt;ActionResult&gt; Index()
+    {
+        return View(await _repository.GetBusinessObjects());
+    }
+
+    //
+    // GET: /BO/Details/5
+
+    public async Task&lt;ActionResult&gt; Details(int id)
+    {
+        return View(await _repository.GetBusinessObjectById(id));
+    }
+
+    //
+    // GET: /BO/Create
+
+    public ActionResult Create()
+    {
+        return View();
+    }
+
+    //
+    // POST: /BO/Create
+
+    [HttpPost]
+    public async Task&lt;ActionResult&gt; Create(MyBo1 bo)
+    {
+        if (ModelState.IsValid)
+        {
+            try
+            {
+                await _repository.Save(bo);
+
+                return RedirectToAction("Index");
+            }
+            catch
+            {
+                return View(bo);
+            }
+        }
+        return View(bo);
+    }
+
+    //
+    // GET: /BO/Edit/5
+
+    public async Task&lt;ActionResult&gt; Edit(int id)
+    {
+        return View(await _repository.GetBusinessObjectById(id));
+    }
+
+    //
+    // POST: /BO/Edit/5
+
+    [HttpPost]
+    public async Task&lt;ActionResult&gt; Edit(int id, MyBo1 bo)
+    {
+        if (ModelState.IsValid)
+        {
+            try
+            {
+                _repository.Save(id, bo);
+
+                return RedirectToAction("Index");
+            }
+            catch
+            {
+                return View(bo);
+            }
+        }
+        return View(bo);
+    }
+
+    //
+    // GET: /BO/Delete/5
+
+    public async Task&lt;ActionResult&gt; Delete(int id)
+    {
+        return View(await _repository.GetBusinessObjectById(id));
+    }
+
+    //
+    // POST: /BO/Delete/5
+
+    [HttpPost]
+    public async Task&lt;ActionResult&gt; Delete(int id, MyBo1 bo)
+    {
+        if (ModelState.IsValid)
+        {
+            try
+            {
+                bo = await _repository.Delete(id);
+
+                return RedirectToAction("Index");
+            }
+            catch
+            {
+                return View(bo);
+            }
+        }
+        return View(bo);
+    }
+
+}
+</code></pre>
+
+<p>The unit tests are simple:</p>
+
+<pre><code>[TestFixture]
+[Category("CI")]
+public class BOControllerTest
+{
+    [Test]
+    public void Ctor_Does_Not_Throw_Exception()
+    {
+        //Arrange
+        var mockRepository = new Mock&lt;IBusinessObjectRepository&gt;();
+
+        //Arrange &amp; Assert
+        Assert.DoesNotThrow(() =&gt;
+        {
+            var controller = new BOController(mockRepository.Object);
+            Assert.That(controller, Is.InstanceOf&lt;BOController&gt;());
+        });
+    }
+
+    [Test]
+    public async void Index_Does_Call_Repo_Correct()
+    {
+        //Arrange
+        var mockRepository = new Mock&lt;IBusinessObjectRepository&gt;();
+        mockRepository.Setup(m =&gt; m.GetBusinessObjects())
+                      .Returns(() =&gt; Task.Run(() =&gt; new List&lt;MyBo1&gt;().AsEnumerable()));
+        var controller = new BOController(mockRepository.Object);
+
+        //Act
+        var result = (ViewResult) await controller.Index();
+
+        //Assert
+        Assert.That(result.Model, Is.Not.EqualTo(null));
+        Assert.That(result.Model, Is.InstanceOf&lt;IEnumerable&lt;MyBo1&gt;&gt;());
+
+        mockRepository.Verify(m =&gt; m.GetBusinessObjects(), Times.Exactly(1));
+    }
+
+    [Test]
+    public async void Details_Does_Call_Repo_Correct()
+    {
+        //Arrange
+        var mockRepository = new Mock&lt;IBusinessObjectRepository&gt;();
+        mockRepository.Setup(m =&gt; m.GetBusinessObjectById(It.IsAny&lt;int&gt;())).Returns(() =&gt; Task.Run(() =&gt; new MyBo1{Oid = 1, MyName = "Test"}));
+        var controller = new BOController(mockRepository.Object);
+
+        //Act
+        var result = (ViewResult)await controller.Details(1);
+
+        //Assert
+        Assert.That(result.Model, Is.Not.EqualTo(null));
+        Assert.That(result.Model, Is.InstanceOf&lt;MyBo1&gt;());
+        Assert.That((result.Model as MyBo1).Oid, Is.EqualTo(1));
+        Assert.That((result.Model as MyBo1).MyName, Is.EqualTo("Test"));
+        mockRepository.Verify(m =&gt; m.GetBusinessObjectById(1), Times.Exactly(1));
+    }
+
+    [Test]
+    public  void Create_Does_Not_Call_Repo()
+    {
+        //Arrange
+        var mockRepository = new Mock&lt;IBusinessObjectRepository&gt;();
+        var controller = new BOController(mockRepository.Object);
+
+        //Act
+        var result = (ViewResult) controller.Create();
+
+        //Assert
+        mockRepository.Verify(m =&gt; m.GetBusinessObjectById(1), Times.Exactly(0));
+    }
+
+    [Test]
+    public async void Create_Does_Call_Repo_Correct()
+    {
+        //Arrange
+        var mockRepository = new Mock&lt;IBusinessObjectRepository&gt;();
+        mockRepository.Setup(m =&gt; m.Save(It.IsAny&lt;MyBo1&gt;()));
+        var controller = new BOController(mockRepository.Object);
+
+        var expected = new MyBo1() {MyName = "Test"};
+        //Act
+        var result = (ViewResult)await controller.Create(expected);
+
+        //Assert
+        mockRepository.Verify(m =&gt; m.Save(expected), Times.Exactly(1));
+    }
+
+    [Test]
+    public async void Edit_Does_Call_Repo_Correct()
+    {
+        //Arrange
+        var mockRepository = new Mock&lt;IBusinessObjectRepository&gt;();
+        mockRepository.Setup(m =&gt; m.GetBusinessObjectById(It.IsAny&lt;int&gt;())).Returns(() =&gt; Task.Run(() =&gt; new MyBo1 { Oid = 1, MyName = "Test" }));
+        var controller = new BOController(mockRepository.Object);
+
+        //Act
+        var result = (ViewResult)await controller.Edit(1);
+
+        //Assert
+        Assert.That(result.Model, Is.Not.EqualTo(null));
+        Assert.That(result.Model, Is.InstanceOf&lt;MyBo1&gt;());
+        Assert.That((result.Model as MyBo1).Oid, Is.EqualTo(1));
+        Assert.That((result.Model as MyBo1).MyName, Is.EqualTo("Test"));
+        mockRepository.Verify(m =&gt; m.GetBusinessObjectById(1), Times.Exactly(1));
+    }
+
+    [Test]
+    public async void Edit_Will_Update_Call_Repo_Correct()
+    {
+        //Arrange
+        var mockRepository = new Mock&lt;IBusinessObjectRepository&gt;();
+        mockRepository.Setup(m =&gt; m.Save(It.IsAny&lt;int&gt;(), It.IsAny&lt;MyBo1&gt;()));
+
+        var controller = new BOController(mockRepository.Object);
+
+        var expected = new MyBo1() {MyName = "Update"};
+        //Act
+        var result = (RedirectToRouteResult)await controller.Edit(1, expected);
+
+        //Assert
+        mockRepository.Verify(m =&gt; m.Save(1, expected), Times.Exactly(1));
+    }
+
+    [Test]
+    public async void Delete_Will_Call_Repo_Correct()
+    {
+        //Arrange
+        var mockRepository = new Mock&lt;IBusinessObjectRepository&gt;();
+        mockRepository.Setup(m =&gt; m.GetBusinessObjectById(It.IsAny&lt;int&gt;())).Returns(() =&gt; Task.Run(() =&gt; new MyBo1 { Oid = 1, MyName = "Test" }));
+
+        var controller = new BOController(mockRepository.Object);
+
+        //Act
+        var result = (ViewResult)await controller.Delete(1);
+
+        //Assert
+        mockRepository.Verify(m =&gt; m.GetBusinessObjectById(1), Times.Exactly(1));
+    }
+
+    [Test]
+    public async void Delete_Will_Call_Repo_Delete_Correct()
+    {
+        //Arrange
+        var mockRepository = new Mock&lt;IBusinessObjectRepository&gt;();
+        mockRepository.Setup(m =&gt; m.Delete(It.IsAny&lt;int&gt;()));
+
+        var controller = new BOController(mockRepository.Object);
+
+        var expected = new MyBo1() { MyName = "Update" };
+        //Act
+        var result = (ViewResult)await controller.Delete(1, expected);
+
+        //Assert
+        mockRepository.Verify(m =&gt; m.Delete(1), Times.Exactly(1));
+    }
+}
+</code></pre>
+
+<h2 id="views">Views</h2>
+<p>Let’s modify the scaffolded views:</p>
+
+<p>Create.cshtml</p>
+
+<pre><code>@model XAFDISolution.DTO.MyBo1
+
+@{
+    ViewBag.Title = "View2";
+}
+
+&lt;h2&gt;View2&lt;/h2&gt;
+
+@using (Html.BeginForm()) {
+    @Html.ValidationSummary(true)
+
+    &lt;fieldset&gt;
+        &lt;legend&gt;MyBo1&lt;/legend&gt;
+        
+        &lt;div class="editor-label"&gt;
+            @Html.LabelFor(model =&gt; model.MyName)
+        &lt;/div&gt;
+        &lt;div class="editor-field"&gt;
+            @Html.EditorFor(model =&gt; model.MyName)
+            @Html.ValidationMessageFor(model =&gt; model.MyName)
+        &lt;/div&gt;
+
+        &lt;p&gt;
+            &lt;input type="submit" value="Create" /&gt;
+        &lt;/p&gt;
+    &lt;/fieldset&gt;
+}
+
+&lt;div&gt;
+    @Html.ActionLink("Back to List", "Index")
+&lt;/div&gt;
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}
+</code></pre>
+
+<p>Delete.cshtml</p>
+
+<pre><code>@model XAFDISolution.DTO.MyBo1
+
+@{
+    ViewBag.Title = "Delete";
+}
+
+&lt;h2&gt;Delete&lt;/h2&gt;
+
+&lt;h3&gt;Are you sure you want to delete this?&lt;/h3&gt;
+&lt;fieldset&gt;
+    &lt;legend&gt;MyBo1&lt;/legend&gt;
+
+    &lt;div class="display-label"&gt;
+         @Html.DisplayNameFor(model =&gt; model.Oid)
+    &lt;/div&gt;
+    &lt;div class="display-field"&gt;
+        @Html.DisplayFor(model =&gt; model.Oid)
+    &lt;/div&gt;
+
+    &lt;div class="display-label"&gt;
+         @Html.DisplayNameFor(model =&gt; model.MyName)
+    &lt;/div&gt;
+    &lt;div class="display-field"&gt;
+        @Html.DisplayFor(model =&gt; model.MyName)
+    &lt;/div&gt;
+&lt;/fieldset&gt;
+@using (Html.BeginForm()) {
+    &lt;p&gt;
+        &lt;input type="submit" value="Delete" /&gt; |
+        @Html.ActionLink("Back to List", "Index")
+    &lt;/p&gt;
+}
+</code></pre>
+
+<p>Details.cshtml</p>
+
+<pre><code>@model XAFDISolution.DTO.MyBo1
+
+@{
+    ViewBag.Title = "Details";
+}
+
+&lt;h2&gt;Details&lt;/h2&gt;
+
+&lt;fieldset&gt;
+    &lt;legend&gt;MyBo1&lt;/legend&gt;
+
+    &lt;div class="display-label"&gt;
+         @Html.DisplayNameFor(model =&gt; model.Oid)
+    &lt;/div&gt;
+    &lt;div class="display-field"&gt;
+        @Html.DisplayFor(model =&gt; model.Oid)
+    &lt;/div&gt;
+
+    &lt;div class="display-label"&gt;
+         @Html.DisplayNameFor(model =&gt; model.MyName)
+    &lt;/div&gt;
+    &lt;div class="display-field"&gt;
+        @Html.DisplayFor(model =&gt; model.MyName)
+    &lt;/div&gt;
+&lt;/fieldset&gt;
+&lt;p&gt;
+    @Html.ActionLink("Edit", "Edit", new { id=Model.Oid  }) |
+    @Html.ActionLink("Back to List", "Index")
+&lt;/p&gt;
+</code></pre>
+
+<p>Edit.cshtml</p>
+
+<pre><code>@model XAFDISolution.DTO.MyBo1
+
+@{
+    ViewBag.Title = "Edit";
+}
+
+&lt;h2&gt;Edit&lt;/h2&gt;
+
+@using (Html.BeginForm()) {
+    @Html.ValidationSummary(true)
+
+    &lt;fieldset&gt;
+        &lt;legend&gt;MyBo1&lt;/legend&gt;
+
+        &lt;div class="editor-label"&gt;
+            @Model.Oid
+        &lt;/div&gt;
+        
+        &lt;div class="editor-label"&gt;
+            @Html.LabelFor(model =&gt; model.MyName)
+        &lt;/div&gt;
+        &lt;div class="editor-field"&gt;
+            @Html.EditorFor(model =&gt; model.MyName)
+            @Html.ValidationMessageFor(model =&gt; model.MyName)
+        &lt;/div&gt;
+
+        &lt;p&gt;
+            &lt;input type="submit" value="Save" /&gt;
+        &lt;/p&gt;
+    &lt;/fieldset&gt;
+}
+
+&lt;div&gt;
+    @Html.ActionLink("Back to List", "Index")
+&lt;/div&gt;
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}
+</code></pre>
+
+<p>Index.cshtml</p>
+
+<pre><code>@model IEnumerable&lt;XAFDISolution.DTO.MyBo1&gt;
+
+@{
+    ViewBag.Title = "View1";
+}
+
+&lt;h2&gt;View1&lt;/h2&gt;
+
+&lt;p&gt;
+    @Html.ActionLink("Create New", "Create")
+&lt;/p&gt;
+&lt;table&gt;
+    &lt;tr&gt;
+        &lt;th&gt;
+            @Html.DisplayNameFor(model =&gt; model.Oid)
+        &lt;/th&gt;
+        &lt;th&gt;
+            @Html.DisplayNameFor(model =&gt; model.MyName)
+        &lt;/th&gt;
+        &lt;th&gt;&lt;/th&gt;
+    &lt;/tr&gt;
+
+@foreach (var item in Model) {
+    &lt;tr&gt;
+        &lt;td&gt;
+            @Html.DisplayFor(modelItem =&gt; item.Oid)
+        &lt;/td&gt;
+        &lt;td&gt;
+            @Html.DisplayFor(modelItem =&gt; item.MyName)
+        &lt;/td&gt;
+        &lt;td&gt;
+            @Html.ActionLink("Edit", "Edit", new { id=item.Oid }) |
+            @Html.ActionLink("Details", "Details", new { id=item.Oid }) |
+            @Html.ActionLink("Delete", "Delete", new { id=item.Oid })
+        &lt;/td&gt;
+    &lt;/tr&gt;
+}
+
+&lt;/table&gt;
+</code></pre>
+
+<h2 id="action">Action!</h2>
+
+<p>List:</p>
+
+<p><img src="http://blog.paraoffice.at/get/screenshots/XAFDISolution3/MVC_List.png" alt="List MVC" /></p>
+
+<p>Create:</p>
+
+<p><img src="http://blog.paraoffice.at/get/screenshots/XAFDISolution3/MVC_Create.png" alt="MVC Create" /></p>
+
+<p>Result:
+<img src="http://blog.paraoffice.at/get/screenshots/XAFDISolution3/MVC_Create2.png" alt="MVC Create Result" /></p>
+
+<p>Details:</p>
+
+<p><img src="http://blog.paraoffice.at/get/screenshots/XAFDISolution3/MVC_Details.png" alt="MVC Details" /></p>
+
+<p>Edit:</p>
+
+<p><img src="http://blog.paraoffice.at/get/screenshots/XAFDISolution3/MVC_Edit.png" alt="MVC Edit" /></p>
+
+<p>Result:</p>
+
+<p><img src="http://blog.paraoffice.at/get/screenshots/XAFDISolution3/MVC_Edit1.png" alt="MVC Edit Result" /></p>
+
+<p>Delete:</p>
+
+<p><img src="http://blog.paraoffice.at/get/screenshots/XAFDISolution3/MVC_Delete.png" alt="MVC Delete" /></p>
+
+<p>Result:</p>
+
+<p><img src="http://blog.paraoffice.at/get/screenshots/XAFDISolution3/MVC_Delete1.png" alt="MVC Delete Result" /></p>
+
+<h1 id="missing-parts">Missing Parts</h1>
+
+<p>The one missing part is how to apply custom business logic for the XPO Object (Rename me, remember?). This will be covered in a future blog post.</p>
+
+<h2 id="check-out-the-sources">Check out the sources</h2>
+
+<ul>
+  <li><a href="https://bitbucket.org/biohazard999/xafdisolution">Bitbucket</a></li>
+</ul>
+
+    </div>
+
+    
+
+  
+    <ul class="tag_box inline">
+      <li><i class="glyphicon glyphicon-tags"></i></li>
+      
+      
+
+
+  
+     
+    	<li><a href="/tags.html#XAF-ref">XAF <span>9</span></a></li>
+     
+    	<li><a href="/tags.html#XPO-ref">XPO <span>6</span></a></li>
+     
+    	<li><a href="/tags.html#Web-ref">Web <span>3</span></a></li>
+     
+    	<li><a href="/tags.html#WebApi-ref">WebApi <span>2</span></a></li>
+     
+    	<li><a href="/tags.html#UnitTesting-ref">UnitTesting <span>4</span></a></li>
+     
+    	<li><a href="/tags.html#Unity-ref">Unity <span>5</span></a></li>
+     
+    	<li><a href="/tags.html#NUnit-ref">NUnit <span>1</span></a></li>
+     
+    	<li><a href="/tags.html#MVC-ref">MVC <span>3</span></a></li>
+     
+    	<li><a href="/tags.html#Async-ref">Async <span>3</span></a></li>
+     
+    	<li><a href="/tags.html#Await-ref">Await <span>3</span></a></li>
+    
+  
+
+
+
+    </ul>
+    
+  
+    <hr>
+    <ul class="pagination">
+    
+      <li class="prev"><a href="/2013/03/03/how-to-use-dependency-injection-in-xaf-aspnet-custom-actions-part-4" title="How to use Dependency Injection in XAF (ASP.NET Custom Actions) Part 4">&laquo; Previous</a></li>
+    
+      <li><a href="/archive.html">Archive</a></li>
+    
+      <li class="next"><a href="/2013/03/04/xaf-dependency-injection---bring-the-stuff-together" title="XAF Dependency Injection   bring the stuff together">Next &raquo;</a></li>
+    
+    </ul>
+    <hr>
+    
+
+
+  <div id="disqus_thread"></div>
+<script type="text/javascript">
+    var disqus_developer = 1;
+    var disqus_shortname = 'biohazard999'; // required: replace example with your forum shortname
+    
+    /* * * DON'T EDIT BELOW THIS LINE * * */
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = 'http://' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="http://disqus.com" class="dsq-brlink">blog comments powered by <span class="logo-disqus">Disqus</span></a>
+
+
+
+
+  </div>
+</div>
+
+
+      </div>
+
+    </div>
+
+    <div id="footer">
+      <div class="container">
+        <p>&copy; 2015 Manuel Grundner
+          with help from <a href="http://jekyllbootstrap.com" target="_blank" title="The Definitive Jekyll Blogging Framework">Jekyll Bootstrap</a>
+          and <a href="http://twitter.github.com/bootstrap/" target="_blank">Twitter Bootstrap</a>
+        </p>
+      </div>
+    </div>
+
+    
+
+
+    <!-- Latest compiled and minified JavaScript, requires jQuery 1.x (2.x not supported in IE8) -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+    <script src="/assets/themes/bootstrap-3/bootstrap/js/bootstrap.min.js"></script>
+  </body>
+</html>
+
