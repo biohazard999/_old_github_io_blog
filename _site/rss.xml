@@ -5,8 +5,8 @@
         <description>paraOffice - Team Blog - Manuel Grundner</description>
         <link>http://biohazard999.github.io</link>
         <link>http://biohazard999.github.io</link>
-        <lastBuildDate>2015-02-27T18:36:18+01:00</lastBuildDate>
-        <pubDate>2015-02-27T18:36:18+01:00</pubDate>
+        <lastBuildDate>2015-02-27T19:26:31+01:00</lastBuildDate>
+        <pubDate>2015-02-27T19:26:31+01:00</pubDate>
         <ttl>1800</ttl>
 
 
@@ -17,6 +17,2848 @@
                 <link>http://biohazard999.github.io/2015/02/27/hello-world</link>
                 <guid>http://biohazard999.github.io/2015/02/27/hello-world</guid>
                 <pubDate>2015-02-27T00:00:00+01:00</pubDate>
+        </item>
+
+        <item>
+                <title>DevExpress 13.2 Review Part 3</title>
+                <description>
+&lt;p&gt;After some days of hard work, not able to blog, here is my third part of the DevExpress review.&lt;/p&gt;
+
+&lt;p&gt;This times i focused, as promised, about integrating the WinForms TaskbarAssistant into XAF.&lt;/p&gt;
+
+&lt;p&gt;Cause i don’t wan’t to repeat myself here is the &lt;a href=&quot;https://github.com/biohazard999/Xpand.ExpressApp.Win.Para.WindowsIntegration/blob/master/README.md&quot;&gt;readme&lt;/a&gt; that can also be found on &lt;a href=&quot;https://github.com/biohazard999/Xpand.ExpressApp.Win.Para.WindowsIntegration&quot;&gt;github&lt;/a&gt;. If i have time over the holidays, i try to make a screencast that explain my solution in further detail and show the little pitfalls i encountered. But, as expected, it was very easy to integrate in XAF and till now my absolute favorite of the 13.2 release. (i hate to write native calls on my own :D)&lt;/p&gt;
+
+&lt;p&gt;So here is the readme &amp;amp; &lt;em&gt;happy holidays to everybody&lt;/em&gt; :)&lt;/p&gt;
+
+&lt;p&gt;Oh and before i forget:
+&lt;strong&gt;Xpand.ExpressApp.Win.Para.&lt;/strong&gt;* will be a new part of our applications, that allows me to write and share Xpand (XAF) modules, without having to violate our internal source licence.&lt;/p&gt;
+
+&lt;p&gt;Greetins Manuel&lt;/p&gt;
+
+&lt;hr /&gt;
+
+&lt;h1 id=&quot;xpandexpressappwinparawindowsintegration&quot;&gt;Xpand.ExpressApp.Win.Para.WindowsIntegration&lt;/h1&gt;
+
+&lt;p&gt;Deeper Windows Integration Features to XAF/Xpand&lt;/p&gt;
+
+&lt;h2 id=&quot;the-windowsintegrationwindowsformsmodule&quot;&gt;The WindowsIntegrationWindowsFormsModule&lt;/h2&gt;
+
+&lt;p&gt;This Module allows you to integrate the &lt;a href=&quot;http://documentation.devexpress.com/#WindowsForms/clsDevExpressUtilsTaskbarTaskbarAssistanttopic&quot; title=&quot;TaskbarAssistent Component&quot;&gt;TaskbarAssistent&lt;/a&gt; into XAF.&lt;/p&gt;
+
+&lt;h3 id=&quot;getting-started&quot;&gt;Getting started&lt;/h3&gt;
+
+&lt;p&gt;Integrate the &lt;code&gt;WindowsIntegrationWindowsFormsModule&lt;/code&gt; like you would do with any Module.
+This is a WindowsForms only Module.&lt;/p&gt;
+
+&lt;p&gt;Rebuild your project and you will see 2 additional nodes in the Options section:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;http://i.imgur.com/vur7hpM.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;The &lt;code&gt;TaskbarJumpListOptions&lt;/code&gt; node allows you to specify &lt;code&gt;JumplistCategories&lt;/code&gt; and &lt;code&gt;JumplistItems&lt;/code&gt;. &lt;/p&gt;
+
+&lt;h3 id=&quot;jumplists&quot;&gt;Jumplists&lt;/h3&gt;
+
+&lt;p&gt;Set the &lt;code&gt;EnableJumplist&lt;/code&gt; option to &lt;code&gt;True&lt;/code&gt; and specify a argument name that will be used to launch your application with command line arguments.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;http://i.imgur.com/EsCmOa4.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;Note if you only like to launch external applications you can skip the &lt;code&gt;NavigationItemJumplistArgumentName&lt;/code&gt;
+The &lt;code&gt;NavigationItemJumplistArgumentName&lt;/code&gt; should end with a &lt;strong&gt;colon&lt;/strong&gt;.&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;You see two nodes:&lt;/p&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;The &lt;code&gt;CustomCategories&lt;/code&gt; node: This allows you to specify custom categories with &lt;code&gt;JumpItems&lt;/code&gt; in it.&lt;/li&gt;
+  &lt;li&gt;The &lt;code&gt;TasksCategory&lt;/code&gt; is the default category provided by windows.&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;&lt;img src=&quot;http://i.imgur.com/CjcAtQ1.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Currently there are 3 types of &lt;code&gt;JumpListItems&lt;/code&gt;:&lt;/p&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;The &lt;code&gt;TaskbarJumplistJumpItemLaunch&lt;/code&gt; allows you to specify any program that you’d like to launch. You can provide arguments and a &lt;code&gt;WorkingDirectory&lt;/code&gt;.&lt;/li&gt;
+  &lt;li&gt;The &lt;code&gt;TaskbarJumplistJumpItemNavigationItem&lt;/code&gt; allows you to specify a &lt;code&gt;NavigationItem&lt;/code&gt; the user can select from the the Jumplist.&lt;/li&gt;
+  &lt;li&gt;The &lt;code&gt;TaskbarJumplistSeperatorItem&lt;/code&gt; is a simple seperator that draws a horizontal line.&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;&lt;img src=&quot;http://i.imgur.com/sJtdh5W.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+
+&lt;h4 id=&quot;taskbarjumplistjumpitemlaunch&quot;&gt;TaskbarJumplistJumpItemLaunch&lt;/h4&gt;
+&lt;p&gt;&lt;img src=&quot;http://i.imgur.com/QSAoYJY.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;You can currently specify:&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;&lt;code&gt;PathToLaunch&lt;/code&gt;: The program you like to launch&lt;/li&gt;
+  &lt;li&gt;&lt;code&gt;Arguments&lt;/code&gt;: The arguments that are passed to the application&lt;/li&gt;
+  &lt;li&gt;&lt;code&gt;WorkingDirectory&lt;/code&gt;: Specifies the folder in which the program is launched&lt;/li&gt;
+  &lt;li&gt;&lt;code&gt;ImageName&lt;/code&gt;: An &lt;a href=&quot;#Images&quot;&gt;ImageName&lt;/a&gt; to provide an icon for the JumpListItem&lt;/li&gt;
+  &lt;li&gt;&lt;code&gt;Caption&lt;/code&gt;: The Text that is displayed to the user&lt;/li&gt;
+  &lt;li&gt;&lt;code&gt;Index&lt;/code&gt;: The order of the JumpListItem&lt;/li&gt;
+  &lt;li&gt;&lt;code&gt;Id&lt;/code&gt;: The Id of the item&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h4 id=&quot;taskbarjumplistjumpitemnavigationitem&quot;&gt;TaskbarJumplistJumpItemNavigationItem&lt;/h4&gt;
+&lt;p&gt;&lt;img src=&quot;http://i.imgur.com/q4XDmM7.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;You can currently specify:&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;&lt;code&gt;NavigationItem&lt;/code&gt;: Specifies the NavigationItem that should be shown&lt;/li&gt;
+  &lt;li&gt;&lt;code&gt;UseProtocolIfAvailable&lt;/code&gt;: Uses the protocol handler if available&lt;/li&gt;
+  &lt;li&gt;&lt;code&gt;ImageName&lt;/code&gt;: An &lt;a href=&quot;#Images&quot;&gt;ImageName&lt;/a&gt; to provide an icon for the JumpListItem &lt;/li&gt;
+  &lt;li&gt;&lt;code&gt;Caption&lt;/code&gt;: The Text that is displayed to the user&lt;/li&gt;
+  &lt;li&gt;&lt;code&gt;Index&lt;/code&gt;: The order of the JumpListItem&lt;/li&gt;
+  &lt;li&gt;&lt;code&gt;Id&lt;/code&gt;: The Id of the item&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h4 id=&quot;taskbarjumplistseperatoritem&quot;&gt;TaskbarJumplistSeperatorItem&lt;/h4&gt;
+&lt;p&gt;&lt;img src=&quot;http://i.imgur.com/zOAhFkd.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;You can currently specify:&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;&lt;code&gt;Index&lt;/code&gt;: The order of the JumpListItem&lt;/li&gt;
+  &lt;li&gt;&lt;code&gt;Id&lt;/code&gt;: The Id of the item&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h4 id=&quot;custom-categories&quot;&gt;Custom Categories&lt;/h4&gt;
+&lt;p&gt;&lt;img src=&quot;http://i.imgur.com/4pUwdBX.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;http://i.imgur.com/bVMs33r.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;You can currently specify:&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;&lt;code&gt;Caption&lt;/code&gt;: The caption of the Category&lt;/li&gt;
+  &lt;li&gt;&lt;code&gt;Index&lt;/code&gt;: The order of the JumpListItem&lt;/li&gt;
+  &lt;li&gt;&lt;code&gt;Id&lt;/code&gt;: The Id of the item&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;Adding new items is exact the same as for the &lt;code&gt;TasksCategory&lt;/code&gt;.&lt;/p&gt;
+
+&lt;h3 id=&quot;bootstrapping-code-for-navigationitemjumplistitems&quot;&gt;Bootstrapping code for NavigationItemJumplistItems&lt;/h3&gt;
+
+&lt;pre&gt;&lt;code&gt;static class Program
+{
+    private static WinApplication _Application;
+
+    /// &amp;lt;summary&amp;gt;
+    /// The main entry point for the application.
+    /// &amp;lt;/summary&amp;gt;
+    [STAThread]
+    static void Main()
+    {
+        var assemblyName = typeof(Program).Assembly.GetName();
+        var mutexName = assemblyName.Name + &quot;_&quot; + assemblyName.Version.ToString(3);
+
+#if DEBUG
+        mutexName += &quot;_Debug&quot;;
+#endif
+        using (var instance = new SingleInstance(mutexName))
+        {
+            if (instance.IsFirstInstance)
+            {
+                instance.ArgumentsReceived += WindowsIntegrationWindowsFormsModule.InstanceOnArgumentsReceived;
+
+                instance.ListenForArgumentsFromSuccessiveInstances();
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Specify a mutex name. This is an ordinary string, my experiance has shown that a combination of the assemblyName combined with the version of the application and a debug constant works very well for the most scenarios.&lt;/p&gt;
+
+&lt;p&gt;Create an instance of the &lt;code&gt;SingleInstance&lt;/code&gt; class that manages our application instances.
+Check if this is the first instance launched, attach the &lt;code&gt;ArgumentsReceived&lt;/code&gt; event handler to the &lt;code&gt;WindowsIntegrationWindowsFormsModule.InstanceOnArgumentsReceived&lt;/code&gt; method and call the &lt;code&gt;ListenForArgumentsFromSuccessiveInstances&lt;/code&gt; method to listen for new arguments on the &lt;code&gt;NamedPipe&lt;/code&gt;.&lt;/p&gt;
+
+&lt;p&gt;Create your application as you always would:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;Application.EnableVisualStyles();
+Application.SetCompatibleTextRenderingDefault(false);
+
+_Application = new WinApplication
+{
+    ApplicationName = assemblyName.Name,
+    SplashScreen = new DevExpress.ExpressApp.Win.Utils.DXSplashScreen()
+};
+
+_Application.CreateCustomObjectSpaceProvider += (sender, args) =&amp;gt;
+{
+    args.ObjectSpaceProvider = new XPObjectSpaceProvider(new ConnectionStringDataStoreProvider(args.ConnectionString));
+};
+
+_Application.DatabaseVersionMismatch += (sender, args) =&amp;gt;
+{
+    args.Updater.Update();
+    args.Handled = true;
+};
+
+_Application.Modules.Add(new SystemModule());
+_Application.Modules.Add(new SystemWindowsFormsModule());
+_Application.Modules.Add(new WindowsIntegrationWindowsFormsModule());
+_Application.Modules.Add(new DemoCenterModule());
+_Application.Modules.Add(new DemoCenterWindowsFormsModule());
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;&lt;strong&gt;Before&lt;/strong&gt; you start the application make sure you pass the &lt;code&gt;WinApplication&lt;/code&gt; instance to the &lt;code&gt;WindowsIntegrationWindowsFormsModule.TaskbarApplication&lt;/code&gt; propety:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;WindowsIntegrationWindowsFormsModule.TaskbarApplication = _Application;
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Than setup and launch your application&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;InMemoryDataStoreProvider.Register();
+_Application.ConnectionString = InMemoryDataStoreProvider.ConnectionString;
+
+try
+{
+    _Application.Setup();
+
+    _Application.Start();
+}
+catch (Exception e)
+{
+    _Application.HandleException(e);
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;If the application is &lt;strong&gt;not&lt;/strong&gt; the first instance pass the arguments to the first instance:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;}
+else
+{
+    instance.PassArgumentsToFirstInstance();
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;The whole bootstrapper now should look like this:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;using System;
+using System.Configuration;
+using System.Windows.Forms;
+using DevExpress.ExpressApp.SystemModule;
+using DevExpress.ExpressApp.Win;
+using DevExpress.ExpressApp.Win.SystemModule;
+using DevExpress.ExpressApp.Xpo;
+using Xpand.Demo.Para.DemoCenter.Module.Win;
+using Xpand.ExpressApp.Win.Para.WindowsIntegration;
+
+namespace Xpand.Demo.Para.DemoCenter.Win
+{
+    static class Program
+    {
+        private static WinApplication _Application;
+
+        /// &amp;lt;summary&amp;gt;
+        /// The main entry point for the application.
+        /// &amp;lt;/summary&amp;gt;
+        [STAThread]
+        static void Main()
+        {
+            var assemblyName = typeof(Program).Assembly.GetName();
+            var mutexName = assemblyName.Name + &quot;_&quot; + assemblyName.Version.ToString(3);
+
+#if DEBUG
+            mutexName += &quot;_Debug&quot;;
+#endif
+            using (var instance = new SingleInstance(mutexName))
+            {
+                if (instance.IsFirstInstance)
+                {
+                    instance.ArgumentsReceived += WindowsIntegrationWindowsFormsModule.InstanceOnArgumentsReceived;
+
+                    instance.ListenForArgumentsFromSuccessiveInstances();
+
+                    Application.EnableVisualStyles();
+                    Application.SetCompatibleTextRenderingDefault(false);
+
+                    _Application = new WinApplication
+                    {
+                        ApplicationName = assemblyName.Name,
+                        SplashScreen = new DevExpress.ExpressApp.Win.Utils.DXSplashScreen()
+                    };
+
+                    _Application.CreateCustomObjectSpaceProvider += (sender, args) =&amp;gt;
+                    {
+                        args.ObjectSpaceProvider = new XPObjectSpaceProvider(new ConnectionStringDataStoreProvider(args.ConnectionString));
+                    };
+
+                    _Application.DatabaseVersionMismatch += (sender, args) =&amp;gt;
+                    {
+                        args.Updater.Update();
+                        args.Handled = true;
+                    };
+
+                    _Application.Modules.Add(new SystemModule());
+                    _Application.Modules.Add(new SystemWindowsFormsModule());
+                    _Application.Modules.Add(new WindowsIntegrationWindowsFormsModule());
+                    _Application.Modules.Add(new DemoCenterModule());
+                    _Application.Modules.Add(new DemoCenterWindowsFormsModule());
+
+                    WindowsIntegrationWindowsFormsModule.TaskbarApplication = _Application;
+
+                    InMemoryDataStoreProvider.Register();
+                    _Application.ConnectionString = InMemoryDataStoreProvider.ConnectionString;
+
+                    try
+                    {
+                        _Application.Setup();
+
+                        _Application.Start();
+                    }
+                    catch (Exception e)
+                    {
+                        _Application.HandleException(e);
+                    }
+                }
+                else
+                {
+                    instance.PassArgumentsToFirstInstance();
+                }
+            }
+        }
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;That’s it!&lt;/p&gt;
+
+&lt;h3 id=&quot;custom-protocols&quot;&gt;Custom Protocols&lt;/h3&gt;
+
+&lt;p&gt;The custom protocol options allow you to launch your application via an custom protocol. This can be handy if you like to send a link to another workstation to open the application with a specific window. You can think about this like a normal hyperlink but this works for your machine.&lt;/p&gt;
+
+&lt;p&gt;Select the CustomProtocolOptions node:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;http://i.imgur.com/rgCkl9u.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Set the &lt;code&gt;EnableProtocols&lt;/code&gt; to &lt;code&gt;True&lt;/code&gt; and specify a &lt;code&gt;ProtolName&lt;/code&gt;. You see a demo of the protocol under the &lt;code&gt;ProtocolHandler&lt;/code&gt; node.&lt;/p&gt;
+
+&lt;p&gt;You can currently specify:&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;&lt;code&gt;AutoRegisterProtols&lt;/code&gt;: This will write the needed registry keys automatically, when the application launches&lt;/li&gt;
+  &lt;li&gt;&lt;code&gt;EnableProtocols&lt;/code&gt;: This en/disables the whole logic for protocol handlers&lt;/li&gt;
+  &lt;li&gt;&lt;code&gt;ProtocolDescription&lt;/code&gt;: This is a hint in the registry what this protocol does&lt;/li&gt;
+  &lt;li&gt;&lt;code&gt;ProtoclName&lt;/code&gt;: The name of your protocol. This should not start with a number, dashes are allowed. See more under the &lt;a href=&quot;http://msdn.microsoft.com/en-us/library/aa767914(VS.85).aspx&quot;&gt;microsoft documentation&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h3 id=&quot;images&quot;&gt;Images&lt;/h3&gt;
+
+&lt;p&gt;The Images will automatically be compiled into a new dll (based on &lt;code&gt;WinApplication.UserModelDifferenceFilePath&lt;/code&gt;)
+You can specify the name of the generated assembly via the &lt;code&gt;Options.AutomaticImageAssemblyName&lt;/code&gt; parameter. The default leads to &lt;code&gt;JumplistImages.dll&lt;/code&gt;.&lt;/p&gt;
+
+&lt;p&gt;This is necessary because windows needs a &lt;code&gt;NativeResource&lt;/code&gt; assembly. This will be full automatically generated for all images used by your &lt;code&gt;JumplistItems&lt;/code&gt;.&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;If you launch your application, windows is sometimes caching the icons in the jumplists, so you may not see the actual image you set. After a reboot (or a windows logon/logoff) your application icon should be updated.&lt;/p&gt;
+&lt;/blockquote&gt;
+
+</description>
+                <link>http://biohazard999.github.io/2013/12/23/devexpress-132-review-part-3</link>
+                <guid>http://biohazard999.github.io/2013/12/23/devexpress-132-review-part-3</guid>
+                <pubDate>2013-12-23T00:00:00+01:00</pubDate>
+        </item>
+
+        <item>
+                <title>DevExpress 13.2 Review Part 2</title>
+                <description>
+&lt;h1 id=&quot;devexpress-132-review---part-2&quot;&gt;DevExpress 13.2 Review - Part 2&lt;/h1&gt;
+
+&lt;p&gt;In the last review, I showed only some of the new small improvements I noticed during migration, so now go to the great stuff!&lt;/p&gt;
+
+&lt;h2 id=&quot;winforms&quot;&gt;WinForms&lt;/h2&gt;
+
+&lt;h3 id=&quot;taskbarassistant&quot;&gt;TaskbarAssistant&lt;/h3&gt;
+
+&lt;p&gt;The TaskbarAssistent component can help you to integrate the small features of Windows every windows user loves, a seamless and easy to use &lt;em&gt;Quickstart/Recently used/CustomCommand/Preview/Whatever&lt;/em&gt; -menu for your application.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;http://i.imgur.com/Z71xAuy.png&quot; alt=&quot;&quot; /&gt;
+&lt;img src=&quot;http://i.imgur.com/O1cP3Ei.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Till now you had to deal with unmanaged code to bring this in your application, or use the &lt;a href=&quot;http://archive.msdn.microsoft.com/WindowsAPICodePack&quot;&gt;WindowsAPICodePack&lt;/a&gt; but this is very unhandy.&lt;/p&gt;
+
+&lt;p&gt;So DevExpress gave us a new API to handle this straight forward, so we can focus on our clients!&lt;/p&gt;
+
+&lt;h4 id=&quot;use-the-designer&quot;&gt;Use the designer&lt;/h4&gt;
+
+&lt;p&gt;We have a simple Winforms application and start with the designer:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;http://i.imgur.com/hjhRhyl.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Drag it to your form and you got a component:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;http://i.imgur.com/uCPzjhA.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Lets see the options:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;http://i.imgur.com/a5a8Dm8.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;As we can see, we have a lot of options to customize our taskbar. &lt;/p&gt;
+
+&lt;h4 id=&quot;the-jumplist&quot;&gt;The Jumplist&lt;/h4&gt;
+
+&lt;p&gt;The Jumplist items are basically shortcuts or launch commands to applications. &lt;a href=&quot;http://msdn.microsoft.com/en-us/library/windows/desktop/dd378460(v=vs.85).aspx#dests&quot;&gt;The Microsoft Documentation&lt;/a&gt; says that tasks are typically &lt;code&gt;IShellLink&lt;/code&gt; items with command-line arguments.&lt;/p&gt;
+
+&lt;p&gt;Okay lets see how we can manage this:&lt;/p&gt;
+
+&lt;p&gt;For the default Windows behavior, we should use the JumpListTasksCategory. This will be localized under the different languages of the operating system. For example &lt;em&gt;Tasks&lt;/em&gt; in english or &lt;em&gt;Aufgaben&lt;/em&gt; in German.&lt;/p&gt;
+
+&lt;p&gt;We now can add custom commands to this like launching the windows calculator or notepad:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;http://i.imgur.com/sGBxn70.png&quot; alt=&quot;&quot; /&gt;
+&lt;img src=&quot;http://i.imgur.com/WgIIK1J.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Let’s launch the application and see what it looks like:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;http://i.imgur.com/3KUxzCJ.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Great! This works like a charm! But let’s handle the pictures. Cause this can be even launched if the application is not running (for example the user has pinned your application to the taskbar) we need to add a native image resource.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;http://i.imgur.com/DFTPV6w.png&quot; alt=&quot;&quot; /&gt;
+&lt;img src=&quot;http://i.imgur.com/3BhqrxZ.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Let’s add an icon for both applications:&lt;/p&gt;
+
+&lt;p&gt;Grab a &lt;a href=&quot;https://www.google.com/search?q=extract+icon+from+exe+&amp;amp;oq=extract+icon+from+exe+&amp;amp;aqs=chrome..69i57j69i59j0l4.4427j0j4&amp;amp;sourceid=chrome&amp;amp;espv=210&amp;amp;es_sm=122&amp;amp;ie=UTF-8&quot;&gt;tool&lt;/a&gt; that allows you to extract an icon from an exe or use you own ico file (note it must be in the ICO-Format) (I used the freeware tool &lt;a href=&quot;http://www.nirsoft.net/&quot;&gt;IconExtracts from Nirsoft&lt;/a&gt;)&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;http://i.imgur.com/9K48qyU.png&quot; alt=&quot;&quot; /&gt;
+&lt;img src=&quot;http://i.imgur.com/JkUHJPo.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Close the designers, Rebuild and select your icons:
+&lt;img src=&quot;http://i.imgur.com/qxKQBF1.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Let’s see the result:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;http://i.imgur.com/Q3EK8Kk.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;That was easy, without a single line of code we have a full working JumpList. This &lt;strong&gt;is&lt;/strong&gt; really amazing!&lt;/p&gt;
+
+&lt;p&gt;You also can add a custom JumpList with additional categories, it follows the same scheme but you use the &lt;code&gt;JumpListCustomCategories&lt;/code&gt;:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;http://i.imgur.com/xe4taCQ.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+
+&lt;h4 id=&quot;the-overlayicon&quot;&gt;The OverlayIcon&lt;/h4&gt;
+
+&lt;p&gt;Using the overlay icon you can inform your user about the current status of your application. Its a simple Bitmap you can set (Note: I’m using 24x24 PNGs here):&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;if (busyCheckEdit.Checked)
+    taskbarAssistant1.OverlayIcon = Resources.delete;
+else
+    taskbarAssistant1.OverlayIcon = Resources.check;
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;&lt;img src=&quot;http://i.imgur.com/K2LU3uq.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;This is a simple API i like, DevExpress thanks for that. No pointer juggling, just a simple, clear and pure managed API.&lt;/p&gt;
+
+&lt;h4 id=&quot;the-thumbnailbuttons&quot;&gt;The ThumbnailButtons&lt;/h4&gt;
+
+&lt;p&gt;The last feature i want to talk about are the &lt;code&gt;ThumbnailButtons&lt;/code&gt;. That are buttons that are visible if the User hovers over your running application in the taskbar:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;http://i.imgur.com/r8JLKST.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;http://i.imgur.com/eAiESGb.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;http://i.imgur.com/ADix3kn.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Now handle the both &lt;code&gt;Click&lt;/code&gt; events:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;http://i.imgur.com/tBz69d9.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Insert our custom code:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;private void whatsNewTaskbarButton_Click(object sender, ThumbButtonClickEventArgs e)
+{
+    webBrowser1.Navigate(@&quot;https://www.devexpress.com/Subscriptions/New-2013.xml&quot;);
+}
+
+private void helpTaskbarButton_Click(object sender, ThumbButtonClickEventArgs e)
+{
+    webBrowser1.Navigate(@&quot;http://documentation.devexpress.com/#HomePage/CustomDocument9453&quot;);
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Start the application and see if everything works as expected.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;http://i.imgur.com/f3sqaL8.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;http://i.imgur.com/W1BJ1d4.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;And we are done! In minutes, we implemented full working windows 7 (or greater) taskbar support for our application.&lt;/p&gt;
+
+&lt;p&gt;I’m impressed.&lt;/p&gt;
+
+&lt;h3 id=&quot;conclusion&quot;&gt;Conclusion&lt;/h3&gt;
+
+&lt;p&gt;Never thought it was so easy to get along with this new control. No need to think about Win32 API, just get it done right. With the first try. I never used this control before, and I’m really impressed how quick i got running with this. Never looked in the documentation (of course the documentation it self is very good)&lt;/p&gt;
+
+&lt;p&gt;For me, it is a great proof to rely on the strengths of a manufacturer like DevExpress. When only the best will do.&lt;/p&gt;
+
+&lt;h2 id=&quot;whats-next&quot;&gt;What’s next?&lt;/h2&gt;
+
+&lt;p&gt;In the next part of the review, i will show you how easy it is to integrate the TaskbarAssistent in an expressAppFramework Winforms project.&lt;/p&gt;
+
+&lt;p&gt;Also, i try to show the soft validation feature of XAF and try to cover some other features like adding custom fields and calculated fields at runtime.&lt;/p&gt;
+
+&lt;p&gt;Of course, you can follow my progress in my public &lt;a href=&quot;https://github.com/biohazard999/DX13_2&quot;&gt;GitHub-Repository&lt;/a&gt;.&lt;/p&gt;
+
+&lt;p&gt;Greetings, Manuel&lt;/p&gt;
+</description>
+                <link>http://biohazard999.github.io/2013/12/07/devexpress-132-review-part-2</link>
+                <guid>http://biohazard999.github.io/2013/12/07/devexpress-132-review-part-2</guid>
+                <pubDate>2013-12-07T00:00:00+01:00</pubDate>
+        </item>
+
+        <item>
+                <title>DevExpress 13.2 Review Part 1</title>
+                <description>
+&lt;h1 id=&quot;devexpress-132-review---part-1&quot;&gt;DevExpress 13.2 Review - Part 1&lt;/h1&gt;
+
+&lt;p&gt;First of all I’d like to say happy birthday to DevExpress for their 15th Anniversary! Congratulations keep on rocking!&lt;/p&gt;
+
+&lt;h2 id=&quot;the-new-stuff&quot;&gt;The new stuff&lt;/h2&gt;
+
+&lt;p&gt;The first thing i normally start with a new DevExpress release is to fire up the ProjectConverter:&lt;/p&gt;
+
+&lt;h3 id=&quot;new-projectconverter&quot;&gt;New ProjectConverter&lt;/h3&gt;
+&lt;p&gt;The old one:
+&lt;img src=&quot;http://i.imgur.com/eyWW790.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;The new one:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;http://i.imgur.com/tiBTocg.png&quot; alt=&quot;&quot; /&gt;
+&lt;img src=&quot;http://i.imgur.com/eG3Wqvo.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;As you can see the project converter got a face lift, but also can now handle multiple project folders. Handy if you have a large source base :).&lt;/p&gt;
+
+&lt;h2 id=&quot;expressappframework-xaf&quot;&gt;expressAppFramework (XAF)&lt;/h2&gt;
+
+&lt;h3 id=&quot;easy-status-notification-from-updaters-and-application&quot;&gt;Easy status notification from Updaters and Application&lt;/h3&gt;
+
+&lt;p&gt;&lt;img src=&quot;http://i.imgur.com/ZGYHe1Q.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;public class NotificationUpdater : ModuleUpdater
+{
+    public NotificationUpdater(IObjectSpace objectSpace, Version currentDBVersion)
+        : base(objectSpace, currentDBVersion)
+    {
+    }
+
+    public override void UpdateDatabaseBeforeUpdateSchema()
+    {
+        UpdateStatus(&quot;DBUpdater&quot;, &quot;UpdateDatabaseBeforeUpdateSchema&quot;, &quot;Before updating the schema&quot;);
+        base.UpdateDatabaseBeforeUpdateSchema();
+    }
+
+    public override void UpdateDatabaseAfterUpdateSchema()
+    {
+        UpdateStatus(&quot;DBUpdater&quot;, &quot;UpdateDatabaseAfterUpdateSchema&quot;, &quot;After updating the schema&quot;);
+        base.UpdateDatabaseAfterUpdateSchema();
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h3 id=&quot;xpview-support-for-xpobjectspace&quot;&gt;XPView Support for XPObjectSpace&lt;/h3&gt;
+
+&lt;p&gt;If you have to deal with larger projects you often have to select only some properties from BusinessObjects to improve the performance (reporting, filtering, PropertyEditors, ect.)&lt;/p&gt;
+
+&lt;p&gt;Now the XPObjectSpace provides a method called GetDataView().&lt;/p&gt;
+
+&lt;p&gt;With a ListView in ServerMode XPO generates the following query:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;06.12.13 18:51:02.221 Executing sql &#39;select N0.`OID`,N0.`Name`,N0.`Property1`,N0.`Property2`,N0.`Property3`,N0.`Property4`,N0.`Property5`,N0.`Property6`,N0.`Property7`,N0.`Property8`,N0.`Property9`,N0.`Property10`,N0.`OptimisticLockField`,N0.`GCRecord` from `LargeBusinessObject` N0
+ where N0.`GCRecord` is null
+ order by N0.`Name` asc,N0.`OID` asc limit 128 &#39;
+06.12.13 18:51:04.392 Result: rowcount = 128, total = 188413040, N0.{OID,Int32} = 512, N0.{Name,String} = 2274, N0.{Property1,String} = 18991174, N0.{Property2,String} = 18898246, N0.{Property3,String} = 18716842, N0.{Property4,String} = 18855078, N0.{Property5,String} = 18756318, N0.{Property6,String} = 18881274, N0.{Property7,String} = 18838262, N0.{Property8,String} = 18836256, N0.{Property9,String} = 18755904, N0.{Property10,String} = 18879876, N0.{OptimisticLockField,Int32} = 512, N0.{GCRecord,Int32} = 512
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;With the new GetDataView() method we can do something like this:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;var view = ObjectSpace.CreateDataView(typeof(LargeBusinessObject), new List&amp;lt;DataViewExpression&amp;gt;()
+        {
+            new DataViewExpression(&quot;Name&quot;, LargeBusinessObject.Field.GetOperand(m =&amp;gt; m.Name)),
+            new DataViewExpression(&quot;Property&quot;, new OperandProperty(&quot;Property1&quot;)),
+        }, null, new List&amp;lt;SortProperty&amp;gt;());
+
+foreach (ViewRecord item in view)
+{
+    var name = item[&quot;Name&quot;];
+    var property = item[&quot;Property&quot;];
+
+    var obj = ObjectSpace.CreateObject&amp;lt;XPViewBusinessObjectProxy&amp;gt;();
+    obj.Name = name as string;
+    obj.Property = property as string;
+
+    (View.CollectionSource as DevExpress.ExpressApp.CollectionSource).Add(obj);
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;This will generate the following query:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;06.12.13 18:54:32.369 Executing sql &#39;select N0.`Name`,N0.`Property1` from `LargeBusinessObject` N0
+ where N0.`GCRecord` is null &#39;
+06.12.13 18:54:34.226 Result: rowcount = 1000, total = 147096588, N0.{Name,String} = 17786, N0.{Property1,String} = 147078802
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;As you clearly can see, only the Name and the Property1 will be fetched from the database. This can be very handy if you have to process large amounts of data for sums or calculations, without having to fetch the whole object.&lt;/p&gt;
+
+&lt;p&gt;To clarify the performance improvements:&lt;/p&gt;
+
+&lt;p&gt;We have 1000 objects with a property called &lt;code&gt;IntPropertyToCalculate&lt;/code&gt;.&lt;/p&gt;
+
+&lt;p&gt;When we calculate the sum of the &lt;code&gt;IntPropertyToCalculate&lt;/code&gt; in 3 modes:&lt;/p&gt;
+
+&lt;h4 id=&quot;pureclientside&quot;&gt;PureClientSide&lt;/h4&gt;
+
+&lt;p&gt;With a &lt;code&gt;ObjectSpace.GetObjects(null)&lt;/code&gt; it takes about &lt;strong&gt;20.000 ms&lt;/strong&gt;:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;private int CalculateSumPureClientMode()
+{
+    using (var os = Application.CreateObjectSpace())
+    {
+        var objects = os.GetObjects&amp;lt;LargeBusinessObject&amp;gt;(null);
+
+        var result = 0;
+
+        foreach (var item in objects)
+            result += item.IntPropertyToCalculate;
+
+        return result;    
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h4 id=&quot;clientside&quot;&gt;ClientSide&lt;/h4&gt;
+
+&lt;p&gt;With a &lt;code&gt;DataView&lt;/code&gt; selecting only the &lt;code&gt;IntPropertyToCalculate&lt;/code&gt; and do the sum on the client side it takes about &lt;strong&gt;130 ms&lt;/strong&gt;:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;private int CalculateSumClientMode()
+{
+    using (var os = Application.CreateObjectSpace())
+    {
+        var objects = os.CreateDataView(typeof(LargeBusinessObject), new List&amp;lt;DataViewExpression&amp;gt;
+        {
+            new DataViewExpression(&quot;IntPropertyToCalculate&quot;, new OperandProperty(&quot;IntPropertyToCalculate&quot;))
+        }, null, new List&amp;lt;SortProperty&amp;gt;());
+
+        var result = 0;
+
+        foreach (ViewRecord item in objects)
+            result += (int)item[&quot;IntPropertyToCalculate&quot;];
+
+        return result;
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h4 id=&quot;serverside&quot;&gt;ServerSide&lt;/h4&gt;
+
+&lt;p&gt;With a &lt;code&gt;DataView&lt;/code&gt; selecting the sum of &lt;code&gt;IntPropertyToCalculate&lt;/code&gt; ServerSide it takes about &lt;strong&gt;9 ms&lt;/strong&gt;:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;private int CalculateSumServerMode()
+{
+    using (var os = Application.CreateObjectSpace())
+    {
+        var objects = os.CreateDataView(typeof(LargeBusinessObject), new List&amp;lt;DataViewExpression&amp;gt;
+        {
+            new DataViewExpression(&quot;CalculatedServerSide&quot;, CriteriaOperator.Parse(&quot;Sum(IntPropertyToCalculate)&quot;))
+        }, null, new List&amp;lt;SortProperty&amp;gt;());
+
+        var result = 0;
+
+        foreach (ViewRecord item in objects)
+            result += (int)item[&quot;CalculatedServerSide&quot;];
+
+        return result;
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Of course, this performance measurement is not really accurate (only one run and so on), but i think you get the point. (there are about 700MB of data in this table).&lt;/p&gt;
+
+&lt;h2 id=&quot;just-the-tip-of-the-iceberg&quot;&gt;Just the tip of the iceberg&lt;/h2&gt;
+
+&lt;p&gt;Stay tuned for the second/third/fourth/..nth part, there are a lot of new things to see like:&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;RibbonControl and SpreadSheat for ASP.NET&lt;/li&gt;
+  &lt;li&gt;Enhanced Dashboard,&lt;/li&gt;
+  &lt;li&gt;Warnings for Validation&lt;/li&gt;
+  &lt;li&gt;New ReportingModule&lt;/li&gt;
+  &lt;li&gt;Flyout Panel&lt;/li&gt;
+  &lt;li&gt;WinForms Taskbar Assistant&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;And many more!
+Greetings Manuel&lt;/p&gt;
+
+&lt;p&gt;Note: you can see the sourcecode (as usual) in my public &lt;a href=&quot;https://github.com/biohazard999/DX13_2&quot;&gt;github repo&lt;/a&gt;.&lt;/p&gt;
+
+&lt;p&gt;Greetings Manuel&lt;/p&gt;
+</description>
+                <link>http://biohazard999.github.io/2013/12/06/devexpress-132-review-part-1</link>
+                <guid>http://biohazard999.github.io/2013/12/06/devexpress-132-review-part-1</guid>
+                <pubDate>2013-12-06T00:00:00+01:00</pubDate>
+        </item>
+
+        <item>
+                <title>Performance and XAF Bootstrapping</title>
+                <description>
+&lt;h1 id=&quot;how-to-speed-up-bootstrap-time&quot;&gt;How to speed-up bootstrap time:&lt;/h1&gt;
+
+&lt;p&gt;Its all about reflection. Don’t do it if you haven’t.&lt;/p&gt;
+
+&lt;h2 id=&quot;look-at-your-modules&quot;&gt;Look at your modules:&lt;/h2&gt;
+
+&lt;p&gt;Here is an excerpt of our main module:&lt;/p&gt;
+
+&lt;p&gt;ctor:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;public sealed partial class ModelDefinitionModule : ModuleBase, IUnityModule
+{
+	InitializeComponent();
+
+	snip..
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;ModulesTypes:&lt;/p&gt;
+
+&lt;p&gt;Important although its a .Net 1.1 List, but there you should expose everything you need.
+Not exposing the modules will kick in refelection, what are trying not do do..&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;protected override ModuleTypeList GetRequiredModuleTypesCore()
+{
+    return new ModuleTypeList(
+        typeof(DevExpress.ExpressApp.SystemModule.SystemModule),
+
+	snip..
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;next &lt;/p&gt;
+
+&lt;p&gt;GetDeclaredControllerTypes:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;    protected override System.Collections.Generic.IEnumerable&amp;lt;System.Type&amp;gt; GetDeclaredControllerTypes()
+    {
+        return new Type[] { };
+    }
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;not exposing any controllers would do fine.&lt;/p&gt;
+
+&lt;p&gt;Its faster to expose all controllers need.
+But you should not expose IEnumerable via yield return.&lt;/p&gt;
+
+&lt;p&gt;Why?&lt;/p&gt;
+
+&lt;p&gt;It maybe enumerated certain times. If you know the result, expose a collection (see LINQ for that)…&lt;/p&gt;
+
+&lt;p&gt;The similar yields for GetModuleUpdaters
+and
+GetDeclaredExportedTypes&lt;/p&gt;
+
+&lt;p&gt;Cave cat of all this optimization is that you have to declare everything, modules, controllers, business classes at compile time, you will not see any of them at run time, until you do this although.&lt;/p&gt;
+
+&lt;p&gt;Having all under control is a task of high responsibility.&lt;/p&gt;
+
+&lt;p&gt;Declaring your module this way will help you to reduce bootstrap time of your XAF-Appliction&lt;/p&gt;
+
+&lt;p&gt;You might be still struggling with boot strap performance, so look at your xptypesinfo-table (loading types no more available), your images (loading images non more available), and broken xafml (trying to load further things not more available…)&lt;/p&gt;
+
+&lt;p&gt;regards&lt;/p&gt;
+
+&lt;p&gt;René&lt;/p&gt;
+</description>
+                <link>http://biohazard999.github.io/2013/03/20/performance-and-xaf-bootstrapping</link>
+                <guid>http://biohazard999.github.io/2013/03/20/performance-and-xaf-bootstrapping</guid>
+                <pubDate>2013-03-20T00:00:00+01:00</pubDate>
+        </item>
+
+        <item>
+                <title>XAF Dependency Injection   bring the stuff together</title>
+                <description>
+&lt;h1 id=&quot;xaf-dependency-injection---bring-the-stuff-together&quot;&gt;XAF Dependency Injection - bring the stuff together&lt;/h1&gt;
+
+&lt;p&gt;Somebody of you know that we actually use &lt;a href=&quot;http://www.funnelweblog.com/&quot;&gt;FunnelWeb&lt;/a&gt;. Don’t get me wrong, it is a good blog engine, but it’s buggy, and it is a playground. &lt;/p&gt;
+
+&lt;p&gt;I like opensource projects, and i like to contribute to FunnelWeb to make it a better blog engine. But my spare time is really, …hmm rare? I try to make the best out of this problem and try to write a blog engine (oh no, not another one) that uses all the XPO/XAF/WebApi/WebMvc/Unity/DI/async/await features i blogged about earlier and get the thing into a real working application.&lt;/p&gt;
+
+&lt;p&gt;Some facts i want to keep in mind when i implement this thing:&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;I &lt;em&gt;like&lt;/em&gt; to import (or even better, reuse) the existing database of funnelweb&lt;/li&gt;
+  &lt;li&gt;I &lt;strong&gt;will&lt;/strong&gt; create this in TDD (from the &lt;strong&gt;first&lt;/strong&gt; to the &lt;strong&gt;last&lt;/strong&gt; line of code)&lt;/li&gt;
+  &lt;li&gt;I &lt;strong&gt;will&lt;/strong&gt; create a full blown XAF/XPO/WebApi/WebMvc application&lt;/li&gt;
+  &lt;li&gt;I &lt;em&gt;like&lt;/em&gt; to manage the whole thing out of XAF&lt;/li&gt;
+  &lt;li&gt;I &lt;em&gt;like&lt;/em&gt; to create a API that allows me easily to import (or communicate) with other engines&lt;/li&gt;
+  &lt;li&gt;I &lt;strong&gt;will&lt;/strong&gt; follow clean-coder&lt;/li&gt;
+  &lt;li&gt;I &lt;strong&gt;will&lt;/strong&gt; share this code open-source&lt;/li&gt;
+  &lt;li&gt;I &lt;strong&gt;have to&lt;/strong&gt; use &lt;em&gt;TFSService&lt;/em&gt; or &lt;em&gt;TFS&lt;/em&gt; with &lt;code&gt;GIT&lt;/code&gt; or &lt;code&gt;TFS-SCC&lt;/code&gt;&lt;/li&gt;
+  &lt;li&gt;I &lt;em&gt;like&lt;/em&gt; to use &lt;em&gt;Continious deployment&lt;/em&gt;&lt;/li&gt;
+  &lt;li&gt;I &lt;em&gt;like&lt;/em&gt; that other XAF users &lt;em&gt;can&lt;/em&gt; contribute, and &lt;em&gt;are able to&lt;/em&gt; learn from my experiences&lt;/li&gt;
+  &lt;li&gt;I like code &lt;a href=&quot;http://osherove.com/tdd-kata-1/&quot;&gt;kata’s&lt;/a&gt; &amp;amp; I like &lt;a href=&quot;http://www.youtube.com/watch?v=hHkKJfcBXcw&quot;&gt;trains&lt;/a&gt; ;)&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;In the next weeks i will try to code every WE till this thing is done.&lt;/p&gt;
+
+&lt;p&gt;Your help, thoughts, meanings and other ideas are welcome! &lt;/p&gt;
+
+&lt;p&gt;Thanks, Manuel&lt;/p&gt;
+</description>
+                <link>http://biohazard999.github.io/2013/03/04/xaf-dependency-injection---bring-the-stuff-together</link>
+                <guid>http://biohazard999.github.io/2013/03/04/xaf-dependency-injection---bring-the-stuff-together</guid>
+                <pubDate>2013-03-04T00:00:00+01:00</pubDate>
+        </item>
+
+        <item>
+                <title>How to use Dependency Injection in XAF (ASP.NET WebApi/WebMvc) Part 3</title>
+                <description>
+&lt;h1 id=&quot;how-how-to-use-dependency-injection-in-xaf-aspnet-webapi--mvc4-part-3&quot;&gt;How How to use Dependency Injection in XAF (ASP.Net WebApi / MVC4) Part 3&lt;/h1&gt;
+
+&lt;h2 id=&quot;how-to-add-support-for-aspnet-webapi--mvc4-in-xaf&quot;&gt;How to add support for ASP.NET WebAPI / MVC4 in XAF?&lt;/h2&gt;
+&lt;p&gt;It is not quite complicated, but took me also some hours of work to get it running.&lt;/p&gt;
+
+&lt;h2 id=&quot;why&quot;&gt;Why?&lt;/h2&gt;
+&lt;p&gt;We’d like to provide a WebAPI to other companies to reduce our amount of work, when handling with other companies data.&lt;/p&gt;
+
+&lt;p&gt;Microsoft’s &lt;a href=&quot;http://www.asp.net/web-api&quot;&gt;WebAPI&lt;/a&gt;/&lt;a href=&quot;http://www.asp.net/mvc&quot;&gt;MVC4&lt;/a&gt; are great frameworks to easily write such platforms. &lt;a href=&quot;http://www.devexpress.com/&quot;&gt;XPO&lt;/a&gt; and &lt;a href=&quot;http://www.devexpress.com/Products/NET/Application_Framework/&quot;&gt;XAF&lt;/a&gt; are great products. So let’s combine them.&lt;/p&gt;
+
+&lt;h2 id=&quot;how&quot;&gt;How?&lt;/h2&gt;
+
+&lt;p&gt;First of all we need 3 new projects in our solution.
+The first one is the WebApi project. The second one is the WebMvc Project. The third one will contain our Datatransfer objects to support strong typing. This one will be a portable class library.&lt;/p&gt;
+
+&lt;h2 id=&quot;webapi&quot;&gt;WebApi&lt;/h2&gt;
+&lt;p&gt;In this project goes the whole big stuff (domain logic &amp;amp; co).
+Let’s start:&lt;/p&gt;
+
+&lt;p&gt;First of all we need to install the &lt;a href=&quot;http://nuget.org/packages/Unity.WebAPI/&quot;&gt;Unity.WebAPI&lt;/a&gt; nuget package. (Attention: if your project is strong signed, this will fail, but the source is not that hard ;))&lt;/p&gt;
+
+&lt;p&gt;We get this nice little bootstrapper class that allowes us to configure our UnityContainer.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;public static class Bootstrapper
+{
+    public static void Initialise()
+    {
+        var container = BuildUnityContainer();
+
+        GlobalConfiguration.Configuration.DependencyResolver = new Unity.WebApi.UnityDependencyResolver(container);
+    }
+
+    private static IUnityContainer BuildUnityContainer()
+    {
+        var container = new UnityContainer();
+
+        // register all your components with the container here
+        // e.g. container.RegisterType&amp;lt;ITestService, TestService&amp;gt;();            
+
+        return container;
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;The only thing we need to do is call our &lt;code&gt;Bootstrapper&lt;/code&gt; in our &lt;code&gt;Global.asax&lt;/code&gt; file:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;public class WebApiApplication : System.Web.HttpApplication
+{
+    protected void Application_Start()
+    {
+        AreaRegistration.RegisterAllAreas();
+
+        WebApiConfig.Register(GlobalConfiguration.Configuration);
+        FilterConfig.RegisterGlobalFilters(GlobalFilters.Filters);
+        RouteConfig.RegisterRoutes(RouteTable.Routes);
+        BundleConfig.RegisterBundles(BundleTable.Bundles);
+
+        Bootstrapper.Initialise();
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Nothing special so far. This is default ASP.NET WebApi. &lt;/p&gt;
+
+&lt;p&gt;How to deal now with XPO? We need to bootstrap the  &lt;code&gt;Datalayer&lt;/code&gt; and the &lt;code&gt;Session&lt;/code&gt;:&lt;/p&gt;
+
+&lt;p&gt;The interface IDataLayerHelper is used to abstract the procress of creating an DataLayer:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;public interface IDataLayerHelper
+{
+    IDataLayer DataLayer { get; }
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;The implementation is pretty straight forward. Notice that nothing is static here, except of the &lt;code&gt;XPDictionary&lt;/code&gt; (cause this is the only thing that is very time consuming, and dosn’t change at all, when the application is running)&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;public class DataLayerHelper : IDataLayerHelper
+{
+    private IDataLayer _DataLayer;
+    public IDataLayer DataLayer
+    {
+        get
+        {
+            if (_DataLayer == null)
+            {
+                var connectionString = ConnectionString;
+                XpoDefault.Session = null;
+
+                _DataLayer = new ThreadSafeDataLayer(XpDictionary, GetConnectionProvider(connectionString));
+            }
+
+            return _DataLayer;
+        }
+
+    }
+
+    private readonly static object lockObjectXpDictionary = new object();
+
+    private volatile static XPDictionary _XpDictionary;
+    private static XPDictionary XpDictionary
+    {
+        get
+        {
+            if (_XpDictionary == null)
+            {
+                lock (lockObjectXpDictionary)
+                {
+                    if (_XpDictionary == null)
+                    {
+                        _XpDictionary = new ReflectionDictionary();
+
+                        _XpDictionary.GetDataStoreSchema(Assembly.GetExecutingAssembly(), typeof(XAFDISolutionModule).Assembly);
+                    }
+                }
+            }
+            return _XpDictionary;
+        }
+    }
+
+    protected internal string _ConnectionString;
+
+    protected internal AutoCreateOption _DefaultAutoCreateOption = AutoCreateOption.None;
+
+    protected virtual string ConnectionString
+    {
+        get
+        {
+            if (string.IsNullOrEmpty(_ConnectionString) &amp;amp;&amp;amp; ConfigurationManager.ConnectionStrings[&quot;ConnectionString&quot;] != null)
+                _ConnectionString = ConfigurationManager.ConnectionStrings[&quot;ConnectionString&quot;].ConnectionString;
+
+            return _ConnectionString;
+        }
+    }
+
+    protected virtual IDataStore GetConnectionProvider(string connectionString)
+    {
+        return XpoDefault.GetConnectionProvider(connectionString, _DefaultAutoCreateOption);
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Now we need to register this &lt;code&gt;Type&lt;/code&gt; with the correct &lt;code&gt;LifeTimeManager&lt;/code&gt;:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;public static class Bootstrapper
+{
+    public static void Initialise()
+    {
+        var container = BuildUnityContainer();
+
+        GlobalConfiguration.Configuration.DependencyResolver = new Unity.WebApi.UnityDependencyResolver(container);
+    }
+
+    private static IUnityContainer BuildUnityContainer()
+    {
+        var unityContainer = new UnityContainer();
+
+        unityContainer.RegisterType&amp;lt;IDataLayerHelper, DataLayerHelper&amp;gt;(new ContainerControlledLifetimeManager());
+
+        return unityContainer;
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;In this case we need a &lt;code&gt;ContainerControlledLifetimeManager&lt;/code&gt; so the instance will live for every &lt;code&gt;ChildUnityContainer &lt;/code&gt; that is created.&lt;/p&gt;
+
+&lt;p&gt;Of course we write a &lt;code&gt;UnitTest&lt;/code&gt; for this:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;[TestFixture]
+[Category(&quot;CI&quot;)]
+public class DataLayerHelperTest
+{
+    [Test]
+    public void DataLayerHelper_Ctor_DoesNotThrowAnException()
+    {
+        Assert.DoesNotThrow(() =&amp;gt;
+        {
+            var helper = new DataLayerHelper();
+    
+            Assert.That(helper, Is.InstanceOf&amp;lt;DataLayerHelper&amp;gt;());
+        });
+    }
+
+    [Test]
+    public void DataLayerHelper_Can_Load_DataLayer_With_InMemoryConnectionString()
+    {
+        //Arrange
+        var helper = new DataLayerHelper
+            {
+                _ConnectionString = InMemoryDataStore.GetConnectionStringInMemory(true),
+                _DefaultAutoCreateOption = AutoCreateOption.DatabaseAndSchema
+            };
+
+        //Act
+        var session = new UnitOfWork(helper.DataLayer);
+        var bo = new MyBo1(session)
+            {
+                MyName = &quot;test&quot;
+            };
+
+        session.CommitTransaction();
+
+        //Assert
+        var itemToAssert = session.FindObject&amp;lt;MyBo1&amp;gt;(null);
+
+        Assert.That(itemToAssert.MyName, Is.EqualTo(&quot;test&quot;));
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Now we need a little interface that abstracts the creation of a new &lt;code&gt;Session&lt;/code&gt; aka &lt;code&gt;UnityUnitOfWork&lt;/code&gt;:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;public interface IXpoHelper
+{
+    Session GetNewSession();
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;The implementation is easy:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;public class XpoHelper : IXpoHelper
+{
+    private readonly IDataLayerHelper _DataLayerHelper;
+
+    internal readonly IUnityContainer _UnityContainer;
+
+    public XpoHelper(IUnityContainer unityContainer, IDataLayerHelper dataLayerHelper)
+    {
+        _DataLayerHelper = dataLayerHelper;
+        _UnityContainer = unityContainer;
+    }
+
+    public Session GetNewSession()
+    {
+        return GetNewUnitOfWork();
+    }
+
+    UnityUnitOfWork GetNewUnitOfWork()
+    {
+        var uow = new UnityUnitOfWork(_DataLayerHelper.DataLayer)
+        {
+            UnityContainer = _UnityContainer
+        };
+        return uow;
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;Notice that we use here &lt;code&gt;ConstructorInjection&lt;/code&gt;&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;The UnitTest:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;[TestFixture]
+[Category(&quot;CI&quot;)]
+public class XpoHelperTest
+{
+    [Test]
+    public void Ctor_OfXpoHelperTest_DoesNotThrowAnException()
+    {
+        //Arrange
+        var dataLayerHelperMock = new Moq.Mock&amp;lt;IDataLayerHelper&amp;gt;();
+        var unityContainerMock = new Moq.Mock&amp;lt;IUnityContainer&amp;gt;();
+
+        //Act &amp;amp; Assert
+        Assert.DoesNotThrow(() =&amp;gt;
+        {
+            var xpoHelper = new XpoHelper(unityContainerMock.Object, dataLayerHelperMock.Object);
+            Assert.That(xpoHelper, Is.InstanceOf&amp;lt;XpoHelper&amp;gt;());
+        });
+    }
+
+    [Test]
+    public void GetNewSession_Creates_A_New_Session()
+    {
+        //Arrange
+        var dataLayerHelperMock = new Moq.Mock&amp;lt;IDataLayerHelper&amp;gt;();
+        dataLayerHelperMock.SetupGet(m =&amp;gt; m.DataLayer).Returns(new SimpleDataLayer(new InMemoryDataStore()));
+
+        var unityContainerMock = new Moq.Mock&amp;lt;IUnityContainer&amp;gt;();
+        var sessionHelper = new XpoHelper(unityContainerMock.Object, dataLayerHelperMock.Object);
+
+        //Act 
+        var session = sessionHelper.GetNewSession();
+
+        //Assert
+        Assert.That(session, Is.Not.Null);
+        Assert.That(session, Is.InstanceOf&amp;lt;Session&amp;gt;());
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Now we also must register this guy in the &lt;code&gt;Bootstrapper&lt;/code&gt;:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;public static class Bootstrapper
+{
+    public static void Initialise()
+    {
+        var container = BuildUnityContainer();
+
+        GlobalConfiguration.Configuration.DependencyResolver = new Unity.WebApi.UnityDependencyResolver(container);
+    }
+
+    private static IUnityContainer BuildUnityContainer()
+    {
+        var unityContainer = new UnityContainer();
+
+        unityContainer.RegisterType&amp;lt;IDataLayerHelper, DataLayerHelper&amp;gt;(new ContainerControlledLifetimeManager());
+        unityContainer.RegisterType&amp;lt;IXpoHelper, XpoHelper&amp;gt;();
+
+        return unityContainer;
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h2 id=&quot;the-portable-assembly&quot;&gt;The portable assembly&lt;/h2&gt;
+
+&lt;p&gt;Note that the WebApi and WebMvc are using &lt;code&gt;.Net 4.5&lt;/code&gt; to use the nice async/await featues we build the protable assembly with support for &lt;code&gt;.Net 4.0&lt;/code&gt; support to use the calls from our &lt;em&gt;legacy&lt;/em&gt; XAFSolution.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;http://blog.paraoffice.at/get/screenshots/XAFDISolution3/2013-03-03%2012_49_53-Add_Portable_Class_Library.png&quot; alt=&quot;Portable Lib&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Here is the very simple &lt;code&gt;MyBo1-DTO&lt;/code&gt;&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;public class MyBo1
+{
+    public int Oid { get; set; }
+    public string MyName { get; set; }
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h2 id=&quot;back-to-the-future-ahm-webapi&quot;&gt;Back to the future, ahm WebApi&lt;/h2&gt;
+
+&lt;p&gt;We know use a simple pattern called the &lt;a href=&quot;http://msdn.microsoft.com/en-us/library/ff649690.aspx&quot;&gt;RepositoryPattern&lt;/a&gt; to access our Database via XPO and keep testablility and &lt;a href=&quot;http://en.wikipedia.org/wiki/Separation_of_concerns&quot;&gt;Seperation of Conserns&lt;/a&gt;:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;public interface IBusinessObjectRepository
+{
+    Task&amp;lt;IEnumerable&amp;lt;MyBo1&amp;gt;&amp;gt; GetBusinessObjects();
+
+    Task&amp;lt;MyBo1&amp;gt; GetBusinessObjectById(int id);
+
+    Task&amp;lt;MyBo1&amp;gt; Save(MyBo1 bo);
+
+    Task&amp;lt;MyBo1&amp;gt; Delete(int id);
+
+    Task&amp;lt;MyBo1&amp;gt; Save(int id, MyBo1 value);
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;A nice an clean interface, isn’t it? :)&lt;/p&gt;
+
+&lt;p&gt;The implementation is also not that complicated:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;public class MyBo1Repository : IBusinessObjectRepository
+{
+    internal readonly IXpoHelper _Helper;
+
+    public MyBo1Repository(IXpoHelper helper)
+    {
+        _Helper = helper;
+    }
+
+    MyBo1 CreateBusinessObject(XAFDISolution.Module.BusinessObjects.MyBo1 boXPO)
+    {
+        if(boXPO == null)
+            return null;
+
+        return new MyBo1()
+            {
+                Oid = boXPO.Oid,
+                MyName = boXPO.MyName,
+            };
+    }
+
+    XAFDISolution.Module.BusinessObjects.MyBo1 CreateBusinessObject(MyBo1 bo, Session session)
+    {
+        return MapBusinessObject(bo, new XAFDISolution.Module.BusinessObjects.MyBo1(session));
+    }
+
+    XAFDISolution.Module.BusinessObjects.MyBo1 MapBusinessObject(MyBo1 bo, XAFDISolution.Module.BusinessObjects.MyBo1 boXPO)
+    {
+        boXPO.MyName = bo.MyName;
+        
+        return boXPO;
+    }
+
+    public async Task&amp;lt;IEnumerable&amp;lt;MyBo1&amp;gt;&amp;gt; GetBusinessObjects()
+    {
+        return await Task&amp;lt;IEnumerable&amp;lt;MyBo1&amp;gt;&amp;gt;.Run(() =&amp;gt; BusinessObjectsXPO.Select(CreateBusinessObject));
+    }
+
+    IEnumerable&amp;lt;XAFDISolution.Module.BusinessObjects.MyBo1&amp;gt; BusinessObjectsXPO
+    {
+        get
+        {
+            return new XPQuery&amp;lt;XAFDISolution.Module.BusinessObjects.MyBo1&amp;gt;(_Helper.GetNewSession());
+        }
+    }
+
+    public async Task&amp;lt;MyBo1&amp;gt; GetBusinessObjectById(int id)
+    {
+        return CreateBusinessObject(_Helper.GetNewSession().GetObjectByKey&amp;lt;XAFDISolution.Module.BusinessObjects.MyBo1&amp;gt;(id));
+    }
+
+    public async Task&amp;lt;MyBo1&amp;gt; Save(MyBo1 bo)
+    {
+        return await Task&amp;lt;MyBo1&amp;gt;.Run(() =&amp;gt;
+            {
+                var session = _Helper.GetNewSession();
+                var boToReturn = CreateBusinessObject(bo, session);
+                session.CommitTransaction();
+
+                return CreateBusinessObject(boToReturn);
+            });
+    }
+
+    public async Task&amp;lt;MyBo1&amp;gt; Delete(int id)
+    {
+        return await Task&amp;lt;MyBo1&amp;gt;.Run(() =&amp;gt;
+            {
+                var session = _Helper.GetNewSession();
+                var boXpo = session.GetObjectByKey&amp;lt;XAFDISolution.Module.BusinessObjects.MyBo1&amp;gt;(id);
+                if (boXpo == null)
+                    return CreateBusinessObject(null);
+
+                session.Delete(boXpo);
+                session.CommitTransaction();
+                boXpo.Oid = -1;
+
+                return CreateBusinessObject(boXpo);
+            });
+    }
+
+    public async Task&amp;lt;MyBo1&amp;gt; Save(int id, MyBo1 bo)
+    {
+        return await Task&amp;lt;MyBo1&amp;gt;.Run(() =&amp;gt;
+            {
+                var session = _Helper.GetNewSession();
+                var boXpo = session.GetObjectByKey&amp;lt;XAFDISolution.Module.BusinessObjects.MyBo1&amp;gt;(id);
+
+                MapBusinessObject(bo, boXpo);
+
+                session.CommitTransaction();
+
+                return CreateBusinessObject(boXpo);
+            });
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;What we do here is basicly a proxy arround our XPO-Database-Objects and wrap the whole thing in async/await Tasks. The most complex thing that can happen are in the &lt;code&gt;CreateBusinessObject&lt;/code&gt; and &lt;code&gt;MapBusinessObject&lt;/code&gt; methods. Here is good testing absolutly necessary. If you miss a property the whole thing is unstable. The other side of the medal is that we can provide a clear interface to the database, and can decide how to serialize/deserialize data to the database.&lt;/p&gt;
+
+&lt;p&gt;The tests are also very interessting:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;[TestFixture]
+[Category(&quot;CI&quot;)]
+public class MyBo1RepositoryTests
+{
+    [Test]
+    public void Ctor_Is_Not_Throwing_An_Exception()
+    {
+        //Arrange
+        var mockXpoHelper = new Mock&amp;lt;IXpoHelper&amp;gt;();
+
+        //Act &amp;amp; Assert
+        Assert.DoesNotThrow(() =&amp;gt;
+        {
+            var repo = new MyBo1Repository(mockXpoHelper.Object);
+
+            Assert.That(repo, Is.InstanceOf&amp;lt;MyBo1Repository&amp;gt;());
+        });
+    }
+
+    private IDataLayerHelper CreateDataLayer()
+    {
+        //Arrange
+        var dataLayerHelperMock = new Moq.Mock&amp;lt;IDataLayerHelper&amp;gt;();
+        dataLayerHelperMock.SetupGet(m =&amp;gt; m.DataLayer).Returns(new SimpleDataLayer(new InMemoryDataStore()));
+        return dataLayerHelperMock.Object;
+    }
+
+    [Test]
+    public async void Save_A_New_Object_Will_Go_To_Database()
+    {
+        //Arrange
+        var xpoHelper = new XpoHelper(new Mock&amp;lt;IUnityContainer&amp;gt;().Object, CreateDataLayer());
+
+        var repo = new MyBo1Repository(xpoHelper);
+
+        //Act
+        var boToTest = new XAFDiSolution.DTO.MyBo1()
+            {
+                MyName = &quot;Test Name&quot;
+            };
+
+        await repo.Save(boToTest);
+
+        //Assert
+        var myBo1Expected = xpoHelper.GetNewSession().FindObject&amp;lt;XAFDISolution.Module.BusinessObjects.MyBo1&amp;gt;(null);
+
+        Assert.That(myBo1Expected, Is.Not.Null);
+
+        Assert.That(myBo1Expected.MyName, Is.EqualTo(&quot;Test Name&quot;));
+    }
+
+    [Test]
+    public async void Save_An_Existing_Object_Will_Modify_The_XPO_Object()
+    {
+        //Arrange
+        var xpoHelper = new XpoHelper(new Mock&amp;lt;IUnityContainer&amp;gt;().Object, CreateDataLayer());
+
+        var session = xpoHelper.GetNewSession();
+
+        var existingXpoBo = new XAFDISolution.Module.BusinessObjects.MyBo1(session)
+            {
+                MyName = &quot;Test existing&quot;,
+            };
+
+        session.CommitTransaction();
+
+        var oid = session.FindObject&amp;lt;XAFDISolution.Module.BusinessObjects.MyBo1&amp;gt;(null).Oid;
+
+        var repo = new MyBo1Repository(xpoHelper);
+
+        //Act
+        var boToTest = new XAFDiSolution.DTO.MyBo1()
+        {
+            MyName = &quot;Test Name&quot;
+        };
+
+        await repo.Save(oid, boToTest);
+
+        //Assert
+        var assertSession = xpoHelper.GetNewSession();
+        var myBo1ExpectedCollection = assertSession.GetObjects(assertSession.GetClassInfo&amp;lt;XAFDISolution.Module.BusinessObjects.MyBo1&amp;gt;(), null, new SortingCollection(), 0, Int32.MaxValue, true, true);
+
+        Assert.That(myBo1ExpectedCollection, Is.Not.Null);
+        Assert.That(myBo1ExpectedCollection.Count, Is.EqualTo(1));
+
+        Assert.That(myBo1ExpectedCollection.OfType&amp;lt;XAFDISolution.Module.BusinessObjects.MyBo1&amp;gt;().ElementAt(0).MyName, Is.EqualTo(&quot;Test Name&quot;));
+    }
+
+    [Test]
+    public async void GetBusinessObjects_With_Empty_Database_Does_Not_Return_Null()
+    {
+        //Arrange
+        var xpoHelper = new XpoHelper(new Mock&amp;lt;IUnityContainer&amp;gt;().Object, CreateDataLayer());
+
+        var session = xpoHelper.GetNewSession();
+
+        var repo = new MyBo1Repository(xpoHelper);
+
+        //Act
+        var result = await repo.GetBusinessObjects();
+
+        //Assert
+        Assert.That(result, Is.Not.Null);
+        Assert.That(result.Count(), Is.EqualTo(0));
+    }
+
+    [Test]
+    public async void GetBusinessObjects_With_Filled_Database_Returns_All_BusinessObjects_Correct()
+    {
+        //Arrange
+        var xpoHelper = new XpoHelper(new Mock&amp;lt;IUnityContainer&amp;gt;().Object, CreateDataLayer());
+
+        var session = xpoHelper.GetNewSession();
+
+        var existingXpoBo1 = new XAFDISolution.Module.BusinessObjects.MyBo1(session)
+        {
+            MyName = &quot;Test existing1&quot;,
+        };
+
+        var existingXpoBo2 = new XAFDISolution.Module.BusinessObjects.MyBo1(session)
+        {
+            MyName = &quot;Test existing2&quot;,
+        };
+
+        session.CommitTransaction();
+
+        var repo = new MyBo1Repository(xpoHelper);
+
+        //Act
+
+        var result = (await repo.GetBusinessObjects()).OrderBy(m =&amp;gt; m.Oid);
+
+        //Assert
+        Assert.That(result, Is.Not.Null);
+        Assert.That(result.Count(), Is.EqualTo(2));
+
+        Assert.That(result.ElementAt(0).MyName, Is.EqualTo(&quot;Test existing1&quot;));
+        Assert.That(result.ElementAt(1).MyName, Is.EqualTo(&quot;Test existing2&quot;));
+    }
+
+    [Test]
+    public async void GetBusinessObjectById_With_Filled_Database_Returns_Correct_BusinessObject_With_Exisiting_Key_Property()
+    {
+        //Arrange
+        var xpoHelper = new XpoHelper(new Mock&amp;lt;IUnityContainer&amp;gt;().Object, CreateDataLayer());
+
+        var session = xpoHelper.GetNewSession();
+
+        var existingXpoBo1 = new XAFDISolution.Module.BusinessObjects.MyBo1(session)
+        {
+            MyName = &quot;Test existing1&quot;,
+        };
+
+        var existingXpoBo2 = new XAFDISolution.Module.BusinessObjects.MyBo1(session)
+        {
+            MyName = &quot;Test existing2&quot;,
+        };
+
+        session.CommitTransaction();
+
+        var oid = session.FindObject&amp;lt;Module.BusinessObjects.MyBo1&amp;gt;(CriteriaOperator.Parse(&quot;MyName = ?&quot;, &quot;Test existing2&quot;)).Oid;
+
+        var repo = new MyBo1Repository(xpoHelper);
+
+        //Act
+
+        var result = await repo.GetBusinessObjectById(oid);
+
+        //Assert
+        Assert.That(result, Is.Not.Null);
+        Assert.That(result.MyName, Is.EqualTo(&quot;Test existing2&quot;));
+    }
+
+    [Test]
+    public async void GetBusinessObjectById_With_Empty_Database_Returns_Null_With_Non_Exisiting_Key_Property()
+    {
+        //Arrange
+        var xpoHelper = new XpoHelper(new Mock&amp;lt;IUnityContainer&amp;gt;().Object, CreateDataLayer());
+
+        var session = xpoHelper.GetNewSession();
+        
+        session.CommitTransaction();
+
+        var repo = new MyBo1Repository(xpoHelper);
+
+        //Act
+        var result = await repo.GetBusinessObjectById(1);
+
+        //Assert
+        Assert.That(result, Is.Null);
+    }
+
+    [Test]
+    public async void Delete_With_Filled_Database_Returns_Correct_BusinessObject_With_Exisiting_Key_Property()
+    {
+        //Arrange
+        var xpoHelper = new XpoHelper(new Mock&amp;lt;IUnityContainer&amp;gt;().Object, CreateDataLayer());
+
+        var session = xpoHelper.GetNewSession();
+
+        var existingXpoBo1 = new XAFDISolution.Module.BusinessObjects.MyBo1(session)
+        {
+            MyName = &quot;Test existing1&quot;,
+        };
+
+        var existingXpoBo2 = new XAFDISolution.Module.BusinessObjects.MyBo1(session)
+        {
+            MyName = &quot;Test existing2&quot;,
+        };
+
+        session.CommitTransaction();
+
+        var oid = session.FindObject&amp;lt;Module.BusinessObjects.MyBo1&amp;gt;(CriteriaOperator.Parse(&quot;MyName = ?&quot;, &quot;Test existing2&quot;)).Oid;
+
+        var repo = new MyBo1Repository(xpoHelper);
+
+        //Act
+
+        var result = await repo.Delete(oid);
+        var collectionResult = await repo.GetBusinessObjects();
+
+        //Assert
+        Assert.That(result, Is.Not.Null);
+        Assert.That(result.Oid, Is.EqualTo(-1));
+        Assert.That(result.MyName, Is.EqualTo(&quot;Test existing2&quot;));
+
+        Assert.That(collectionResult, Is.Not.Null);
+        Assert.That(collectionResult.Count(), Is.EqualTo(1));
+
+        Assert.That(collectionResult.ElementAt(0).MyName, Is.EqualTo(&quot;Test existing1&quot;));
+    }
+
+    [Test]
+    public async void Delete_With_Empty_Database_Returns_Null()
+    {
+        //Arrange
+        var xpoHelper = new XpoHelper(new Mock&amp;lt;IUnityContainer&amp;gt;().Object, CreateDataLayer());
+
+        var repo = new MyBo1Repository(xpoHelper);
+
+        //Act
+
+        var result = await repo.Delete(1);
+        var collectionResult = await repo.GetBusinessObjects();
+
+        //Assert
+        Assert.That(result, Is.Null);
+
+        Assert.That(collectionResult, Is.Not.Null);
+        Assert.That(collectionResult.Count(), Is.EqualTo(0));
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Do not forget to add the Repository to the UnityContainer:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;public static class Bootstrapper
+{
+    public static void Initialise()
+    {
+        var container = BuildUnityContainer();
+
+        GlobalConfiguration.Configuration.DependencyResolver = new Unity.WebApi.UnityDependencyResolver(container);
+    }
+
+    private static IUnityContainer BuildUnityContainer()
+    {
+        var unityContainer = new UnityContainer();
+
+        unityContainer.RegisterType&amp;lt;IDataLayerHelper, DataLayerHelper&amp;gt;(new ContainerControlledLifetimeManager());
+        unityContainer.RegisterType&amp;lt;IXpoHelper, XpoHelper&amp;gt;();
+        unityContainer.RegisterType&amp;lt;IBusinessObjectRepository, MyBo1Repository&amp;gt;();
+
+        return unityContainer;
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;For now the data access aspect is finished. How to get the data now to the client?&lt;/p&gt;
+
+&lt;p&gt;We need to implement a new &lt;code&gt;MyBusinessObjectController&lt;/code&gt; derived from &lt;code&gt;ApiController&lt;/code&gt;;&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;public class MyBusinessObjectController : ApiController
+{
+    private readonly IBusinessObjectRepository _repository;
+
+    public MyBusinessObjectController(IBusinessObjectRepository repository)
+    {
+        _repository = repository;
+    }
+
+    // GET api/MyBusinessObject
+    public async Task&amp;lt;IEnumerable&amp;lt;MyBo1&amp;gt;&amp;gt; Get()
+    {
+        return await _repository.GetBusinessObjects();
+    }
+
+    // GET api/MyBusinessObject/5
+    public async Task&amp;lt;MyBo1&amp;gt; Get(int id)
+    {
+        return await _repository.GetBusinessObjectById(id);
+    }
+
+    // POST api/MyBusinessObject
+    public async Task&amp;lt;MyBo1&amp;gt; Post([FromBody]MyBo1 value)
+    {
+        return await _repository.Save(value);
+    }
+
+    // PUT api/MyBusinessObject/5
+    public async Task&amp;lt;MyBo1&amp;gt; Put(int id, [FromBody]MyBo1 value)
+    {
+        return await _repository.Save(id, value);
+    }
+
+    // DELETE api/MyBusinessObject/5
+    public async Task&amp;lt;MyBo1&amp;gt; Delete(int id)
+    {
+        return await _repository.Delete(id);
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Here we need no registration to create the controller, cause of the &lt;code&gt;Unity.WebApi&lt;/code&gt; package we’ve imported via nuget.&lt;/p&gt;
+
+&lt;p&gt;The tests are not that clear cause we have to return tasks for now, but the async/await in the unittests helps us to write quite straight tests:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;[TestFixture]
+[Category(&quot;CI&quot;)]
+public class MyBusinessObjectControllerTests
+{
+    [Test]
+    public void Ctor_Does_Not_Throw_Exception()
+    {
+        //Arrage
+        var mockRepo = new Mock&amp;lt;IBusinessObjectRepository&amp;gt;();
+
+        //Act &amp;amp; Assert
+        Assert.DoesNotThrow(() =&amp;gt;
+        {
+            var controller = new MyBusinessObjectController(mockRepo.Object);
+            Assert.That(controller, Is.InstanceOf&amp;lt;MyBusinessObjectController&amp;gt;());
+        });
+    }
+
+    [Test]
+    public async void Get_Will_Call_Repo()
+    {
+        //Arrage
+        var mockRepo = new Mock&amp;lt;IBusinessObjectRepository&amp;gt;();
+        mockRepo.Setup(m =&amp;gt; m.GetBusinessObjects()).Returns(() =&amp;gt; Task.Run(() =&amp;gt; new List&amp;lt;MyBo1&amp;gt;().AsEnumerable()));
+
+        var controller = new MyBusinessObjectController(mockRepo.Object);
+
+        //Act 
+        var result = await controller.Get();
+
+        //Assert
+        mockRepo.Verify(m =&amp;gt; m.GetBusinessObjects(), Times.Exactly(1));
+    }
+
+    [Test]
+    public async void Get_Will_Return_2_Bo()
+    {
+        //Arrage
+        var mockRepo = new Mock&amp;lt;IBusinessObjectRepository&amp;gt;();
+        mockRepo.Setup(m =&amp;gt; m.GetBusinessObjects()).Returns(() =&amp;gt; Task.Run(() =&amp;gt; new List&amp;lt;MyBo1&amp;gt;() { new MyBo1() { MyName = &quot;Test&quot; }, new MyBo1() {MyName = &quot;Test2&quot;} }.AsEnumerable()));
+
+        var controller = new MyBusinessObjectController(mockRepo.Object);
+
+        //Act 
+        var result = (await controller.Get()).OrderBy(m =&amp;gt; m.Oid);
+
+        //Assert
+        Assert.That(result, Is.Not.Null);
+        Assert.That(result.Count(), Is.EqualTo(2));
+        Assert.That(result.ElementAt(0).MyName, Is.EqualTo(&quot;Test&quot;));
+        Assert.That(result.ElementAt(1).MyName, Is.EqualTo(&quot;Test2&quot;));
+    }
+
+    [Test]
+    public async void Get_Will_Return_1_Bo()
+    {
+        //Arrage
+        var mockRepo = new Mock&amp;lt;IBusinessObjectRepository&amp;gt;();
+        mockRepo.Setup(m =&amp;gt; m.GetBusinessObjectById(It.IsAny&amp;lt;int&amp;gt;())).Returns(() =&amp;gt; Task.Run(() =&amp;gt; new MyBo1() { MyName = &quot;Test&quot; }));
+
+        var controller = new MyBusinessObjectController(mockRepo.Object);
+
+        //Act 
+        var result = await controller.Get(1);
+
+        //Assert
+        Assert.That(result, Is.Not.Null);
+        Assert.That(result.MyName, Is.EqualTo(&quot;Test&quot;));
+    }
+
+    [Test]
+    public async void Post_Will_Set_Something_Up_In_The_Database()
+    {
+        //Arrage
+        var mockRepo = new Mock&amp;lt;IBusinessObjectRepository&amp;gt;();
+        mockRepo.Setup(m =&amp;gt; m.Save(It.IsAny&amp;lt;MyBo1&amp;gt;())).Returns(Task.Run(() =&amp;gt; new MyBo1() { Oid = 1, MyName = &quot;Test&quot; }));
+
+        var controller = new MyBusinessObjectController(mockRepo.Object);
+
+        //Act 
+        var bo = new MyBo1() { MyName = &quot;Test&quot; };
+        var result = await controller.Post(bo);
+
+        //Assert
+        mockRepo.Verify(m =&amp;gt; m.Save(bo), Times.Exactly(1));
+        Assert.That(result, Is.Not.Null);
+        Assert.That(result.Oid, Is.EqualTo(1));
+        Assert.That(result.MyName, Is.EqualTo(&quot;Test&quot;));
+    }
+
+    [Test]
+    public async void Put_Will_Set_Something_Up_In_The_Database()
+    {
+        //Arrage
+        var mockRepo = new Mock&amp;lt;IBusinessObjectRepository&amp;gt;();
+        mockRepo.Setup(m =&amp;gt; m.Save(It.IsAny&amp;lt;int&amp;gt;(), It.IsAny&amp;lt;MyBo1&amp;gt;())).Returns(Task.Run(() =&amp;gt; new MyBo1() { Oid = 1, MyName = &quot;Test&quot; }));
+
+        var controller = new MyBusinessObjectController(mockRepo.Object);
+
+        //Act 
+        var bo = new MyBo1() { MyName = &quot;Test&quot; };
+        var result = await controller.Put(1, bo);
+
+        //Assert
+        mockRepo.Verify(m =&amp;gt; m.Save(1, bo), Times.Exactly(1));
+        Assert.That(result, Is.Not.Null);
+        Assert.That(result.Oid, Is.EqualTo(1));
+        Assert.That(result.MyName, Is.EqualTo(&quot;Test&quot;));
+    }
+
+    [Test]
+    public async void Delete_Will_Set_Something_Up_In_The_Database()
+    {
+        //Arrage
+        var mockRepo = new Mock&amp;lt;IBusinessObjectRepository&amp;gt;();
+        mockRepo.Setup(m =&amp;gt; m.Delete(It.IsAny&amp;lt;int&amp;gt;())).Returns(Task.Run(() =&amp;gt; new MyBo1() { Oid = -1, MyName = &quot;Test&quot; }));
+
+        var controller = new MyBusinessObjectController(mockRepo.Object);
+
+        //Act 
+        var result = await controller.Delete(1);
+
+        //Assert
+        mockRepo.Verify(m =&amp;gt; m.Delete(1), Times.Exactly(1));
+        Assert.That(result, Is.Not.Null);
+        Assert.That(result.Oid, Is.EqualTo(-1));
+        Assert.That(result.MyName, Is.EqualTo(&quot;Test&quot;));
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h3 id=&quot;ready-to-rock&quot;&gt;Ready to rock!&lt;/h3&gt;
+
+&lt;p&gt;Starting up our &lt;a href=&quot;http://msdn.microsoft.com/en-us/library/ms165413(v=vs.80).aspx&quot;&gt;projects&lt;/a&gt; and see something in action.&lt;/p&gt;
+
+&lt;p&gt;Hit the page from our controller (http://localhost:3786/api/MyBusinessObject) we get this result:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;&amp;lt;ArrayOfMyBo1 xmlns:i=&quot;http://www.w3.org/2001/XMLSchema-instance&quot; xmlns=&quot;http://schemas.datacontract.org/2004/07/XAFDiSolution.DTO&quot;&amp;gt;
+	&amp;lt;MyBo1&amp;gt;
+		&amp;lt;MyName&amp;gt;Hello from the Win Project: My Dependencies: XAFDISolution.Module.Win.DomainLogic.WinRenamer XAFDISolution.Core.UnityObjectSpaceSession id:XAFDISolution.Core.UnityUnitOfWork(13)&amp;lt;/MyName&amp;gt;
+		&amp;lt;Oid&amp;gt;2&amp;lt;/Oid&amp;gt;
+	&amp;lt;/MyBo1&amp;gt;
+	&amp;lt;MyBo1&amp;gt;
+		&amp;lt;MyName&amp;gt;Hello from the Win Project: My Dependencies: XAFDISolution.Module.Win.DomainLogic.WinRenamer XAFDISolution.Core.UnityObjectSpaceSession id:XAFDISolution.Core.UnityUnitOfWork(5)&amp;lt;/MyName&amp;gt;
+		&amp;lt;Oid&amp;gt;0&amp;lt;/Oid&amp;gt;
+	&amp;lt;/MyBo1&amp;gt;
+	&amp;lt;MyBo1&amp;gt;
+		&amp;lt;MyName&amp;gt;Hello from the Win Project: My Dependencies: XAFDISolution.Module.Win.DomainLogic.WinRenamer XAFDISolution.Core.UnityObjectSpaceSession id:XAFDISolution.Core.UnityUnitOfWork(12)&amp;lt;/MyName&amp;gt;
+		&amp;lt;Oid&amp;gt;1&amp;lt;/Oid&amp;gt;
+	&amp;lt;/MyBo1&amp;gt;
+&amp;lt;/ArrayOfMyBo1&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Nice or is it? :)&lt;/p&gt;
+
+&lt;p&gt;Let’s check out &lt;a href=&quot;http://www.fiddler2.com/fiddler2/&quot;&gt;fiddler&lt;/a&gt; an see if we can get some &lt;a href=&quot;http://www.json.org/&quot;&gt;JSON&lt;/a&gt; from our api.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;http://blog.paraoffice.at/get/screenshots/XAFDISolution3/fiddler_input.png&quot; alt=&quot;Fiddler input&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Outputs:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;http://blog.paraoffice.at/get/screenshots/XAFDISolution3/fiddler_output.png&quot; alt=&quot;Fiddler output&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Nice!
+Lets input some data:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;http://blog.paraoffice.at/get/screenshots/XAFDISolution3/post_from_fiddler.png&quot; alt=&quot;Post from fiddler&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;http://blog.paraoffice.at/get/screenshots/XAFDISolution3/XAF_Post_From_Fiddler.png&quot; alt=&quot;XAF Post from fiddler&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Update some data:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;http://blog.paraoffice.at/get/screenshots/XAFDISolution3/put_from_fiddler.png&quot; alt=&quot;Update from Fiddler&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;http://blog.paraoffice.at/get/screenshots/XAFDISolution3/XAF_Put_From_Fiddler.png&quot; alt=&quot;XAF Update from fiddler&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;And delete it:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;http://blog.paraoffice.at/get/screenshots/XAFDISolution3/delete_from_fiddler.png&quot; alt=&quot;Delete from fiddler&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;http://blog.paraoffice.at/get/screenshots/XAFDISolution3/XAF_Delete_From_Fiddler.png&quot; alt=&quot;XAF Delete from fiddler&quot; /&gt;&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;As you maybe noticed, i’ve never startet the application so far. The unit-testing works like a charm.&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;h2 id=&quot;webmvc&quot;&gt;WebMvc&lt;/h2&gt;
+&lt;p&gt;Here we need a little different package from nuget. Install &lt;a href=&quot;http://nuget.org/packages/Unity.Mvc3/1.2&quot;&gt;Unity.WebMvc3&lt;/a&gt; This will also work in Mvc4.&lt;/p&gt;
+
+&lt;p&gt;Our little friend the &lt;code&gt;Bootstrapper&lt;/code&gt; is also present here:&lt;/p&gt;
+
+ 	public static class Bootstrapper
+&lt;pre&gt;&lt;code&gt;{
+    public static void Initialise()
+    {
+        var container = BuildUnityContainer();
+
+        DependencyResolver.SetResolver(new UnityDependencyResolver(container));
+    }
+
+    private static IUnityContainer BuildUnityContainer()
+    {
+        var container = new UnityContainer();
+
+        // register all your components with the container here
+        // it is NOT necessary to register your controllers
+        
+        // e.g. container.RegisterType&amp;lt;ITestService, TestService&amp;gt;();            
+
+        return container;
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Same thing here with the &lt;code&gt;Global.asax&lt;/code&gt; file. We need to call the &lt;code&gt;Bootstrapper&lt;/code&gt; once to get the nice DI-Thing:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;public class MvcApplication : System.Web.HttpApplication
+{
+    protected void Application_Start()
+    {
+        AreaRegistration.RegisterAllAreas();
+
+        WebApiConfig.Register(GlobalConfiguration.Configuration);
+        FilterConfig.RegisterGlobalFilters(GlobalFilters.Filters);
+        RouteConfig.RegisterRoutes(RouteTable.Routes);
+        BundleConfig.RegisterBundles(BundleTable.Bundles);
+        AuthConfig.RegisterAuth();
+
+        Bootstrapper.Initialise();
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;Notice: The only thing we need in this assembly is the &lt;code&gt;XAFDISolution.DTO&lt;/code&gt; Reference. Don’t reference any XPO-specific here!!&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;Unfortunately the portable lib doesn’t provide support for the Task&lt;t&gt; class we used so far, so we have to recreate the `IBusinessObjectRepository`. But i don&#39;t like that. So i link the files via `Add Existing Item` feature from VisualStudio.&lt;/t&gt;&lt;/p&gt;
+
+&lt;p&gt;Now we need a new &lt;code&gt;Repository&lt;/code&gt;. I call this one &lt;code&gt;WebApiBoRepository&lt;/code&gt;:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;public class WebApiBoRepository : IBusinessObjectRepository
+{
+    private readonly IEndpointProvider _endpointProvider;
+
+    public WebApiBoRepository(IEndpointProvider endpointProvider)
+    {
+        _endpointProvider = endpointProvider;
+    }
+
+    private HttpClient CreateHttpClient()
+    {
+        var client = new HttpClient();
+
+        client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue(&quot;application/json&quot;));
+
+        client.BaseAddress = new Uri(_endpointProvider.WebApiEndpoint);
+        return client;
+    }
+
+    public async Task&amp;lt;IEnumerable&amp;lt;MyBo1&amp;gt;&amp;gt; GetBusinessObjects()
+    {
+        var client = CreateHttpClient();
+
+        var response = await client.GetAsync(&quot;api/MyBusinessObject&quot;);
+
+        response.EnsureSuccessStatusCode();
+
+        return await response.Content.ReadAsAsync&amp;lt;IEnumerable&amp;lt;MyBo1&amp;gt;&amp;gt;();
+    }
+
+    public async Task&amp;lt;MyBo1&amp;gt; GetBusinessObjectById(int id)
+    {
+        var client = CreateHttpClient();
+
+        var response = await client.GetAsync(&quot;api/MyBusinessObject/&quot; + id);
+
+        response.EnsureSuccessStatusCode();
+
+        return await response.Content.ReadAsAsync&amp;lt;MyBo1&amp;gt;();
+    }
+
+    public async Task&amp;lt;MyBo1&amp;gt; Save(MyBo1 bo)
+    {
+        var client = CreateHttpClient();
+
+        var response = await client.PostAsync(&quot;api/MyBusinessObject/&quot;, bo, new JsonMediaTypeFormatter());
+
+        response.EnsureSuccessStatusCode();
+
+        return await response.Content.ReadAsAsync&amp;lt;MyBo1&amp;gt;();
+    }
+
+    public async Task&amp;lt;MyBo1&amp;gt; Delete(int id)
+    {
+        var client = CreateHttpClient();
+
+        var response = await client.DeleteAsync(&quot;api/MyBusinessObject/&quot; + id);
+
+        response.EnsureSuccessStatusCode();
+
+        return await response.Content.ReadAsAsync&amp;lt;MyBo1&amp;gt;();
+    }
+
+    public async Task&amp;lt;MyBo1&amp;gt; Save(int id, MyBo1 bo)
+    {
+        var client = CreateHttpClient();
+
+        var response = await client.PutAsync(&quot;api/MyBusinessObject/&quot; + id, bo, new JsonMediaTypeFormatter());
+
+        response.EnsureSuccessStatusCode();
+
+        return await response.Content.ReadAsAsync&amp;lt;MyBo1&amp;gt;();
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;To avoid hard references to a singe WebApi-Endpoint we use a IEndpointProvider&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;public interface IEndpointProvider
+{
+    string WebApiEndpoint { get; }
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;And implement this really silly (but important) class:&lt;/p&gt;
+
+ 	public class HTTPEndpointProvider : IEndpointProvider
+&lt;pre&gt;&lt;code&gt;{
+    public string WebApiEndpoint
+    {
+        get { return &quot;http://localhost:3786/&quot;; }
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;If you need to implement SSL this &lt;a href=&quot;http://www.hanselman.com/blog/WorkingWithSSLAtDevelopmentTimeIsEasierWithIISExpress.aspx&quot;&gt;post&lt;/a&gt; from &lt;a href=&quot;http://www.hanselman.com&quot;&gt;Scott Hanselmann&lt;/a&gt; will help you, and you can use a SSLEndpointProvider:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;public class SSLEndpointProvider : IEndpointProvider
+{
+    public string WebApiEndpoint
+    {
+        get { return &quot;https://localhost:8443/&quot;; }
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Don’t forget to register the IEndpointProvider and the IBusinessObjectRepository&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;public static class Bootstrapper
+{
+    public static void Initialise()
+    {
+        var container = BuildUnityContainer();
+
+        DependencyResolver.SetResolver(new UnityDependencyResolver(container));
+    }
+
+    private static IUnityContainer BuildUnityContainer()
+    {
+        var unityContainer = new UnityContainer();
+
+        // register all your components with the container here
+        // it is NOT necessary to register your controllers
+
+        unityContainer.RegisterType&amp;lt;IEndpointProvider, HTTPEndpointProvider&amp;gt;();            
+
+        unityContainer.RegisterType&amp;lt;IBusinessObjectRepository, WebApiBoRepository&amp;gt;();            
+
+        return unityContainer;
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;So far i found no easy way to test this &lt;code&gt;Repository&lt;/code&gt; without providing a WebApi. Maybe someone will provide this functionality :).&lt;/p&gt;
+
+&lt;p&gt;Now we need a simple &lt;code&gt;AsyncController&lt;/code&gt; called &lt;code&gt;BOController&lt;/code&gt;:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;public class BOController : AsyncController
+{
+    private readonly IBusinessObjectRepository _repository;
+
+    public BOController(IBusinessObjectRepository repository)
+    {
+        _repository = repository;
+    }
+
+    //
+    // GET: /BO/
+    public async Task&amp;lt;ActionResult&amp;gt; Index()
+    {
+        return View(await _repository.GetBusinessObjects());
+    }
+
+    //
+    // GET: /BO/Details/5
+
+    public async Task&amp;lt;ActionResult&amp;gt; Details(int id)
+    {
+        return View(await _repository.GetBusinessObjectById(id));
+    }
+
+    //
+    // GET: /BO/Create
+
+    public ActionResult Create()
+    {
+        return View();
+    }
+
+    //
+    // POST: /BO/Create
+
+    [HttpPost]
+    public async Task&amp;lt;ActionResult&amp;gt; Create(MyBo1 bo)
+    {
+        if (ModelState.IsValid)
+        {
+            try
+            {
+                await _repository.Save(bo);
+
+                return RedirectToAction(&quot;Index&quot;);
+            }
+            catch
+            {
+                return View(bo);
+            }
+        }
+        return View(bo);
+    }
+
+    //
+    // GET: /BO/Edit/5
+
+    public async Task&amp;lt;ActionResult&amp;gt; Edit(int id)
+    {
+        return View(await _repository.GetBusinessObjectById(id));
+    }
+
+    //
+    // POST: /BO/Edit/5
+
+    [HttpPost]
+    public async Task&amp;lt;ActionResult&amp;gt; Edit(int id, MyBo1 bo)
+    {
+        if (ModelState.IsValid)
+        {
+            try
+            {
+                _repository.Save(id, bo);
+
+                return RedirectToAction(&quot;Index&quot;);
+            }
+            catch
+            {
+                return View(bo);
+            }
+        }
+        return View(bo);
+    }
+
+    //
+    // GET: /BO/Delete/5
+
+    public async Task&amp;lt;ActionResult&amp;gt; Delete(int id)
+    {
+        return View(await _repository.GetBusinessObjectById(id));
+    }
+
+    //
+    // POST: /BO/Delete/5
+
+    [HttpPost]
+    public async Task&amp;lt;ActionResult&amp;gt; Delete(int id, MyBo1 bo)
+    {
+        if (ModelState.IsValid)
+        {
+            try
+            {
+                bo = await _repository.Delete(id);
+
+                return RedirectToAction(&quot;Index&quot;);
+            }
+            catch
+            {
+                return View(bo);
+            }
+        }
+        return View(bo);
+    }
+
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;The unit tests are simple:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;[TestFixture]
+[Category(&quot;CI&quot;)]
+public class BOControllerTest
+{
+    [Test]
+    public void Ctor_Does_Not_Throw_Exception()
+    {
+        //Arrange
+        var mockRepository = new Mock&amp;lt;IBusinessObjectRepository&amp;gt;();
+
+        //Arrange &amp;amp; Assert
+        Assert.DoesNotThrow(() =&amp;gt;
+        {
+            var controller = new BOController(mockRepository.Object);
+            Assert.That(controller, Is.InstanceOf&amp;lt;BOController&amp;gt;());
+        });
+    }
+
+    [Test]
+    public async void Index_Does_Call_Repo_Correct()
+    {
+        //Arrange
+        var mockRepository = new Mock&amp;lt;IBusinessObjectRepository&amp;gt;();
+        mockRepository.Setup(m =&amp;gt; m.GetBusinessObjects())
+                      .Returns(() =&amp;gt; Task.Run(() =&amp;gt; new List&amp;lt;MyBo1&amp;gt;().AsEnumerable()));
+        var controller = new BOController(mockRepository.Object);
+
+        //Act
+        var result = (ViewResult) await controller.Index();
+
+        //Assert
+        Assert.That(result.Model, Is.Not.EqualTo(null));
+        Assert.That(result.Model, Is.InstanceOf&amp;lt;IEnumerable&amp;lt;MyBo1&amp;gt;&amp;gt;());
+
+        mockRepository.Verify(m =&amp;gt; m.GetBusinessObjects(), Times.Exactly(1));
+    }
+
+    [Test]
+    public async void Details_Does_Call_Repo_Correct()
+    {
+        //Arrange
+        var mockRepository = new Mock&amp;lt;IBusinessObjectRepository&amp;gt;();
+        mockRepository.Setup(m =&amp;gt; m.GetBusinessObjectById(It.IsAny&amp;lt;int&amp;gt;())).Returns(() =&amp;gt; Task.Run(() =&amp;gt; new MyBo1{Oid = 1, MyName = &quot;Test&quot;}));
+        var controller = new BOController(mockRepository.Object);
+
+        //Act
+        var result = (ViewResult)await controller.Details(1);
+
+        //Assert
+        Assert.That(result.Model, Is.Not.EqualTo(null));
+        Assert.That(result.Model, Is.InstanceOf&amp;lt;MyBo1&amp;gt;());
+        Assert.That((result.Model as MyBo1).Oid, Is.EqualTo(1));
+        Assert.That((result.Model as MyBo1).MyName, Is.EqualTo(&quot;Test&quot;));
+        mockRepository.Verify(m =&amp;gt; m.GetBusinessObjectById(1), Times.Exactly(1));
+    }
+
+    [Test]
+    public  void Create_Does_Not_Call_Repo()
+    {
+        //Arrange
+        var mockRepository = new Mock&amp;lt;IBusinessObjectRepository&amp;gt;();
+        var controller = new BOController(mockRepository.Object);
+
+        //Act
+        var result = (ViewResult) controller.Create();
+
+        //Assert
+        mockRepository.Verify(m =&amp;gt; m.GetBusinessObjectById(1), Times.Exactly(0));
+    }
+
+    [Test]
+    public async void Create_Does_Call_Repo_Correct()
+    {
+        //Arrange
+        var mockRepository = new Mock&amp;lt;IBusinessObjectRepository&amp;gt;();
+        mockRepository.Setup(m =&amp;gt; m.Save(It.IsAny&amp;lt;MyBo1&amp;gt;()));
+        var controller = new BOController(mockRepository.Object);
+
+        var expected = new MyBo1() {MyName = &quot;Test&quot;};
+        //Act
+        var result = (ViewResult)await controller.Create(expected);
+
+        //Assert
+        mockRepository.Verify(m =&amp;gt; m.Save(expected), Times.Exactly(1));
+    }
+
+    [Test]
+    public async void Edit_Does_Call_Repo_Correct()
+    {
+        //Arrange
+        var mockRepository = new Mock&amp;lt;IBusinessObjectRepository&amp;gt;();
+        mockRepository.Setup(m =&amp;gt; m.GetBusinessObjectById(It.IsAny&amp;lt;int&amp;gt;())).Returns(() =&amp;gt; Task.Run(() =&amp;gt; new MyBo1 { Oid = 1, MyName = &quot;Test&quot; }));
+        var controller = new BOController(mockRepository.Object);
+
+        //Act
+        var result = (ViewResult)await controller.Edit(1);
+
+        //Assert
+        Assert.That(result.Model, Is.Not.EqualTo(null));
+        Assert.That(result.Model, Is.InstanceOf&amp;lt;MyBo1&amp;gt;());
+        Assert.That((result.Model as MyBo1).Oid, Is.EqualTo(1));
+        Assert.That((result.Model as MyBo1).MyName, Is.EqualTo(&quot;Test&quot;));
+        mockRepository.Verify(m =&amp;gt; m.GetBusinessObjectById(1), Times.Exactly(1));
+    }
+
+    [Test]
+    public async void Edit_Will_Update_Call_Repo_Correct()
+    {
+        //Arrange
+        var mockRepository = new Mock&amp;lt;IBusinessObjectRepository&amp;gt;();
+        mockRepository.Setup(m =&amp;gt; m.Save(It.IsAny&amp;lt;int&amp;gt;(), It.IsAny&amp;lt;MyBo1&amp;gt;()));
+
+        var controller = new BOController(mockRepository.Object);
+
+        var expected = new MyBo1() {MyName = &quot;Update&quot;};
+        //Act
+        var result = (RedirectToRouteResult)await controller.Edit(1, expected);
+
+        //Assert
+        mockRepository.Verify(m =&amp;gt; m.Save(1, expected), Times.Exactly(1));
+    }
+
+    [Test]
+    public async void Delete_Will_Call_Repo_Correct()
+    {
+        //Arrange
+        var mockRepository = new Mock&amp;lt;IBusinessObjectRepository&amp;gt;();
+        mockRepository.Setup(m =&amp;gt; m.GetBusinessObjectById(It.IsAny&amp;lt;int&amp;gt;())).Returns(() =&amp;gt; Task.Run(() =&amp;gt; new MyBo1 { Oid = 1, MyName = &quot;Test&quot; }));
+
+        var controller = new BOController(mockRepository.Object);
+
+        //Act
+        var result = (ViewResult)await controller.Delete(1);
+
+        //Assert
+        mockRepository.Verify(m =&amp;gt; m.GetBusinessObjectById(1), Times.Exactly(1));
+    }
+
+    [Test]
+    public async void Delete_Will_Call_Repo_Delete_Correct()
+    {
+        //Arrange
+        var mockRepository = new Mock&amp;lt;IBusinessObjectRepository&amp;gt;();
+        mockRepository.Setup(m =&amp;gt; m.Delete(It.IsAny&amp;lt;int&amp;gt;()));
+
+        var controller = new BOController(mockRepository.Object);
+
+        var expected = new MyBo1() { MyName = &quot;Update&quot; };
+        //Act
+        var result = (ViewResult)await controller.Delete(1, expected);
+
+        //Assert
+        mockRepository.Verify(m =&amp;gt; m.Delete(1), Times.Exactly(1));
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h2 id=&quot;views&quot;&gt;Views&lt;/h2&gt;
+&lt;p&gt;Let’s modify the scaffolded views:&lt;/p&gt;
+
+&lt;p&gt;Create.cshtml&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;@model XAFDISolution.DTO.MyBo1
+
+@{
+    ViewBag.Title = &quot;View2&quot;;
+}
+
+&amp;lt;h2&amp;gt;View2&amp;lt;/h2&amp;gt;
+
+@using (Html.BeginForm()) {
+    @Html.ValidationSummary(true)
+
+    &amp;lt;fieldset&amp;gt;
+        &amp;lt;legend&amp;gt;MyBo1&amp;lt;/legend&amp;gt;
+        
+        &amp;lt;div class=&quot;editor-label&quot;&amp;gt;
+            @Html.LabelFor(model =&amp;gt; model.MyName)
+        &amp;lt;/div&amp;gt;
+        &amp;lt;div class=&quot;editor-field&quot;&amp;gt;
+            @Html.EditorFor(model =&amp;gt; model.MyName)
+            @Html.ValidationMessageFor(model =&amp;gt; model.MyName)
+        &amp;lt;/div&amp;gt;
+
+        &amp;lt;p&amp;gt;
+            &amp;lt;input type=&quot;submit&quot; value=&quot;Create&quot; /&amp;gt;
+        &amp;lt;/p&amp;gt;
+    &amp;lt;/fieldset&amp;gt;
+}
+
+&amp;lt;div&amp;gt;
+    @Html.ActionLink(&quot;Back to List&quot;, &quot;Index&quot;)
+&amp;lt;/div&amp;gt;
+
+@section Scripts {
+    @Scripts.Render(&quot;~/bundles/jqueryval&quot;)
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Delete.cshtml&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;@model XAFDISolution.DTO.MyBo1
+
+@{
+    ViewBag.Title = &quot;Delete&quot;;
+}
+
+&amp;lt;h2&amp;gt;Delete&amp;lt;/h2&amp;gt;
+
+&amp;lt;h3&amp;gt;Are you sure you want to delete this?&amp;lt;/h3&amp;gt;
+&amp;lt;fieldset&amp;gt;
+    &amp;lt;legend&amp;gt;MyBo1&amp;lt;/legend&amp;gt;
+
+    &amp;lt;div class=&quot;display-label&quot;&amp;gt;
+         @Html.DisplayNameFor(model =&amp;gt; model.Oid)
+    &amp;lt;/div&amp;gt;
+    &amp;lt;div class=&quot;display-field&quot;&amp;gt;
+        @Html.DisplayFor(model =&amp;gt; model.Oid)
+    &amp;lt;/div&amp;gt;
+
+    &amp;lt;div class=&quot;display-label&quot;&amp;gt;
+         @Html.DisplayNameFor(model =&amp;gt; model.MyName)
+    &amp;lt;/div&amp;gt;
+    &amp;lt;div class=&quot;display-field&quot;&amp;gt;
+        @Html.DisplayFor(model =&amp;gt; model.MyName)
+    &amp;lt;/div&amp;gt;
+&amp;lt;/fieldset&amp;gt;
+@using (Html.BeginForm()) {
+    &amp;lt;p&amp;gt;
+        &amp;lt;input type=&quot;submit&quot; value=&quot;Delete&quot; /&amp;gt; |
+        @Html.ActionLink(&quot;Back to List&quot;, &quot;Index&quot;)
+    &amp;lt;/p&amp;gt;
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Details.cshtml&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;@model XAFDISolution.DTO.MyBo1
+
+@{
+    ViewBag.Title = &quot;Details&quot;;
+}
+
+&amp;lt;h2&amp;gt;Details&amp;lt;/h2&amp;gt;
+
+&amp;lt;fieldset&amp;gt;
+    &amp;lt;legend&amp;gt;MyBo1&amp;lt;/legend&amp;gt;
+
+    &amp;lt;div class=&quot;display-label&quot;&amp;gt;
+         @Html.DisplayNameFor(model =&amp;gt; model.Oid)
+    &amp;lt;/div&amp;gt;
+    &amp;lt;div class=&quot;display-field&quot;&amp;gt;
+        @Html.DisplayFor(model =&amp;gt; model.Oid)
+    &amp;lt;/div&amp;gt;
+
+    &amp;lt;div class=&quot;display-label&quot;&amp;gt;
+         @Html.DisplayNameFor(model =&amp;gt; model.MyName)
+    &amp;lt;/div&amp;gt;
+    &amp;lt;div class=&quot;display-field&quot;&amp;gt;
+        @Html.DisplayFor(model =&amp;gt; model.MyName)
+    &amp;lt;/div&amp;gt;
+&amp;lt;/fieldset&amp;gt;
+&amp;lt;p&amp;gt;
+    @Html.ActionLink(&quot;Edit&quot;, &quot;Edit&quot;, new { id=Model.Oid  }) |
+    @Html.ActionLink(&quot;Back to List&quot;, &quot;Index&quot;)
+&amp;lt;/p&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Edit.cshtml&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;@model XAFDISolution.DTO.MyBo1
+
+@{
+    ViewBag.Title = &quot;Edit&quot;;
+}
+
+&amp;lt;h2&amp;gt;Edit&amp;lt;/h2&amp;gt;
+
+@using (Html.BeginForm()) {
+    @Html.ValidationSummary(true)
+
+    &amp;lt;fieldset&amp;gt;
+        &amp;lt;legend&amp;gt;MyBo1&amp;lt;/legend&amp;gt;
+
+        &amp;lt;div class=&quot;editor-label&quot;&amp;gt;
+            @Model.Oid
+        &amp;lt;/div&amp;gt;
+        
+        &amp;lt;div class=&quot;editor-label&quot;&amp;gt;
+            @Html.LabelFor(model =&amp;gt; model.MyName)
+        &amp;lt;/div&amp;gt;
+        &amp;lt;div class=&quot;editor-field&quot;&amp;gt;
+            @Html.EditorFor(model =&amp;gt; model.MyName)
+            @Html.ValidationMessageFor(model =&amp;gt; model.MyName)
+        &amp;lt;/div&amp;gt;
+
+        &amp;lt;p&amp;gt;
+            &amp;lt;input type=&quot;submit&quot; value=&quot;Save&quot; /&amp;gt;
+        &amp;lt;/p&amp;gt;
+    &amp;lt;/fieldset&amp;gt;
+}
+
+&amp;lt;div&amp;gt;
+    @Html.ActionLink(&quot;Back to List&quot;, &quot;Index&quot;)
+&amp;lt;/div&amp;gt;
+
+@section Scripts {
+    @Scripts.Render(&quot;~/bundles/jqueryval&quot;)
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Index.cshtml&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;@model IEnumerable&amp;lt;XAFDISolution.DTO.MyBo1&amp;gt;
+
+@{
+    ViewBag.Title = &quot;View1&quot;;
+}
+
+&amp;lt;h2&amp;gt;View1&amp;lt;/h2&amp;gt;
+
+&amp;lt;p&amp;gt;
+    @Html.ActionLink(&quot;Create New&quot;, &quot;Create&quot;)
+&amp;lt;/p&amp;gt;
+&amp;lt;table&amp;gt;
+    &amp;lt;tr&amp;gt;
+        &amp;lt;th&amp;gt;
+            @Html.DisplayNameFor(model =&amp;gt; model.Oid)
+        &amp;lt;/th&amp;gt;
+        &amp;lt;th&amp;gt;
+            @Html.DisplayNameFor(model =&amp;gt; model.MyName)
+        &amp;lt;/th&amp;gt;
+        &amp;lt;th&amp;gt;&amp;lt;/th&amp;gt;
+    &amp;lt;/tr&amp;gt;
+
+@foreach (var item in Model) {
+    &amp;lt;tr&amp;gt;
+        &amp;lt;td&amp;gt;
+            @Html.DisplayFor(modelItem =&amp;gt; item.Oid)
+        &amp;lt;/td&amp;gt;
+        &amp;lt;td&amp;gt;
+            @Html.DisplayFor(modelItem =&amp;gt; item.MyName)
+        &amp;lt;/td&amp;gt;
+        &amp;lt;td&amp;gt;
+            @Html.ActionLink(&quot;Edit&quot;, &quot;Edit&quot;, new { id=item.Oid }) |
+            @Html.ActionLink(&quot;Details&quot;, &quot;Details&quot;, new { id=item.Oid }) |
+            @Html.ActionLink(&quot;Delete&quot;, &quot;Delete&quot;, new { id=item.Oid })
+        &amp;lt;/td&amp;gt;
+    &amp;lt;/tr&amp;gt;
+}
+
+&amp;lt;/table&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h2 id=&quot;action&quot;&gt;Action!&lt;/h2&gt;
+
+&lt;p&gt;List:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;http://blog.paraoffice.at/get/screenshots/XAFDISolution3/MVC_List.png&quot; alt=&quot;List MVC&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Create:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;http://blog.paraoffice.at/get/screenshots/XAFDISolution3/MVC_Create.png&quot; alt=&quot;MVC Create&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Result:
+&lt;img src=&quot;http://blog.paraoffice.at/get/screenshots/XAFDISolution3/MVC_Create2.png&quot; alt=&quot;MVC Create Result&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Details:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;http://blog.paraoffice.at/get/screenshots/XAFDISolution3/MVC_Details.png&quot; alt=&quot;MVC Details&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Edit:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;http://blog.paraoffice.at/get/screenshots/XAFDISolution3/MVC_Edit.png&quot; alt=&quot;MVC Edit&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Result:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;http://blog.paraoffice.at/get/screenshots/XAFDISolution3/MVC_Edit1.png&quot; alt=&quot;MVC Edit Result&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Delete:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;http://blog.paraoffice.at/get/screenshots/XAFDISolution3/MVC_Delete.png&quot; alt=&quot;MVC Delete&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Result:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;http://blog.paraoffice.at/get/screenshots/XAFDISolution3/MVC_Delete1.png&quot; alt=&quot;MVC Delete Result&quot; /&gt;&lt;/p&gt;
+
+&lt;h1 id=&quot;missing-parts&quot;&gt;Missing Parts&lt;/h1&gt;
+
+&lt;p&gt;The one missing part is how to apply custom business logic for the XPO Object (Rename me, remember?). This will be covered in a future blog post.&lt;/p&gt;
+
+&lt;h2 id=&quot;check-out-the-sources&quot;&gt;Check out the sources&lt;/h2&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;&lt;a href=&quot;https://bitbucket.org/biohazard999/xafdisolution&quot;&gt;Bitbucket&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+</description>
+                <link>http://biohazard999.github.io/2013/03/03/how-to-use-dependency-injection-in-xaf-aspnet-webapiwebmvc-part-3</link>
+                <guid>http://biohazard999.github.io/2013/03/03/how-to-use-dependency-injection-in-xaf-aspnet-webapiwebmvc-part-3</guid>
+                <pubDate>2013-03-03T00:00:00+01:00</pubDate>
+        </item>
+
+        <item>
+                <title>How to use Dependency Injection in XAF (ASP.NET Custom Actions) Part 4</title>
+                <description>
+&lt;h1 id=&quot;how-to-use-dependency-injection-in-xaf-aspnet-custom-actions-part-4&quot;&gt;How to use Dependency Injection in XAF (ASP.NET Custom Actions) Part 4&lt;/h1&gt;
+
+&lt;p&gt;Now we get to the interesting part. Dependency Injection for an &lt;a href=&quot;http://www.asp.net/web-api/overview/web-api-routing-and-actions/routing-and-action-selection&quot;&gt;ApiAction&lt;/a&gt;.&lt;/p&gt;
+
+&lt;p&gt;The interface of the &lt;a href=&quot;http://blog.paraoffice.at/how-to-use-dependency-injection-in-xaf&quot;&gt;first blog post&lt;/a&gt; &lt;code&gt;IRenamer&lt;/code&gt; looks like this:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;public interface IRenamer
+{
+    void RenameMe(MyBo1 myBo1);
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Our implementation from WebApi looks like this&lt;/p&gt;
+
+ 	public class WebApiRenamer : IRenamer
+&lt;pre&gt;&lt;code&gt;{
+    public void RenameMe(MyBo1 myBo1)
+    {
+        myBo1.MyName = string.Format(&quot;I was renamed by &#39;{0}&#39;. Original Name &#39;{1}&#39;&quot;, typeof (WebApiRenamer).FullName, myBo1.MyName);
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Now we should register our &lt;code&gt;Renamer&lt;/code&gt; in the &lt;code&gt;Bootstrapper&lt;/code&gt;:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;public static class Bootstrapper
+{
+    public static void Initialise()
+    {
+        var container = BuildUnityContainer();
+
+        GlobalConfiguration.Configuration.DependencyResolver = new Unity.WebApi.UnityDependencyResolver(container);
+    }
+
+    private static IUnityContainer BuildUnityContainer()
+    {
+        var unityContainer = new UnityContainer();
+
+        unityContainer.RegisterType&amp;lt;IDataLayerHelper, DataLayerHelper&amp;gt;(new ContainerControlledLifetimeManager());
+        unityContainer.RegisterType&amp;lt;IXpoHelper, XpoHelper&amp;gt;();
+        unityContainer.RegisterType&amp;lt;IBusinessObjectRepository, MyBo1Repository&amp;gt;();
+        unityContainer.RegisterType&amp;lt;IRenamer, WebApiRenamer&amp;gt;();
+
+        return unityContainer;
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h2 id=&quot;the-webapirepository&quot;&gt;The WebApiRepository&lt;/h2&gt;
+
+&lt;p&gt;We need to extend the &lt;code&gt;IBusinessObjectRepository&lt;/code&gt; with the method &lt;code&gt;Rename&lt;/code&gt; that takes the &lt;code&gt;id&lt;/code&gt; of an BusinessObject and returns it’s &lt;code&gt;id&lt;/code&gt;:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;public interface IBusinessObjectRepository
+{
+    Task&amp;lt;IEnumerable&amp;lt;MyBo1&amp;gt;&amp;gt; GetBusinessObjects();
+
+    Task&amp;lt;MyBo1&amp;gt; GetBusinessObjectById(int id);
+
+    Task&amp;lt;MyBo1&amp;gt; Save(MyBo1 bo);
+
+    Task&amp;lt;MyBo1&amp;gt; Delete(int id);
+
+    Task&amp;lt;MyBo1&amp;gt; Save(int id, MyBo1 bo);
+
+    Task&amp;lt;int&amp;gt; Rename(int id);
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;The implementation can look like this:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;public class MyBo1Repository : IBusinessObjectRepository
+{
+    //...
+
+    public Task&amp;lt;MyBo1&amp;gt; Rename(int id)
+    {
+        return Task.Run(() =&amp;gt;
+        {
+            var bo = this.BusinessObjectsXPO.FirstOrDefault(m =&amp;gt; m.Oid == id);
+
+            if (bo != null)
+            {
+                bo.RenameMe();
+
+                bo.Session.CommitTransaction();
+
+                return CreateBusinessObject(bo);
+            }
+            return null;
+        });
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Let’s test this:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;[Test]
+public async void Rename_Will_Be_Called_Correctly()
+{
+    var unityContainer = new UnityContainer();
+
+    var mockRenamer = new Mock&amp;lt;IRenamer&amp;gt;();
+    mockRenamer.Setup(m =&amp;gt; m.RenameMe(It.IsAny&amp;lt;Module.BusinessObjects.MyBo1&amp;gt;()));
+
+    unityContainer.RegisterInstance&amp;lt;IRenamer&amp;gt;(mockRenamer.Object);
+
+    //Arrange
+    var xpoHelper = new XpoHelper(unityContainer, CreateDataLayer());
+
+    var session = xpoHelper.GetNewSession();
+
+    var bo = new Module.BusinessObjects.MyBo1(session);
+
+    bo.MyName = &quot;TestName&quot;;
+
+    session.CommitTransaction();
+
+    var oid = session.FindObject&amp;lt;Module.BusinessObjects.MyBo1&amp;gt;(null).Oid;
+
+    var repo = new MyBo1Repository(xpoHelper);
+
+    //Act
+
+    var result = await repo.Rename(oid);
+
+    //Assert
+    Assert.That(result, Is.Not.Null);
+    Assert.That(result.Oid, Is.EqualTo(1));
+    Assert.That(result.MyName, Is.EqualTo(&quot;TestName&quot;));
+
+    mockRenamer.Verify(m =&amp;gt; m.RenameMe(It.IsAny&amp;lt;Module.BusinessObjects.MyBo1&amp;gt;()), Times.Exactly(1));
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Also test the Real implementation:&lt;/p&gt;
+
+ 	[TestFixture]
+&lt;pre&gt;&lt;code&gt;[Category(&quot;CI&quot;)]
+public class WebApiRenamerTest
+{
+    [Test]
+    public void Ctor_Does_Not_Throw_An_Exception()
+    {
+        //Arrange / Act / Assert
+        Assert.DoesNotThrow(() =&amp;gt;
+        {
+            var renamer = new WebApiRenamer();
+
+            Assert.That(renamer, Is.InstanceOf&amp;lt;WebApiRenamer&amp;gt;());
+        });
+    }
+
+    [Test]
+    public void Rename_Does_Rename_Object()
+    {
+        //Arrange
+        var renamer = new WebApiRenamer();
+
+        var session = new Session(new SimpleDataLayer(new InMemoryDataStore()));
+        var bo = new MyBo1(session);
+        bo.MyName = &quot;Test&quot;;
+
+        //Act
+        renamer.RenameMe(bo);
+
+        //Assert
+        Assert.That(bo.MyName, Is.EqualTo(&quot;I was renamed by &#39;XAFDISolution.WebApi.Domain.WebApiRenamer&#39;. Original Name &#39;Test&#39;&quot;));
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h2 id=&quot;the-webapicontroller&quot;&gt;The WebApiController&lt;/h2&gt;
+
+&lt;p&gt;Extend the &lt;code&gt;MyBusinessObjectController&lt;/code&gt; with the &lt;code&gt;Rename&lt;/code&gt; method:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;// PUT api/MyBusinessObject/5
+[HttpPut]
+public async Task&amp;lt;MyBo1&amp;gt; Rename(int id)
+{
+    return await _repository.Rename(id);
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;The &lt;code&gt;HttpPutAttribute&lt;/code&gt; tells the framework that this will be a &lt;code&gt;Put-Http-Request&lt;/code&gt;.&lt;/p&gt;
+
+&lt;p&gt;Test it:&lt;/p&gt;
+
+ 	[Test]
+&lt;pre&gt;&lt;code&gt;public async void Rename_Will_Call_Rename_And_Return_TheObject()
+{
+    //Arrange
+    var mockRepo = new Mock&amp;lt;IBusinessObjectRepository&amp;gt;();
+    mockRepo.Setup(m =&amp;gt; m.Rename(It.IsAny&amp;lt;int&amp;gt;())).Returns(() =&amp;gt; Task.Run(() =&amp;gt; new MyBo1(){MyName = &quot;Renamed&quot;}));
+
+    var controller = new MyBusinessObjectController(mockRepo.Object);
+
+    //Act
+    var actual = await controller.Rename(1);
+
+    //Assert
+    Assert.That(actual, Is.Not.Null);
+    Assert.That(actual.MyName, Is.EqualTo(&quot;Renamed&quot;));
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h2 id=&quot;fiddler&quot;&gt;Fiddler!&lt;/h2&gt;
+&lt;p&gt;One thing we need to tell WebApi how to handle routes with a custom pattern:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;public class RouteConfig
+{
+    public static void RegisterRoutes(RouteCollection routes)
+    {
+        routes.IgnoreRoute(&quot;{resource}.axd/{*pathInfo}&quot;);
+
+        routes.MapRoute(
+            name: &quot;Default&quot;,
+            url: &quot;{controller}/{action}/{id}&quot;,
+            defaults: new { controller = &quot;Home&quot;, action = &quot;Index&quot;, id = UrlParameter.Optional }
+        );
+
+        routes.MapHttpRoute(
+            name: &quot;DefaultApi2&quot;,
+            routeTemplate: &quot;api/{controller}/{action}/{id}&quot;,
+            defaults: new { id = RouteParameter.Optional }
+        );
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;The &lt;code&gt;DefaultApi2&lt;/code&gt; will handle our custom actions that will accept a id in the url.&lt;/p&gt;
+
+&lt;p&gt;Then we can call fiddler:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;http://blog.paraoffice.at/get/screenshots/XAFDISolution4/fiddler.png&quot; alt=&quot;Call Fiddler&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Result: &lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;http://blog.paraoffice.at/get/screenshots/XAFDISolution4/fiddler2.png&quot; alt=&quot;Result from fiddler&quot; /&gt;&lt;/p&gt;
+
+&lt;h1 id=&quot;webmvc&quot;&gt;WebMvc&lt;/h1&gt;
+
+&lt;h2 id=&quot;repository&quot;&gt;Repository&lt;/h2&gt;
+
+&lt;p&gt;We need to extend the &lt;code&gt;WebApiBoRepository&lt;/code&gt;:&lt;/p&gt;
+
+ 	public async Task&lt;mybo1&gt; Rename(int id)
+&lt;/mybo1&gt;&lt;pre&gt;&lt;code&gt;{
+    var client = CreateHttpClient();
+
+    var response = await client.PutAsync(&quot;api/MyBusinessObject/Rename/&quot; + id, new MyBo1(), new JsonMediaTypeFormatter());
+
+    response.EnsureSuccessStatusCode();
+
+    return await response.Content.ReadAsAsync&amp;lt;MyBo1&amp;gt;();
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h2 id=&quot;controller&quot;&gt;Controller&lt;/h2&gt;
+
+&lt;p&gt;The &lt;code&gt;BOController&lt;/code&gt; must be extended:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;//
+// POST: /BO/Rename/5
+[HttpPut]
+public async Task&amp;lt;ActionResult&amp;gt; Rename(int id)
+{
+    if (ModelState.IsValid)
+    {
+        try
+        {
+            var bo = await _repository.Rename(id);
+
+            return RedirectToAction(&quot;Details&quot;, bo);
+        }
+        catch
+        {
+            return View(&quot;Index&quot;);
+        }
+    }
+    return View(&quot;Index&quot;);
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Test it:&lt;/p&gt;
+
+ 	[Test]
+&lt;pre&gt;&lt;code&gt;public async void Rename_Will_Call_Repo_Rename_Correct()
+{
+    //Arrange
+    var mockRepository = new Mock&amp;lt;IBusinessObjectRepository&amp;gt;();
+    mockRepository.Setup(m =&amp;gt; m.Rename(It.IsAny&amp;lt;int&amp;gt;())).Returns(() =&amp;gt; Task.Run(() =&amp;gt; new MyBo1() { Oid = 1}));
+
+    var controller = new BOController(mockRepository.Object);
+
+    
+    //Act
+    var result = (RedirectToRouteResult)await controller.Rename(1);
+
+    //Assert
+    mockRepository.Verify(m =&amp;gt; m.Rename(1), Times.Exactly(1));
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Extent the Index.cshtml:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;@model IEnumerable&amp;lt;XAFDISolution.DTO.MyBo1&amp;gt;
+
+@{
+    ViewBag.Title = &quot;View1&quot;;
+}
+
+&amp;lt;h2&amp;gt;View1&amp;lt;/h2&amp;gt;
+
+&amp;lt;p&amp;gt;
+    @Html.ActionLink(&quot;Create New&quot;, &quot;Create&quot;)
+&amp;lt;/p&amp;gt;
+&amp;lt;table&amp;gt;
+    &amp;lt;tr&amp;gt;
+        &amp;lt;th&amp;gt;
+            @Html.DisplayNameFor(model =&amp;gt; model.Oid)
+        &amp;lt;/th&amp;gt;
+        &amp;lt;th&amp;gt;
+            @Html.DisplayNameFor(model =&amp;gt; model.MyName)
+        &amp;lt;/th&amp;gt;
+        &amp;lt;th&amp;gt;&amp;lt;/th&amp;gt;
+    &amp;lt;/tr&amp;gt;
+
+@foreach (var item in Model) {
+    &amp;lt;tr&amp;gt;
+        &amp;lt;td&amp;gt;
+            @Html.DisplayFor(modelItem =&amp;gt; item.Oid)
+        &amp;lt;/td&amp;gt;
+        &amp;lt;td&amp;gt;
+            @Html.DisplayFor(modelItem =&amp;gt; item.MyName)
+        &amp;lt;/td&amp;gt;
+        &amp;lt;td&amp;gt;
+            @Html.ActionLink(&quot;Edit&quot;, &quot;Edit&quot;, new { id=item.Oid }) |
+            @Html.ActionLink(&quot;Details&quot;, &quot;Details&quot;, new { id=item.Oid }) |
+            @Html.ActionLink(&quot;Delete&quot;, &quot;Delete&quot;, new { id=item.Oid })
+            @Html.ActionLink(&quot;Rename&quot;, &quot;Rename&quot;, new { id=item.Oid })
+        &amp;lt;/td&amp;gt;
+    &amp;lt;/tr&amp;gt;
+}
+
+&amp;lt;/table&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h1 id=&quot;action&quot;&gt;Action!&lt;/h1&gt;
+
+&lt;p&gt;&lt;img src=&quot;http://blog.paraoffice.at/get/screenshots/XAFDISolution4/MVC.png&quot; alt=&quot;Call it&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;http://blog.paraoffice.at/get/screenshots/XAFDISolution4/MVC2.png&quot; alt=&quot;See the action!&quot; /&gt;&lt;/p&gt;
+
+&lt;h2 id=&quot;source-is-updated&quot;&gt;Source is updated:&lt;/h2&gt;
+
+&lt;p&gt;See &lt;a href=&quot;https://bitbucket.org/biohazard999/xafdisolution&quot;&gt;here&lt;/a&gt;.&lt;/p&gt;
+
+</description>
+                <link>http://biohazard999.github.io/2013/03/03/how-to-use-dependency-injection-in-xaf-aspnet-custom-actions-part-4</link>
+                <guid>http://biohazard999.github.io/2013/03/03/how-to-use-dependency-injection-in-xaf-aspnet-custom-actions-part-4</guid>
+                <pubDate>2013-03-03T00:00:00+01:00</pubDate>
         </item>
 
         <item>
@@ -343,6 +3185,1339 @@ $(ProjectDir)
                 <link>http://biohazard999.github.io/2013/02/22/real-mtier-with-devexpress-part1</link>
                 <guid>http://biohazard999.github.io/2013/02/22/real-mtier-with-devexpress-part1</guid>
                 <pubDate>2013-02-22T00:00:00+01:00</pubDate>
+        </item>
+
+        <item>
+                <title>How to use Dependency Injection in XAF (UnitTesting) Part 2</title>
+                <description>
+&lt;h1 id=&quot;how-to-unittest-a-xafxpo-application&quot;&gt;How to UnitTest a XAF/XPO application?&lt;/h1&gt;
+
+&lt;p&gt;It’s not a really easy task to correctly UnitTest a XAF/XPO application, but as we all know, UnitTesting is a very important part of our work today.&lt;/p&gt;
+
+&lt;h2 id=&quot;why&quot;&gt;Why?&lt;/h2&gt;
+
+&lt;p&gt;Cause nobody can know all impacts a change can make in an application.&lt;/p&gt;
+
+&lt;h2 id=&quot;how&quot;&gt;How?&lt;/h2&gt;
+
+&lt;p&gt;I’ve written a bunch of little helpers to accomplish this tasks:&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;&lt;code&gt;XpoTest&lt;/code&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;code&gt;XafTest&lt;/code&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;code&gt;XafModelTestHelper&lt;/code&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h3 id=&quot;xpotest&quot;&gt;XpoTest&lt;/h3&gt;
+&lt;p&gt;I prefer this kind of test cause it is horrible fast and only tests model classes. Perfect to test DomainLogic.&lt;/p&gt;
+
+&lt;p&gt;This baseclass provides all you need to test a business object in memory (and of course with &lt;code&gt;Unity&lt;/code&gt;)&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;public abstract class XpoTest
+{
+    private TestHelper _Helper;
+    protected TestHelper GetHelper()
+    {
+        if (_Helper == null)
+        {
+            _Helper = GetHelperCore();
+            InitUnityContainer(_Helper.UnityContainer);
+        }
+        return _Helper;
+    }
+
+    protected virtual void InitUnityContainer(IUnityContainer unityContainer)
+    {
+
+    }
+
+    protected virtual TestHelper GetHelperCore()
+    {
+        return TestHelper.NewInstanceXpo();
+    }
+
+    protected Session CreateSession()
+    {
+        return GetHelper().GetNewObjectSpace().GetSession();
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;There are currently 5 generic versions of this class to provide a easy to read, and convention based approach to unit-test our classes:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;public abstract class XpoTest&amp;lt;T, T2, T3, T4, T5&amp;gt; : XpoTest
+{
+    protected override TestHelper GetHelperCore()
+    {
+        return TestHelper.NewInstanceXpo&amp;lt;T, T2, T3, T4, T5&amp;gt;();
+    }
+}
+
+public abstract class XpoTest&amp;lt;T, T2, T3, T4&amp;gt; : XpoTest
+{
+    protected override TestHelper GetHelperCore()
+    {
+        return TestHelper.NewInstanceXpo&amp;lt;T, T2, T3, T4&amp;gt;();
+    }
+}
+
+public abstract class XpoTest&amp;lt;T, T2, T3&amp;gt; : XpoTest
+{
+    protected override TestHelper GetHelperCore()
+    {
+        return TestHelper.NewInstanceXpo&amp;lt;T, T2, T3&amp;gt;();
+    }
+}
+
+public abstract class XpoTest&amp;lt;T, T2&amp;gt; : XpoTest
+{
+    protected override TestHelper GetHelperCore()
+    {
+        return TestHelper.NewInstanceXpo&amp;lt;T, T2&amp;gt;();
+    }
+}
+
+public abstract class XpoTest&amp;lt;T&amp;gt; : XpoTest
+{
+    protected override TestHelper GetHelperCore()
+    {
+        return TestHelper.NewInstanceXpo&amp;lt;T&amp;gt;();
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;It uses the &lt;code&gt;TestHelper&lt;/code&gt; class which does all the bootstrapping for you:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;public class TestHelper
+{
+    public IUnityContainer UnityContainer { get; set; }
+
+    private IObjectSpaceProvider ObjectSpaceProvider;
+
+    public static TestHelper NewInstance()
+    {
+        return new TestHelper();
+    }
+
+    public static TestHelper NewInstanceXpo(params Type[] types)
+    {
+        return new TestHelper();
+    }
+
+    public static TestHelper NewInstanceXpo&amp;lt;T&amp;gt;()
+    {
+        return NewInstanceXaf(typeof(T));
+    }
+
+    public static TestHelper NewInstanceXpo&amp;lt;T, T2&amp;gt;()
+    {
+        return NewInstanceXaf(typeof(T), typeof(T2));
+    }
+
+    public static TestHelper NewInstanceXpo&amp;lt;T, T2, T3&amp;gt;()
+    {
+        return NewInstanceXaf(typeof(T), typeof(T2), typeof(T3));
+    }
+
+    public static TestHelper NewInstanceXpo&amp;lt;T, T2, T3, T4&amp;gt;()
+    {
+        return NewInstanceXaf(typeof(T), typeof(T2), typeof(T3), typeof(T4));
+    }
+
+    public static TestHelper NewInstanceXpo&amp;lt;T, T2, T3, T4, T5&amp;gt;()
+    {
+        return NewInstanceXaf(typeof(T), typeof(T2), typeof(T3), typeof(T4), typeof(T5));
+    }
+
+    public static TestHelper NewInstanceXaf(params Type[] types)
+    {
+        XafTypesInfo.Reset();
+
+        if (XafTypesInfo.PersistentEntityStore == null)
+            XafTypesInfo.SetPersistentEntityStore(new XpoTypeInfoSource(XafTypesInfo.Instance as TypesInfo));
+
+        foreach (var typeToRegister in types)
+            XafTypesInfo.Instance.RegisterEntity(typeToRegister);
+
+        return new TestHelper();
+    }
+
+    public static TestHelper NewInstanceXaf&amp;lt;T&amp;gt;()
+    {
+        return NewInstanceXaf(typeof(T));
+    }
+
+    public static TestHelper NewInstanceXaf&amp;lt;T, T2&amp;gt;()
+    {
+        return NewInstanceXaf(typeof(T), typeof(T2));
+    }
+
+    public static TestHelper NewInstanceXaf&amp;lt;T, T2, T3&amp;gt;()
+    {
+        return NewInstanceXaf(typeof(T), typeof(T2), typeof(T3));
+    }
+
+    public static TestHelper NewInstanceXaf&amp;lt;T, T2, T3, T4&amp;gt;()
+    {
+        return NewInstanceXaf(typeof(T), typeof(T2), typeof(T3), typeof(T4));
+    }
+
+    public static TestHelper NewInstanceXaf&amp;lt;T, T2, T3, T4, T5&amp;gt;()
+    {
+        return NewInstanceXaf(typeof(T), typeof(T2), typeof(T3), typeof(T4), typeof(T5));
+    }
+
+    public TestHelper AutoMock()
+    {
+        UnityContainer.AddNewExtension&amp;lt;AutoMockingContainerExtension&amp;gt;();
+        return this;
+    }
+
+    public TestHelper()
+    {
+        UnityContainer = new UnityContainer();
+    }
+
+    public IObjectSpace GetNewObjectSpace(bool generateIds = true)
+    {
+        ObjectSpaceProvider = new UnityObjectSpaceProvider(new MemoryDataStoreProvider(), UnityContainer);
+        var OS = ObjectSpaceProvider.CreateObjectSpace();
+
+        if (generateIds)
+            (OS as UnityObjectSpace).ObjectNewInObjectSpace += ChannelTestsHelper_ObjectNewInObjectSpace;
+
+        return OS;
+    }
+
+    private static void ChannelTestsHelper_ObjectNewInObjectSpace(object sender, ObjectNewInObjectSpaceEventArgs e)
+    {
+        var classInfo = (e.Object as IXPObject).ClassInfo;
+        if (!classInfo.IsPersistent)
+            return;
+
+        if (classInfo.KeyProperty.MemberType.IsAssignableFrom(typeof(int)))
+        {
+            classInfo.KeyProperty.SetValue(e.Object, IDGenerator.NextInt());
+        }
+
+        if (classInfo.KeyProperty.MemberType.IsAssignableFrom(typeof(Guid)))
+        {
+            classInfo.KeyProperty.SetValue(e.Object, IDGenerator.NextGuid());
+        }
+    }
+}
+
+static class TestExtensions
+{
+    internal static Session GetSession(this IObjectSpace os)
+    {
+        return (os as XPObjectSpace).Session;
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;With memory-datastores there is no auto-incrementing key, so we have to mimic this behaviour.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;public static class IDGenerator
+{
+    private static int Current = 0;
+
+    public static int NextInt()
+    {
+        Current++;
+        return Current;
+    }
+
+    public static Guid NextGuid()
+    {
+        return Guid.NewGuid();
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;It also provides support for &lt;a href=&quot;http://code.google.com/p/moq/&quot; title=&quot;Moq&quot;&gt;Moq&lt;/a&gt;, and &lt;a href=&quot;http://unity.codeplex.com/&quot; title=&quot;Unity&quot;&gt;Unity&lt;/a&gt; based &lt;a href=&quot;https://github.com/darrencauthon/AutoMoq&quot; title=&quot;AutoMoq&quot;&gt;AutoMoq&lt;/a&gt;.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;public static class MoqExtensions
+{
+    public static Mock&amp;lt;T&amp;gt; RegisterMock&amp;lt;T&amp;gt;(this IUnityContainer container, MockBehavior behavior = MockBehavior.Strict) where T : class
+    {
+        var mock = new Mock&amp;lt;T&amp;gt;(behavior);
+
+        container.RegisterInstance&amp;lt;Mock&amp;lt;T&amp;gt;&amp;gt;(mock);
+        container.RegisterInstance&amp;lt;T&amp;gt;(mock.Object);
+
+        return mock;
+    }
+
+    /// &amp;lt;summary&amp;gt;
+    /// Use this to add additional setups for a mock that is already registered
+    /// &amp;lt;/summary&amp;gt;
+    public static Mock&amp;lt;T&amp;gt; ConfigureMockFor&amp;lt;T&amp;gt;(this IUnityContainer container) where T : class
+    {
+        return container.Resolve&amp;lt;Mock&amp;lt;T&amp;gt;&amp;gt;();
+    }
+
+    public static void VerifyMockFor&amp;lt;T&amp;gt;(this IUnityContainer container) where T : class
+    {
+        container.Resolve&amp;lt;Mock&amp;lt;T&amp;gt;&amp;gt;().VerifyAll();
+    }
+}
+
+public class AutoMockingContainerExtension : UnityContainerExtension
+{
+    protected override void Initialize()
+    {
+        var strategy = new AutoMockingBuilderStrategy(Container);
+
+        Context.Strategies.Add(strategy, UnityBuildStage.PreCreation);
+    }
+
+    class AutoMockingBuilderStrategy : BuilderStrategy
+    {
+        private readonly IUnityContainer container;
+
+        public AutoMockingBuilderStrategy(IUnityContainer container)
+        {
+            this.container = container;
+        }
+
+        public override void PreBuildUp(IBuilderContext context)
+        {
+            var key = context.OriginalBuildKey;
+
+            if (key.Type.IsInterface &amp;amp;&amp;amp; !container.IsRegistered(key.Type))
+            {
+                context.Existing = CreateDynamicMock(key.Type);
+            }
+        }
+
+        private static object CreateDynamicMock(Type type)
+        {
+            var genericMockType = typeof(Mock&amp;lt;&amp;gt;).MakeGenericType(type);
+            var mock = (Mock)Activator.CreateInstance(genericMockType);
+            return mock.Object;
+        }
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;I have borrowed this classes from a blogpost i can’t remember (sorry).&lt;/p&gt;
+
+&lt;h3 id=&quot;xaftest&quot;&gt;XafTest&lt;/h3&gt;
+&lt;p&gt;Is intended to test all kinds of DomainLogic that interacts with XafTypesInfo and ObjectSpace relevant tests. It is much slower than the XpoTest cause the XafTypesInfo has to reset and needs to be repopulated.&lt;/p&gt;
+
+&lt;p&gt;The only difference in the usage of &lt;code&gt;XpoTest&lt;/code&gt; and &lt;code&gt;XafTest&lt;/code&gt; is that the &lt;code&gt;XafTest&lt;/code&gt; provides a additional &lt;code&gt;CreateObjectSpace&lt;/code&gt; method:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;public abstract class XafTest : XpoTest
+{
+    protected override TestHelper GetHelperCore()
+    {
+        return TestHelper.NewInstance();
+    }
+
+    protected virtual IObjectSpace CreateObjectSpace()
+    {
+        return GetHelper().GetNewObjectSpace();
+    }
+}
+
+public abstract class XafTest&amp;lt;T, T2&amp;gt; : XafTest
+{
+    protected override TestHelper GetHelperCore()
+    {
+        return TestHelper.NewInstanceXaf&amp;lt;T, T2&amp;gt;();
+    }
+}
+
+public abstract class XafTest&amp;lt;T, T2, T3&amp;gt; : XafTest
+{
+    protected override TestHelper GetHelperCore()
+    {
+        return TestHelper.NewInstanceXaf&amp;lt;T, T2, T3&amp;gt;();
+    }
+}
+
+public abstract class XafTest&amp;lt;T, T2, T3, T4&amp;gt; : XafTest
+{
+    protected override TestHelper GetHelperCore()
+    {
+        return TestHelper.NewInstanceXaf&amp;lt;T, T2, T3, T4&amp;gt;();
+    }
+}
+
+public abstract class XafTest&amp;lt;T, T2, T3, T4, T5&amp;gt; : XafTest
+{
+    protected override TestHelper GetHelperCore()
+    {
+        return TestHelper.NewInstanceXpo&amp;lt;T, T2, T3, T4, T5&amp;gt;();
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h3 id=&quot;xafmodeltesthelper&quot;&gt;XafModelTestHelper&lt;/h3&gt;
+&lt;p&gt;Can be used to load a ApplicationModel and test it’s properties. You can test orders and columns of listviews  or PropertyEditors of DetailViews ect.
+This is in fact the slowest guy in this round. But we have a lot of problems with small refactorings that can happen in huge view problems :(&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;public static class XafModelTestHelper
+{
+    public static IModelApplication LoadApplicationModel(this ModuleBase module)
+    {
+        var manager = new ApplicationModulesManager();
+        
+        manager.AddModule(module);
+
+        manager.Load(XafTypesInfo.Instance, true);
+
+        return new DesignerModelFactory().CreateApplicationModel(module,
+                                                           manager,
+                                                           ModelStoreBase.Empty);
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h2 id=&quot;go-and-test&quot;&gt;Go and test!&lt;/h2&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;For simplicity i only used one UnitTest project to test platform agnostic and winforms code.&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;pre&gt;&lt;code&gt;[TestFixture]
+[Category(&quot;CI&quot;)]
+public class XpoTest_MyBo1 : XpoTest&amp;lt;MyBo1&amp;gt;
+{
+    [Test]
+    public void Test_Ctor()
+    {
+        var session = CreateSession();
+
+        var myBo = new MyBo1(session);
+
+        Assert.That(myBo, Is.AssignableFrom&amp;lt;MyBo1&amp;gt;());
+    }
+
+    private MyBo1 CreateEmptyTestObject()
+    {
+        var session = CreateSession();
+
+        return new MyBo1(session);
+    }
+
+    [Test]
+    public void Test_MyName_Stores_Value_Correctly()
+    {
+        var bo = CreateEmptyTestObject();
+
+        const string expected = &quot;My String&quot;;
+        bo.MyName = &quot;My String&quot;;
+
+        Assert.That(bo.MyName, Is.EqualTo(expected));
+    }
+
+    [Test]
+    public void Test_MyName_Stores_And_Resets_Value_Correctly()
+    {
+        var bo = CreateEmptyTestObject();
+
+        const string expected = &quot;My String&quot;;
+        bo.MyName = &quot;My String&quot;;
+        bo.MyName = null;
+        Assert.That(bo.MyName, Is.Null);
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;This tests are simple property tests, nothing really special here..&lt;/p&gt;
+
+&lt;p&gt;But now the interessting things come:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;[TestFixture]
+[Category(&quot;CI&quot;)]
+public class XpoTest_Manually_Mock_MyBo1 : XpoTest&amp;lt;MyBo1&amp;gt;
+{
+    public class Mock_Renamer : IRenamer
+    {
+        public void RenameMe(MyBo1 myBo1)
+        {
+            myBo1.MyName = typeof (Mock_Renamer).FullName;
+        }
+    }
+
+    protected override void InitUnityContainer(IUnityContainer unityContainer)
+    {
+        base.InitUnityContainer(unityContainer);
+        unityContainer.RegisterType&amp;lt;IRenamer, Mock_Renamer&amp;gt;();
+    }
+
+    [Test]
+    public void Test_Rename_Works()
+    {
+        var bo = new MyBo1(CreateSession());
+
+        bo.RenameMe();
+
+        Assert.That(bo.MyName, Is.EqualTo(typeof(Mock_Renamer).FullName));
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;As you can see we have a successfull test! And decoupled from the original dependency.
+But it can be really annoying to write a mock class for every interface we use. So get &lt;code&gt;Moq&lt;/code&gt;!&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;[TestFixture]
+[Category(&quot;CI&quot;)]
+public class XpoTest_Moq_Mock_MyBo1 : XpoTest&amp;lt;MyBo1&amp;gt;
+{
+    [Test]
+    public void Test_Rename_Works_Mocked()
+    {
+        var session = CreateSession();
+
+        var mock = session.GetUnityContainer().RegisterMock&amp;lt;IRenamer&amp;gt;();
+
+        mock.Setup(m =&amp;gt; m.RenameMe(It.IsAny&amp;lt;MyBo1&amp;gt;()));
+
+        var bo = new MyBo1(session);
+
+        bo.RenameMe();
+
+        mock.Verify(m =&amp;gt; m.RenameMe(bo), Times.AtLeastOnce());
+    }
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;We don’t use a expected value here, cause we only want to know that this interface is resolved and test only the existence of the call.&lt;/p&gt;
+
+&lt;p&gt;Now want to test the XAF part:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;[TestFixture]
+[Category(&quot;CI&quot;)]
+public class XafTest_MyBo1 : XafTest&amp;lt;MyBo1&amp;gt;
+{
+    [Test]
+    public void Test_Ctor_With_OS()
+    {
+        var os = CreateObjectSpace();
+
+        var myBo = os.CreateObject&amp;lt;MyBo1&amp;gt;();
+
+        Assert.That(myBo, Is.AssignableFrom&amp;lt;MyBo1&amp;gt;());
+    }
+
+    private MyBo1 CreateEmptyTestObject()
+    {
+        var os = CreateObjectSpace();
+
+        return os.CreateObject&amp;lt;MyBo1&amp;gt;();
+    }
+
+    [Test]
+    public void Test_MyName_Stores_Value_Correctly()
+    {
+        var bo = CreateEmptyTestObject();
+
+        const string expected = &quot;My String&quot;;
+        bo.MyName = &quot;My String&quot;;
+
+        Assert.That(bo.MyName, Is.EqualTo(expected));
+    }
+
+    [Test]
+    public void Test_MyName_Stores_And_Resets_Value_Correctly()
+    {
+        var bo = CreateEmptyTestObject();
+
+        const string expected = &quot;My String&quot;;
+        bo.MyName = &quot;My String&quot;;
+        bo.MyName = null;
+        Assert.That(bo.MyName, Is.Null);
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Boring. Nothing special here. but a lot slower:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;http://blog.paraoffice.at/get/screenshots/XAFDISolution/XAFDISolution_2013-02-22_17-12-35.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Now the XafApplicationModel part:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;[TestFixture]
+[Category(&quot;CI&quot;)]
+public class XafApplicationModelTest_MyBo1
+{
+    [Test]
+    public void Test_ListView_Should_Only_Contain_1_Column()
+    {
+        var model = XafModelTestHelper.LoadApplicationModel(new XAFDISolutionModule());
+
+        var view = model.Views.OfType&amp;lt;IModelListView&amp;gt;().FirstOrDefault(m =&amp;gt; m.Id == &quot;MyBo1_ListView&quot;);
+
+        Assert.That(view, Is.Not.Null);
+
+        Assert.That(view.Columns.Count, Is.EqualTo(2));
+        // Two is not correct, but i have no idea why the UnityContainer Column is generated??? :(
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;This is almost the slowest of all tests, so i recommend you init the ApplicationModel only once per TestCase:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;[TestFixture]
+[Category(&quot;CI&quot;)]
+public class XafApplicationModelTest_MyBo1
+{
+    private IModelApplication _Model;
+
+    [TestFixtureSetUp]
+    public void SetUp()
+    {
+        _Model = XafModelTestHelper.LoadApplicationModel(new XAFDISolutionModule());
+    }
+
+    [Test]
+    public void Test_ListView_Should_Only_Contain_1_Column()
+    {
+        var view = _Model.Views.OfType&amp;lt;IModelListView&amp;gt;().FirstOrDefault(m =&amp;gt; m.Id == &quot;MyBo1_ListView&quot;);
+
+        Assert.That(view, Is.Not.Null);
+
+        Assert.That(view.Columns.Count, Is.EqualTo(2));
+        // Two is not correct, but i have no idea why the UnityContainer Column is generated??? :(
+    }
+
+    [Test]
+    public void Test_Caption_Of_MyName_Is_My_Name()
+    {
+        var view = _Model.Views.OfType&amp;lt;IModelListView&amp;gt;().FirstOrDefault(m =&amp;gt; m.Id == &quot;MyBo1_ListView&quot;);
+
+        var column = view.Columns.FirstOrDefault(m =&amp;gt; m.Id == &quot;MyName&quot;);
+
+        Assert.That(column, Is.Not.Null);
+
+        Assert.That(column.Caption, Is.EqualTo(&quot;My Name&quot;));
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;The last one is the Application-Based Test:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;[TestFixture]
+[Category(&quot;CI&quot;)]
+public class ApplicationTest_MyBo1
+{
+    private WinApplication TestApplication;
+    [TestFixtureSetUp]
+    public void SetUp()
+    {
+        var unityContainer = new UnityContainer();
+
+        TestApplication = new TestApplication(unityContainer);
+
+        var objectSpaceProvider = new UnityObjectSpaceProvider(new MemoryDataStoreProvider(), unityContainer);
+
+        var testModule = new ModuleBase();
+
+        testModule.AdditionalExportedTypes.Add(typeof(MyBo1));
+
+        TestApplication.Modules.Add(new SystemModule());
+        TestApplication.Modules.Add(testModule);
+
+        TestApplication.Setup(&quot;TestApplication&quot;, objectSpaceProvider);
+
+        TestApplication.CustomCheckCompatibility += (o, args) =&amp;gt; args.Handled = true;
+    }
+
+    [Test]
+    public void Test_Action_WorksCorrectly()
+    {
+        var os = TestApplication.CreateObjectSpace();
+
+        var bo = os.CreateObject&amp;lt;MyBo1&amp;gt;();
+
+        var detailView = TestApplication.CreateDetailView(os, bo);
+
+        var controller = TestApplication.CreateController&amp;lt;DevExpress.ExpressApp.SystemModule.ObjectMethodActionsViewController&amp;gt;();
+
+        controller.SetView(detailView);
+        
+        Assert.That(controller.Actions.Count, Is.GreaterThan(0));
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Note that the last test fails, because i have no idea how to instanciate the ObjectMethodActionsViewController correctly to test my action :(&lt;/p&gt;
+
+&lt;p&gt;But i think you get the point :)&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&quot;https://bitbucket.org/biohazard999/xafdisolution&quot;&gt;Source&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;Update:
+Thanks to &lt;a href=&quot;https://bitbucket.org/shamp00&quot;&gt;Robert Anderson&lt;/a&gt; the ControllerTest is now working correctly :)&lt;/p&gt;
+
+&lt;h2 id=&quot;imported-comments&quot;&gt;Imported Comments:&lt;/h2&gt;
+
+&lt;p&gt;&lt;a href=&quot;http://blog.zerosharp.com/&quot;&gt;Robert Anderson&lt;/a&gt;:&lt;/p&gt;
+
+&lt;p&gt;Fantastic work!&lt;/p&gt;
+</description>
+                <link>http://biohazard999.github.io/2013/02/22/how-to-use-dependency-injection-in-xaf-unittesting-part-2</link>
+                <guid>http://biohazard999.github.io/2013/02/22/how-to-use-dependency-injection-in-xaf-unittesting-part-2</guid>
+                <pubDate>2013-02-22T00:00:00+01:00</pubDate>
+        </item>
+
+        <item>
+                <title>How to use Dependency Injection in XAF</title>
+                <description>
+&lt;h1 id=&quot;dependency-injection&quot;&gt;Dependency injection&lt;/h1&gt;
+
+&lt;p&gt;XAF has the ability to provide DI over Domain-Componants, we use XPO so we don’t have a chance to use this feature (and yes, i &lt;strong&gt;hate static&lt;/strong&gt; methods! (&lt;strong&gt;testing testing testing&lt;/strong&gt;))&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&quot;http://en.wikipedia.org/wiki/Dependency_injection&quot;&gt;http://en.wikipedia.org/wiki/Dependency_injection&lt;/a&gt;&lt;/p&gt;
+
+&lt;h1 id=&quot;why&quot;&gt;Why?&lt;/h1&gt;
+&lt;p&gt;It’s simple. We have a legacy model with a lot of customers, and can’t affort to recreate the model all and all over.&lt;/p&gt;
+
+&lt;p&gt;Testing abilities are also a huge factor for our development.&lt;/p&gt;
+
+&lt;h1 id=&quot;how&quot;&gt;How?&lt;/h1&gt;
+&lt;p&gt;It was a really &lt;em&gt;tricky&lt;/em&gt; task to tell XAF &amp;amp; XPO the trick of DI (or IOC &lt;a href=&quot;http://en.wikipedia.org/wiki/Inversion_of_control&quot;&gt;http://en.wikipedia.org/wiki/Inversion_of_control&lt;/a&gt;)&lt;/p&gt;
+
+&lt;h1 id=&quot;okay-lets-start&quot;&gt;Okay Let’s start&lt;/h1&gt;
+
+&lt;p&gt;First of all: The sample uses Unity (&lt;a href=&quot;http://unity.codeplex.com&quot;&gt;http://unity.codeplex.com&lt;/a&gt;) cause it’s well known and supported from microsoft (and fits our needs perfect), but it’s also possible to extract this hard dependency through the Service Locator Pattern if you like to. (&lt;a href=&quot;http://en.wikipedia.org/wiki/Service_locator_pattern&quot;&gt;http://en.wikipedia.org/wiki/Service_locator_pattern&lt;/a&gt;)&lt;/p&gt;
+
+&lt;h2 id=&quot;the-key-interfaces&quot;&gt;The key interfaces!&lt;/h2&gt;
+
+&lt;p&gt;First we need two simple interface’s we can talk to:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;public interface IUnityContainerProvider
+{
+    IUnityContainer UnityContainer { get; set; }
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+  	public interface IUnityModule
+&lt;pre&gt;&lt;code&gt;{
+    void InitUnityContainer(IUnityContainer unityContainer);
+    void UnityContainerInitialized(IUnityContainer unityContainer);
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;The &lt;code&gt;IUnityContainerProvider&lt;/code&gt; is used for any class resolved by the &lt;code&gt;UnityContainer&lt;/code&gt; to inject himself (we prefer &lt;code&gt;PropertyInjection&lt;/code&gt; cause of the Session constructor forced by XPO.&lt;/p&gt;
+
+&lt;p&gt;The IUnityModule is intended to be implemented by a &lt;code&gt;DevExpress.ExpressApp.ModuleBase&lt;/code&gt; derived type.&lt;/p&gt;
+
+&lt;p&gt;The &lt;code&gt;InitUnityContainer&lt;/code&gt; is inteded to be called after the &lt;code&gt;Application.Setup()&lt;/code&gt; method for each module loaded. The &lt;code&gt;UnityContainerInitialized&lt;/code&gt; is called after the &lt;code&gt;InitUnityContainer&lt;/code&gt; for each module. So we can &lt;em&gt;override&lt;/em&gt; behavior provided by other modules.&lt;/p&gt;
+
+&lt;h2 id=&quot;how-the-hell-can-this-work-with-xaf&quot;&gt;How the hell can this work with XAF?&lt;/h2&gt;
+
+&lt;p&gt;I’ve played with this really long and still facing out some problems i’ve seen with our implementation, but this works for almost 2 years now. So i can say it works &lt;em&gt;almost&lt;/em&gt; with no problems so long. &lt;em&gt;Till the next XAF update&lt;/em&gt; ;)&lt;/p&gt;
+
+&lt;h3 id=&quot;children&quot;&gt;Children&lt;/h3&gt;
+
+&lt;p&gt;Unity has the ability to create ChildContainer’s from parent containers. This is nice cause the Frame concept in XAF is almost the same for the view handling.&lt;/p&gt;
+
+&lt;p&gt;We could &lt;em&gt;reuse&lt;/em&gt; this for the domain-logic so we can simply write domain code without having to deal with different Sessions/UnitOfWorks/ObjectSpaces.&lt;/p&gt;
+
+&lt;h3 id=&quot;code-it-please&quot;&gt;Code it please!&lt;/h3&gt;
+
+&lt;p&gt;Okay okay, dont hustle…&lt;/p&gt;
+
+&lt;h4 id=&quot;unityunitofwork&quot;&gt;UnityUnitOfWork&lt;/h4&gt;
+
+&lt;p&gt;First of all we need a &lt;code&gt;UnityUnitOfWork&lt;/code&gt;. This Class provides a UnityContainer and stores itself as a instance of type &lt;code&gt;Session&lt;/code&gt; and &lt;code&gt;UnitOfWork&lt;/code&gt;.&lt;/p&gt;
+
+ 	public class UnityUnitOfWork : UnitOfWork, IUnityContainerProvider
+&lt;pre&gt;&lt;code&gt;{
+    public UnityUnitOfWork() { }
+    public UnityUnitOfWork(DevExpress.Xpo.Metadata.XPDictionary dictionary) : base(dictionary) { }
+    public UnityUnitOfWork(IDataLayer layer, params IDisposable[] disposeOnDisconnect) : base(layer, disposeOnDisconnect) { }
+    public UnityUnitOfWork(IObjectLayer layer, params IDisposable[] disposeOnDisconnect) : base(layer, disposeOnDisconnect) { }
+
+    private IUnityContainer _UnityContainer;
+    public IUnityContainer UnityContainer
+    {
+        get
+        {
+            return _UnityContainer;
+        }
+        set
+        {
+            value.RegisterInstance&amp;lt;UnitOfWork&amp;gt;(this, new HierarchicalLifetimeManager());
+            value.RegisterInstance&amp;lt;Session&amp;gt;(this, new HierarchicalLifetimeManager());
+            _UnityContainer = value;
+        }
+    }
+
+    protected override NestedUnitOfWork CreateNestedUnitOfWork()
+    {
+        return new NestedUnityUnitOfWork(this);
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h4 id=&quot;nestedunityunitofwork&quot;&gt;NestedUnityUnitOfWork&lt;/h4&gt;
+
+&lt;p&gt;Cause XPO supports nested transactions we shouldn’t miss the &lt;code&gt;NestedUnitOfWork&lt;/code&gt; who is also a &lt;em&gt;full&lt;/em&gt; &lt;code&gt;UnityOfWork&lt;/code&gt;.&lt;/p&gt;
+
+ 	public class NestedUnityUnitOfWork : NestedUnitOfWork, IUnityContainerProvider
+&lt;pre&gt;&lt;code&gt;{
+    protected internal NestedUnityUnitOfWork(Session parent)
+        : base(parent)
+    {
+        UnityContainer = (parent as IUnityContainerProvider).UnityContainer.CreateChildContainer();
+        UnityContainer.RegisterInstance&amp;lt;NestedUnitOfWork&amp;gt;(this, new HierarchicalLifetimeManager());
+        UnityContainer.RegisterInstance&amp;lt;UnitOfWork&amp;gt;(this, new HierarchicalLifetimeManager());
+        UnityContainer.RegisterInstance&amp;lt;Session&amp;gt;(this, new HierarchicalLifetimeManager());
+    }
+
+    public IUnityContainer UnityContainer { get; set; }
+
+    protected override NestedUnitOfWork CreateNestedUnitOfWork()
+    {
+        return new NestedUnityUnitOfWork(this);
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h2 id=&quot;but-what-about-xaf&quot;&gt;But what about XAF?&lt;/h2&gt;
+
+&lt;p&gt;We need to provide the same functionality to the &lt;code&gt;XPObjectSpace&lt;/code&gt; as well to the &lt;code&gt;XPNestedObjectSpace&lt;/code&gt;.
+### ObjectSpaces ###&lt;/p&gt;
+
+&lt;h4 id=&quot;unityobjectspace&quot;&gt;UnityObjectSpace&lt;/h4&gt;
+
+&lt;pre&gt;&lt;code&gt;public class UnityObjectSpace : XPObjectSpace, IUnityContainerProvider, IUnityObjectSpace
+{
+    public UnityObjectSpace(UnitOfWork unitOfWork) : base(unitOfWork) { }
+
+    public UnityObjectSpace(ITypesInfo typesInfo, XpoTypeInfoSource xpoTypeInfoSource, CreateUnitOfWorkHandler createUnitOfWorkDelegate) : base(typesInfo, xpoTypeInfoSource, createUnitOfWorkDelegate) { }
+
+    public IUnityContainer UnityContainer
+    {
+        get
+        {
+            if (Session is UnityUnitOfWork)
+                return (Session as UnityUnitOfWork).UnityContainer;
+            return null;
+        }
+        set { }
+    }
+
+    protected override UnitOfWork RecreateUnitOfWork()
+    {
+        var uow = base.RecreateUnitOfWork();
+        if (uow is UnityUnitOfWork)
+            (uow as UnityUnitOfWork).UnityContainer.RegisterInstance&amp;lt;IObjectSpace&amp;gt;(this, new HierarchicalLifetimeManager());
+        return uow;
+    }
+
+    public override IObjectSpace CreateNestedObjectSpace()
+    {
+        var os = new UnityNestedObjectSpace(this);
+        (os.Session as IUnityContainerProvider).UnityContainer.RegisterInstance&amp;lt;IObjectSpace&amp;gt;(os, new HierarchicalLifetimeManager());
+        return os;
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h4 id=&quot;unitynestedobjectspace&quot;&gt;UnityNestedObjectSpace&lt;/h4&gt;
+
+&lt;pre&gt;&lt;code&gt;public class UnityNestedObjectSpace : XPNestedObjectSpace, IUnityContainerProvider
+{
+    public UnityNestedObjectSpace(IObjectSpace parentObjectSpace)
+        : base(parentObjectSpace) {}
+
+    public IUnityContainer UnityContainer
+    {
+        get
+        {
+            return (Session as IUnityContainerProvider).UnityContainer;
+        }
+        set {}
+    }
+
+    public override IObjectSpace CreateNestedObjectSpace()
+    {
+        var nestedOS = new UnityNestedObjectSpace(this);
+        nestedOS.AsyncServerModeSourceResolveSession = AsyncServerModeSourceResolveSession;
+        nestedOS.AsyncServerModeSourceDismissSession = AsyncServerModeSourceDismissSession;
+
+        (nestedOS.Session as IUnityContainerProvider).UnityContainer.RegisterInstance&amp;lt;IObjectSpace&amp;gt;(nestedOS, new HierarchicalLifetimeManager());
+
+        return nestedOS;
+    }
+
+
+    protected override UnitOfWork RecreateUnitOfWork()
+    {
+        var Result = base.RecreateUnitOfWork();
+        (Result as IUnityContainerProvider).UnityContainer.RegisterInstance&amp;lt;IObjectSpace&amp;gt;(this, new HierarchicalLifetimeManager());
+        return Result;
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h2 id=&quot;okay-we-have-almost-all-we-need-hurry-up&quot;&gt;Okay we have almost all we need, hurry up!&lt;/h2&gt;
+
+&lt;p&gt;There are only 2 things missing. The infrastrucure for the &lt;code&gt;ObjectSpaceProviders&lt;/code&gt; and the &lt;code&gt;XAFApplication&lt;/code&gt;.&lt;/p&gt;
+
+&lt;h3 id=&quot;objectspaceproviders--application&quot;&gt;ObjectSpaceProviders &amp;amp; Application&lt;/h3&gt;
+
+&lt;p&gt;There are 2 versions of the &lt;code&gt;ObjectSpaceProvider&lt;/code&gt;: Secured and Unsecured. &lt;/p&gt;
+
+&lt;p&gt;First the unsecured version:&lt;/p&gt;
+
+  	public class UnityObjectSpaceProvider : XPObjectSpaceProvider, IUnityContainerProvider
+&lt;pre&gt;&lt;code&gt;{
+    public IUnityContainer UnityContainer { get; set; }
+
+    public UnityObjectSpaceProvider(string connectionString, IDbConnection connection, IUnityContainer unityContainer) : base(connectionString, connection)
+    {
+        UnityContainer = unityContainer;
+        unityContainer.RegisterInstance(typeof(IObjectSpaceProvider), this, new ContainerControlledLifetimeManager());
+    }
+
+    public UnityObjectSpaceProvider(IXpoDataStoreProvider dataStoreProvider, IUnityContainer unityContainer)
+        : base(dataStoreProvider)
+    {
+        UnityContainer = unityContainer;
+        unityContainer.RegisterInstance(typeof(IObjectSpaceProvider), this, new ContainerControlledLifetimeManager());
+    }
+
+    public UnityObjectSpaceProvider(IXpoDataStoreProvider dataStoreProvider, ITypesInfo typesInfo, XpoTypeInfoSource xpoTypeInfoSource, IUnityContainer unityContainer)
+        : base(dataStoreProvider, typesInfo, xpoTypeInfoSource)
+    {
+        UnityContainer = unityContainer;
+        unityContainer.RegisterInstance(typeof(IObjectSpaceProvider), this, new ContainerControlledLifetimeManager());
+    }
+
+    protected override IDataLayer CreateDataLayer(IDataStore dataStore)
+    {
+        var dataLayer = new SimpleDataLayer(this.XPDictionary, dataStore);
+
+        return dataLayer;
+    }
+
+    protected override IObjectSpace CreateObjectSpaceCore()
+    {
+        var os = new UnityObjectSpace(TypesInfo, XpoTypeInfoSource, CreateUnitOfWorkDelegate);
+
+        os.UnityContainer.RegisterInstance&amp;lt;IObjectSpace&amp;gt;(os, new HierarchicalLifetimeManager());
+
+        return os;
+    }
+
+    protected override UnitOfWork CreateUnitOfWork(IDataLayer dataLayer)
+    {
+        var uow = new UnityUnitOfWork(dataLayer, null)
+                  {
+                      UnityContainer = UnityContainer.CreateChildContainer()
+                  };
+
+        return uow;
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;And Secured:&lt;/p&gt;
+
+ 	public class SecureUnityObjectSpaceProvider : XPObjectSpaceProvider, IUnityContainerProvider
+&lt;pre&gt;&lt;code&gt;{
+    private ISelectDataSecurityProvider SelectDataSecurityProvider;
+
+    public bool AllowICommandChannelDoWithSecurityContext { get; set; }
+
+    public SecureUnityObjectSpaceProvider(ISelectDataSecurityProvider selectDataSecurityProvider, IXpoDataStoreProvider dataStoreProvider, ITypesInfo typesInfo, XpoTypeInfoSource xpoTypeInfoSource, IUnityContainer unityContainer)
+        : base(dataStoreProvider, typesInfo, xpoTypeInfoSource)
+    {
+        UnityContainer = unityContainer;
+        SelectDataSecurityProvider = selectDataSecurityProvider;
+        AllowICommandChannelDoWithSecurityContext = true;
+    }
+
+    public SecureUnityObjectSpaceProvider(ISelectDataSecurityProvider selectDataSecurityProvider, IXpoDataStoreProvider dataStoreProvider, IUnityContainer unityContainer)
+        : base(dataStoreProvider)
+    {
+        UnityContainer = unityContainer;
+        SelectDataSecurityProvider = selectDataSecurityProvider;
+        AllowICommandChannelDoWithSecurityContext = true;
+    }
+
+    public SecureUnityObjectSpaceProvider(ISelectDataSecurityProvider selectDataSecurityProvider, string databaseConnectionString, IDbConnection connection, IUnityContainer unityContainer)
+        : base(databaseConnectionString, connection)
+    {
+        UnityContainer = unityContainer;
+        SelectDataSecurityProvider = selectDataSecurityProvider;
+        AllowICommandChannelDoWithSecurityContext = true;
+    }
+
+    public IUnityContainer UnityContainer { get; set; }
+
+    protected override IDataLayer CreateDataLayer(IDataStore dataStore)
+    {
+        var datalayer = new SimpleDataLayer(dataStore);
+
+        return datalayer;
+    }
+
+
+    protected override IObjectSpace CreateObjectSpaceCore()
+    {
+        var os = new UnityObjectSpace(TypesInfo, XpoTypeInfoSource, CreateUnitOfWorkDelegate);
+
+        os.UnityContainer.RegisterInstance&amp;lt;IObjectSpace&amp;gt;(os, new HierarchicalLifetimeManager());
+
+        return os;
+    }
+
+    protected override UnitOfWork CreateUnitOfWork(IDataLayer dataLayer)
+    {
+        UnityUnitOfWork uow = new UnityUnitOfWork(dataLayer, null);
+
+        uow.UnityContainer = UnityContainer.CreateChildContainer();
+
+        SessionObjectLayer currentObjectLayer = new SecuredSessionObjectLayer(AllowICommandChannelDoWithSecurityContext, uow, true, null, new SecurityRuleProvider(XPDictionary, SelectDataSecurityProvider.CreateSelectDataSecurity()), null);
+
+        var secureUnitOfWork = new UnityUnitOfWork(currentObjectLayer, uow);
+
+        secureUnitOfWork.UnityContainer = uow.UnityContainer;
+
+        return secureUnitOfWork;
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;&lt;strong&gt;Note: The second one is almost a clone of the &lt;code&gt;SecuredObjectSpaceProvider&lt;/code&gt; provided by DevExpress but we didn’t want to intercept this class with reflection so we made a &lt;em&gt;clone&lt;/em&gt; to &lt;em&gt;inject&lt;/em&gt; our needs.&lt;/strong&gt;&lt;/p&gt;
+
+&lt;h3 id=&quot;application--bootstrapping&quot;&gt;Application &amp;amp; Bootstrapping&lt;/h3&gt;
+
+&lt;pre&gt;&lt;code&gt;public class UnityModuleInitializer
+{
+    public void InitUnityModules(IUnityContainer container, IEnumerable&amp;lt;IUnityModule&amp;gt; modules)
+    {
+        foreach (var module in modules)
+            module.InitUnityContainer(container);
+
+        foreach (var module in modules)
+            module.UnityContainerInitialized(container);
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+  	public class UnityWinApplication : WinApplication, IUnityContainerProvider
+&lt;pre&gt;&lt;code&gt;{
+    public IUnityContainer UnityContainer { get; set; }
+
+    public UnityWinApplication() : this(new UnityContainer()) { }
+
+    public UnityWinApplication(IUnityContainer container)
+    {
+        UnityContainer = container;
+        UnityContainer.RegisterInstance&amp;lt;XafApplication&amp;gt;(this, new ContainerControlledLifetimeManager());
+
+        SettingUp += ParaXAFApplication_SettingUp;
+    }
+
+    protected override void CreateDefaultObjectSpaceProvider(CreateCustomObjectSpaceProviderEventArgs args)
+    {
+        args.ObjectSpaceProvider = CreateUnityObjectSpaceProvider(args);
+    }
+    
+    public XPObjectSpaceProvider CreateUnityObjectSpaceProvider(CreateCustomObjectSpaceProviderEventArgs e)
+    {
+        return new UnityObjectSpaceProvider(e.ConnectionString, e.Connection, UnityContainer);
+    }
+
+    void ParaXAFApplication_SettingUp(object sender, SetupEventArgs e)
+    {
+        new UnityModuleInitializer().InitUnityModules(UnityContainer, Modules.OfType&amp;lt;IUnityModule&amp;gt;());
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h2 id=&quot;bring-the-stuff-together&quot;&gt;Bring the stuff together&lt;/h2&gt;
+
+&lt;p&gt;The Application:&lt;/p&gt;
+
+  	public partial class XAFDISolutionWindowsFormsApplication : UnityWinApplication
+&lt;pre&gt;&lt;code&gt;{
+    public XAFDISolutionWindowsFormsApplication(IUnityContainer container)
+        : base(container)
+    {
+        InitializeComponent();
+        DelayedViewItemsInitialization = true;
+    }
+
+    public XAFDISolutionWindowsFormsApplication() : this(new UnityContainer()) { }
+
+    private void XAFDISolutionWindowsFormsApplication_DatabaseVersionMismatch(object sender, DevExpress.ExpressApp.DatabaseVersionMismatchEventArgs e)
+    {
+        if (System.Diagnostics.Debugger.IsAttached)
+        {
+            e.Updater.Update();
+            e.Handled = true;
+        }
+        else
+        {
+            throw new InvalidOperationException(
+                &quot;The application cannot connect to the specified database, because the latter doesn&#39;t exist or its version is older than that of the application.\r\n&quot; +
+                &quot;This error occurred  because the automatic database update was disabled when the application was started without debugging.\r\n&quot; +
+                &quot;To avoid this error, you should either start the application under Visual Studio in debug mode, or modify the &quot; +
+                &quot;source code of the &#39;DatabaseVersionMismatch&#39; event handler to enable automatic database update, &quot; +
+                &quot;or manually create a database using the &#39;DBUpdater&#39; tool.\r\n&quot; +
+                &quot;Anyway, refer to the &#39;Update Application and Database Versions&#39; help topic at http://www.devexpress.com/Help/?document=ExpressApp/CustomDocument2795.htm &quot; +
+                &quot;for more detailed information. If this doesn&#39;t help, please contact our Support Team at http://www.devexpress.com/Support/Center/&quot;);
+        }
+    }
+
+    private void XAFDISolutionWindowsFormsApplication_CustomizeLanguagesList(object sender, CustomizeLanguagesListEventArgs e)
+    {
+        string userLanguageName = System.Threading.Thread.CurrentThread.CurrentUICulture.Name;
+        if (userLanguageName != &quot;en-US&quot; &amp;amp;&amp;amp; e.Languages.IndexOf(userLanguageName) == -1)
+        {
+            e.Languages.Add(userLanguageName);
+        }
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;And Program.cs&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;static class Program
+{
+    [STAThread]
+    static void Main()
+    {
+        var unityContainer = new UnityContainer();
+
+        Application.EnableVisualStyles();
+        Application.SetCompatibleTextRenderingDefault(false);
+        EditModelPermission.AlwaysGranted = System.Diagnostics.Debugger.IsAttached;
+
+        string connectionString = null;
+
+        if (ConfigurationManager.ConnectionStrings[&quot;ConnectionString&quot;] != null)
+            connectionString = ConfigurationManager.ConnectionStrings[&quot;ConnectionString&quot;].ConnectionString;
+
+        var winApplication = new XAFDISolutionWindowsFormsApplication(unityContainer);
+        winApplication.ConnectionString = connectionString;
+
+        try
+        {
+            winApplication.Setup();
+            winApplication.Start();
+        }
+        catch (Exception e)
+        {
+            winApplication.HandleException(e);
+        }
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h2 id=&quot;lets-rock&quot;&gt;Lets rock!&lt;/h2&gt;
+
+&lt;p&gt;In our platform agnostic module we create a simple BO:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;[Persistent]
+[DefaultClassOptions]
+public class MyBo1 : XPObject
+{
+    public MyBo1()
+    {
+    }
+
+    public MyBo1(Session session) : base(session)
+    {
+    }
+
+    public MyBo1(Session session, XPClassInfo classInfo) : base(session, classInfo)
+    {
+    }
+
+    [NonPersistent]
+    [MemberDesignTimeVisibility(false)]
+    public IUnityContainer UnityContainer
+    {
+        get { return (Session as IUnityContainerProvider).UnityContainer; }
+    }
+
+    private string _MyName;
+    [Size(SizeAttribute.Unlimited)]
+    [Persistent]
+    public string MyName
+    {
+        get { return _MyName; }
+        set { SetPropertyValue(&quot;MyName&quot;, ref _MyName, value); }
+    }
+
+    [DevExpress.Persistent.Base.Action(Caption = &quot;Rename Me!!!&quot;)]
+    public void RenameMe()
+    {
+        UnityContainer.Resolve&amp;lt;IRenamer&amp;gt;().RenameMe(this);
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Notice there is a MethodAction that pulls out the dependency of `IRenamer’&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;public interface IRenamer
+{
+    void RenameMe(MyBo1 myBo1);
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;And a NullImplementation&lt;/p&gt;
+
+ 	public class NullRenamer : IRenamer
+&lt;pre&gt;&lt;code&gt;{
+    [Dependency]
+    public IObjectSpace OS { get; set; }
+
+    public void RenameMe(MyBo1 myBo1)
+    {
+        //I should never be called.
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;So we have a nice NullImplementation and we don’t have to check allways if the dependency is already registered (performance).&lt;/p&gt;
+
+&lt;p&gt;In the Module we implement the interface &lt;code&gt;IUnityModule&lt;/code&gt; and register the type of the &lt;code&gt;NullRenamer&lt;/code&gt;&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;public sealed partial class XAFDISolutionModule : ModuleBase, IUnityModule
+{
+    public XAFDISolutionModule()
+    {
+        InitializeComponent();
+    }
+
+    public override IEnumerable&amp;lt;ModuleUpdater&amp;gt; GetModuleUpdaters(IObjectSpace objectSpace, Version versionFromDB)
+    {
+        ModuleUpdater updater = new DatabaseUpdate.Updater(objectSpace, versionFromDB);
+        return new ModuleUpdater[] { updater };
+    }
+
+    public void InitUnityContainer(Microsoft.Practices.Unity.IUnityContainer unityContainer)
+    {
+        unityContainer.RegisterType&amp;lt;IRenamer, NullRenamer&amp;gt;();
+    }
+
+    public void UnityContainerInitialized(Microsoft.Practices.Unity.IUnityContainer unityContainer)
+    {
+        
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;In the WinProject we create a new DomainLogic class called &lt;code&gt;WinRenamer&lt;/code&gt;&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;public class WinRenamer : IRenamer
+{
+    [Dependency]
+    public IObjectSpace OS { get; set; }
+
+    public void RenameMe(MyBo1 myBo1)
+    {
+        //I should be be called.
+
+        myBo1.MyName = &quot;Hello from the Win Project: My Dependencies: &quot; + GetType().FullName + &quot; &quot; + OS + &quot;Session id:&quot; + (OS as XPObjectSpace).Session;
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;And the WinModule need’s to overwrite the &lt;code&gt;IRenamer&lt;/code&gt; registration&lt;/p&gt;
+
+ 	[ToolboxItemFilter(“Xaf.Platform.Win”)]
+&lt;pre&gt;&lt;code&gt;public sealed partial class XAFDISolutionWindowsFormsModule : ModuleBase, IUnityModule
+{
+    public XAFDISolutionWindowsFormsModule()
+    {
+        InitializeComponent();
+    }
+    public override IEnumerable&amp;lt;ModuleUpdater&amp;gt; GetModuleUpdaters(IObjectSpace objectSpace, Version versionFromDB)
+    {
+        return ModuleUpdater.EmptyModuleUpdaters;
+    }
+
+    public void InitUnityContainer(IUnityContainer unityContainer)
+    {
+        unityContainer.RegisterType&amp;lt;IRenamer, WinRenamer&amp;gt;();
+    }
+
+    public void UnityContainerInitialized(IUnityContainer unityContainer)
+    {
+        
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Thats it!&lt;/p&gt;
+
+&lt;p&gt;Check out the video on &lt;a href=&quot;http://www.screencast.com/users/Paragraph-Software/folders/Jing/media/0fd30e6c-8757-4293-91e9-29a1a67e5443&quot;&gt;Screencast&lt;/a&gt;
+And the source-code on &lt;a href=&quot;https://bitbucket.org/biohazard999/xafdisolution&quot;&gt;Bitbucket&lt;/a&gt;&lt;/p&gt;
+
+</description>
+                <link>http://biohazard999.github.io/2013/02/21/how-to-use-dependency-injection-in-xaf</link>
+                <guid>http://biohazard999.github.io/2013/02/21/how-to-use-dependency-injection-in-xaf</guid>
+                <pubDate>2013-02-21T00:00:00+01:00</pubDate>
+        </item>
+
+        <item>
+                <title>FastSchemaProvider V0.6</title>
+                <description>
+&lt;p&gt;I’ve just updated &lt;a href=&quot;https://github.com/hazard999/FastSchemaProvider&quot;&gt;FastSchemaProvider&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;Next internal steps was to attach a XPO/XAF-Application (internal needs ;-)&lt;/p&gt;
+
+&lt;p&gt;So I was refactoring the DBChanger =&amp;gt; DVDiff, and &lt;em&gt;sic&lt;/em&gt; adding otpions to compare…&lt;/p&gt;
+
+&lt;p&gt;Behaves well (but slowly, anybody an speed up option)?&lt;/p&gt;
+
+&lt;p&gt;next update in a few days&lt;/p&gt;
+
+</description>
+                <link>http://biohazard999.github.io/2012/08/06/fastschemaprovider-v06</link>
+                <guid>http://biohazard999.github.io/2012/08/06/fastschemaprovider-v06</guid>
+                <pubDate>2012-08-06T00:00:00+02:00</pubDate>
+        </item>
+
+        <item>
+                <title>FastSchemaProvider</title>
+                <description>
+&lt;p&gt;I just released beta (hmm let me think…, okay V0.5) of &lt;a href=&quot;https://github.com/hazard999/FastSchemaProvider&quot;&gt;FastSchemaProvider&lt;/a&gt;&lt;/p&gt;
+
+&lt;h2 id=&quot;indoduction&quot;&gt;Indoduction&lt;/h2&gt;
+
+&lt;p&gt;We are having a huge defeat regarding upgrading consumer databases by XPO.&lt;br /&gt;
+XPO isn’t capable of extending column widths (varchars..), neither altering foreign keys, primary keys, defaults…&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;even XPObjectTypes (oh well, this should be possible trough orm, …)&lt;/strong&gt;&lt;/p&gt;
+
+&lt;h2 id=&quot;goal&quot;&gt;Goal&lt;/h2&gt;
+
+&lt;p&gt;This project is intended to perform any schema transitions as fast as possible, taking account the underling database engine and the remote (provided) schema.
+This tool will to supersede any xpo (entity framework as will) change, regarding your database.&lt;/p&gt;
+
+&lt;h2 id=&quot;state&quot;&gt;State&lt;/h2&gt;
+
+&lt;p&gt;Its not yet ready for full productive use, but it will soon (for sql anywhere about Aug 15 2012).&lt;/p&gt;
+
+&lt;h2 id=&quot;some-parts-are-still-missing&quot;&gt;Some parts are still missing:&lt;/h2&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;Altering columns taking place in indexes, would cause an error on most databases &lt;/li&gt;
+  &lt;li&gt;Same for foreign keys  &lt;/li&gt;
+  &lt;li&gt;solutons/projects  &lt;/li&gt;
+  &lt;li&gt;property string length definition =&amp;gt; transfer them to staging schema&lt;/li&gt;
+  &lt;li&gt;provide general attribute for foreignkeys (sealed &lt;strong&gt;&lt;em&gt;i don’t care&lt;/em&gt;&lt;/strong&gt; (╯°□°）╯︵ ┻━┻)&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;i’am at least sorry for bad english ^^&lt;/p&gt;
+
+</description>
+                <link>http://biohazard999.github.io/2012/08/02/fastschemaprovider</link>
+                <guid>http://biohazard999.github.io/2012/08/02/fastschemaprovider</guid>
+                <pubDate>2012-08-02T00:00:00+02:00</pubDate>
         </item>
 
         <item>
