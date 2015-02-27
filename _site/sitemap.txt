@@ -146,7 +146,6 @@ http://biohazard999.github.io/sitemap.txt
 http://biohazard999.github.io/tags.html
 
 http://biohazard999.github.io/2015/02/27/omfg-what-happend-almost-a-year-without-a-single-post
-http://biohazard999.github.io/2015/02/27/omfg-what-happend-a-year-withput-a-single-post
 http://biohazard999.github.io/2013/12/23/devexpress-132-review-part-3
 http://biohazard999.github.io/2013/12/07/devexpress-132-review-part-2
 http://biohazard999.github.io/2013/12/06/devexpress-132-review-part-1
