@@ -145,7 +145,6 @@ http://biohazard999.github.io/rss.xml
 http://biohazard999.github.io/sitemap.txt
 http://biohazard999.github.io/tags.html
 
-http://biohazard999.github.io/2015/02/27/hello-world
 http://biohazard999.github.io/2013/12/23/devexpress-132-review-part-3
 http://biohazard999.github.io/2013/12/07/devexpress-132-review-part-2
 http://biohazard999.github.io/2013/12/06/devexpress-132-review-part-1
@@ -159,7 +158,6 @@ http://biohazard999.github.io/2013/02/21/how-to-use-dependency-injection-in-xaf
 http://biohazard999.github.io/2012/08/06/fastschemaprovider-v06
 http://biohazard999.github.io/2012/08/02/fastschemaprovider
 http://biohazard999.github.io/2012/07/19/hello-blog
-http://biohazard999.github.io/lessons/2011/12/29/jekyll-introduction
   </div>
 </div>
 

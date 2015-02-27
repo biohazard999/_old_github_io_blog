@@ -42,7 +42,7 @@ This is a WindowsForms only Module.
 
 Rebuild your project and you will see 2 additional nodes in the Options section:
 
-![](2013-12-23-devexpress-132-review-part-3/1.png)
+![](/assets/images/2013-12-23-devexpress-132-review-part-3/1.png)
 
 The `TaskbarJumpListOptions` node allows you to specify `JumplistCategories` and `JumplistItems`. 
 
@@ -50,7 +50,7 @@ The `TaskbarJumpListOptions` node allows you to specify `JumplistCategories` and
 
 Set the `EnableJumplist` option to `True` and specify a argument name that will be used to launch your application with command line arguments.
 
-![](2013-12-23-devexpress-132-review-part-3/2.png)
+![](/assets/images/2013-12-23-devexpress-132-review-part-3/2.png)
 
 
 > Note if you only like to launch external applications you can skip the `NavigationItemJumplistArgumentName`
