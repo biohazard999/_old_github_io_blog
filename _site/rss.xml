@@ -5,10 +5,19 @@
         <description>paraOffice - Team Blog - Manuel Grundner</description>
         <link>http://biohazard999.github.io</link>
         <link>http://biohazard999.github.io</link>
-        <lastBuildDate>2015-02-27T19:47:02+01:00</lastBuildDate>
-        <pubDate>2015-02-27T19:47:02+01:00</pubDate>
+        <lastBuildDate>2015-02-27T19:59:03+01:00</lastBuildDate>
+        <pubDate>2015-02-27T19:59:03+01:00</pubDate>
         <ttl>1800</ttl>
 
+
+        <item>
+                <title>OMFG what happend? Almost a year without a single post!</title>
+                <description>
+</description>
+                <link>http://biohazard999.github.io/2015/02/27/omfg-what-happend-almost-a-year-without-a-single-post</link>
+                <guid>http://biohazard999.github.io/2015/02/27/omfg-what-happend-almost-a-year-without-a-single-post</guid>
+                <pubDate>2015-02-27T00:00:00+01:00</pubDate>
+        </item>
 
         <item>
                 <title>DevExpress 13.2 Review Part 3</title>
